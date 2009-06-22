@@ -1,5 +1,4 @@
 - transform array_add, array_remove macros to functions for type-safety for both
   types of graphs.
-- add find_connected and find_connected_custom for complex graphs.
 - set up a build system.
 - set up documentation generation.

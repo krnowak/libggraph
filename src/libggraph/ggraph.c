@@ -445,12 +445,28 @@ g_graph_find(GGraph* graph,
   return g_graph_find_custom(graph, data, g_direct_equal);
 }
 
+/** g_graph_find_connected:
+ * @graph: a node.
+ * @data: the element data to find.
+ *
+ * It calls g_graph_find_custom_conneted() with g_direct_equal() as a third
+ * parameter.
+ *
+ * Returns: a #GGraphArray* that must be freed with g_graph_array_free().
+ */
+GGraphArray*
+g_graph_find_connected(GGraph* graph,
+                       gconstpointer data)
+{
+  return g_graph_find_custom_connected(graph, data, g_direct_equal);
+}
+
 /** g_graph_find_custom:
  * @graph: a node.
  * @data: data passed to @func.
  * @func: the function to call for each element.
  *
- * Finds an element in a #GGraph, using a supplied function to find the desired
+ * Finds elements in a #GGraph, using a supplied function to find the desired
  * elements. It iterates over the whole graph, calling the given function which
  * should return %TRUE when the desired element is found. The function takes two
  * gconstpointer arguments, the #GGraph element's data as the first argument and
@@ -473,6 +489,51 @@ g_graph_find_custom(GGraph* graph,
   
   matching_graphs = g_graph_array_new();
   graph_array = _g_graph_array(graph, FALSE);
+  for (iter = 0; iter < graph_array->len; iter++)
+  {
+    GGraph* node = g_graph_array_index(graph_array, iter);
+    if ((*func)(node->data, data))
+    {
+      g_graph_array_add(matching_graphs, node);
+    }
+  }
+  g_graph_array_free(graph_array, TRUE);
+  if (!matching_graphs->len)
+  {
+    g_graph_array_free(matching_graphs, TRUE);
+    matching_graphs = NULL;
+  }
+  return matching_graphs;
+}
+
+/** g_graph_find_custom_connected:
+ * @graph: a node.
+ * @data: data passed to @func.
+ * @func: the function to call for each element.
+ *
+ * Finds elements in a #GGraph, using a supplied function to find the desired
+ * elements. It iterates over this nodes in graph, to which @graph is directly
+ * or indirectly connected, calling the given function which should return %TRUE
+ * when the desired element is found. The function takes two gconstpointer
+ * arguments, the #GGraph element's data as the first argument and the given
+ * user data as second. If an element is found it is added to a #GGraphArray.
+ *
+ * Returns: a #GGraphArray* that must be freed with g_graph_array_free().
+ */
+GGraphArray*
+g_graph_find_custom_connected(GGraph* graph,
+                              gconstpointer data,
+                              GEqualFunc func)
+{
+  GGraphArray* matching_graphs;
+  GGraphArray* graph_array;
+  guint iter;
+  
+  g_return_val_if_fail(graph != NULL, NULL);
+  g_return_val_if_fail(func != NULL, NULL);
+  
+  matching_graphs = g_graph_array_new();
+  graph_array = _g_graph_array(graph, TRUE);
   for (iter = 0; iter < graph_array->len; iter++)
   {
     GGraph* node = g_graph_array_index(graph_array, iter);

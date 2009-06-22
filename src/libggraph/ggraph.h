@@ -87,9 +87,18 @@ g_graph_find(GGraph* graph,
              gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 GGraphArray*
+g_graph_find_connected(GGraph* graph,
+                       gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
+
+GGraphArray*
 g_graph_find_custom(GGraph* graph,
                     gconstpointer data,
                     GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+
+GGraphArray*
+g_graph_find_custom_connected(GGraph* graph,
+                              gconstpointer data,
+                              GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
 
 gpointer
 g_graph_data(GGraph* graph);
