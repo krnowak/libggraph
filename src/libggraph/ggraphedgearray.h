@@ -38,27 +38,13 @@ typedef GPtrArray GGraphEdgeArray;
 #define g_graph_edge_array_index(array, index) \
 ((GGraphEdge*)(g_ptr_array_index((array), (index))))
 
-/**
- * g_graph_edge_array_add:
- * @array: an array.
- * @pointer: pointer to add to @array.
- *
- * Convenience type-safe macro, adding pointer to array.
- * FIXME: make it a function, it is not type-safe now.
- */
-#define g_graph_edge_array_add(array, pointer) \
-(g_ptr_array_add((array), (pointer)))
+void
+g_graph_edge_array_add(GGraphEdgeArray* array,
+                       GGraphEdge* edge);
 
-/**
- * g_graph_edge_array_remove:
- * @array: an array.
- * @pointer: pointer to be removed from @array.
- *
- * Convenience type-safe macro, removing pointer from array, preserving order.
- * FIXME: make it a function, it is not type-safe now.
- */
-#define g_graph_edge_array_remove(array, pointer) \
-(g_ptr_array_remove((array), (pointer)))
+gboolean
+g_graph_edge_array_remove(GGraphEdgeArray* array,
+                          GGraphEdge* edge);
 
 /**
  * g_graph_edge_array_free:

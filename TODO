@@ -1,4 +1,2 @@
-- transform array_add, array_remove macros to functions for type-safety for both
-  types of graphs.
 - set up a build system.
 - set up documentation generation.

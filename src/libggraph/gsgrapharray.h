@@ -64,27 +64,12 @@ typedef GPtrArray GSGraphArray;
 #define g_sgraph_array_free(array, free_segment) \
 (g_ptr_array_free((array), (free_segment)))
 
-/**
- * g_sgraph_array_add:
- * @array: an array.
- * @pointer: pointer to add to @array.
- *
- * Convenience type-safe macro, adding pointer to array.
- * FIXME: make it a function, it is not type-safe now.
- */
-#define g_sgraph_array_add(array, pointer) \
-(g_ptr_array_add((array), (pointer)))
+void
+g_sgraph_array_add(GSGraphArray* array,
+                   GSGraph* sgraph);
 
-/**
- * g_sgraph_array_remove_index:
- * @array: an array.
- * @index: index to #GSGraph to be removed.
- *
- * Convenience type-safe macro, removing pointer from array at given index,
- * preserving order.
- * FIXME: make it a function, it is not type-safe now.
- */
-#define g_sgraph_array_remove_index(array, index) \
-((GSGraph*)(g_ptr_array_remove_index((array), (index))))
+GSGraph*
+g_sgraph_array_remove_index(GSGraphArray* array,
+                            guint index);
 
 #endif // _G_SGRAPH_ARRAY_H_

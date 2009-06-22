@@ -64,15 +64,8 @@ typedef GPtrArray GGraphArray;
 #define g_graph_array_free(array, free_segment) \
 ((GGraph**)(g_ptr_array_free((array), (free_segment))))
 
-/**
- * g_graph_array_add:
- * @array: an array.
- * @pointer: pointer to add to @array.
- *
- * Convenience type-safe macro, adding pointer to array.
- * FIXME: make it a function, it is not type-safe now.
- */
-#define g_graph_array_add(array, pointer) \
-(g_ptr_array_add((array), (pointer)))
+void
+g_graph_array_add(GGraphArray* array,
+                  GGraph* graph);
 
 #endif // _G_GRAPH_ARRAY_H_
