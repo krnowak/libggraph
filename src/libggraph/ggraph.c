@@ -127,7 +127,7 @@ g_graph_remove(GGraph* graph)
 /** g_graph_free:
  * @graph: a graph.
  *
- * Frees whole graph to which @graph belongs. Each nodes data should be freed
+ * Frees whole graph to which @graph belongs. Each node's data should be freed
  * earlier, if applicable.
  */
 void
