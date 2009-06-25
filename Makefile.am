@@ -1,6 +1,6 @@
 SUBDIRS = src
 
-DIST_SUBDIRS = docs
+ACLOCAL_AMFLAGS = -I m4
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; \

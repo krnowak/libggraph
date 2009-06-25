@@ -14,14 +14,15 @@ m4_define([LIBGGRAPH_SO_REVISION], [0])
 m4_define([LIBGGRAPH_SO_AGE], [0])
 m4_define([LIBGGRAPH_SO_VERSION], [LIBGGRAPH_SO_CURRENT:LIBGGRAPH_SO_REVISION:LIBGGRAPH_SO_AGE])
 m4_define([LIBGGRAPH_NAME_NO_LIB], [ggraph])
-m4_define([LIBGGRAPH_NAME], [lib[]LIGGRAPH_NAME_NO_LIB])
-m4_define([LIBGGRAPH_LIBNAME], [LIBGGRAPH_NAME-LIBGGRAP_API_VERSION])
+m4_define([LIBGGRAPH_NAME], [lib[]LIBGGRAPH_NAME_NO_LIB])
+m4_define([LIBGGRAPH_LIBNAME], [LIBGGRAPH_NAME-LIBGGRAPH_API_VERSION])
 m4_define([LIBGGRAPH_MAINTAINER_MAIL], [krnowak@svn.gnome.org])
 
 AC_PREREQ([2.63])
 AC_INIT(LIBGGRAPH_LIBNAME, LIBGGRAPH_VERSION, LIBGGRAPH_MAINTAINER_MAIL)
-AC_CONFIG_SRCDIR([src/[]LIBGGRAPH_NAME.h])
+AC_CONFIG_SRCDIR([src/]LIBGGRAPH_NAME[.h])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 libggraph_major_version=LIBGGRAPH_MAJOR_VERSION
 libggraph_minor_version=LIBGGRAPH_MINOR_VERSION
@@ -67,7 +68,7 @@ AC_CHECK_PROGS(PERL, perl5 perl)
 
 # Checks for libraries.
 
-PKG_CHECK_MODULES([glib, glib-2.0 >= 2.10])
+PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.10])
 AC_SUBST(glib_CFLAGS)
 AC_SUBST(glib_LIBS)
 
@@ -78,7 +79,6 @@ AC_SUBST(glib_LIBS)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 docs/reference/Makefile
                  src/Makefile
                  src/]LIBGGRAPH_LIBNAME[.pc
                  src/]LIBGGRAPH_NAME[/Makefile])
