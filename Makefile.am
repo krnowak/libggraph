@@ -1,5 +1,7 @@
 SUBDIRS = src
 
+DIST_SUBDIRS = m4
+
 ACLOCAL_AMFLAGS = -I m4
 
 dist-hook:
