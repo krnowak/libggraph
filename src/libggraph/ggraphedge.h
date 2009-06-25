@@ -5,6 +5,7 @@
 #ifndef _G_GRAPH_EDGE_H_
 #define _G_GRAPH_EDGE_H_
 
+#include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraph.h>
 
 /**
@@ -17,8 +18,6 @@
  *
  * An edge from the node containing it to the @graph.
  */
-typedef struct _GGraphEdge GGraphEdge;
-
 struct _GGraphEdge
 {
   GGraph* graph;
@@ -28,8 +27,8 @@ struct _GGraphEdge
 
 GGraphEdge*
 g_graph_edge_new(GGraph* graph,
-                 gdouble weight,
-                 gboolean connected);
+                 gboolean connected,
+                 gdouble weight);
 
 GGraph*
 g_graph_edge_free(GGraphEdge* edge);

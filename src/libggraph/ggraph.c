@@ -81,9 +81,9 @@ g_graph_connect(GGraph* graph,
   }
   else
   {
-    edge = g_graph_edge_new(other_graph, weight, TRUE);
+    edge = g_graph_edge_new(other_graph, TRUE, weight);
     g_graph_edge_array_add(graph->edges, edge);
-    edge = g_graph_edge_new(graph, 0, FALSE);
+    edge = g_graph_edge_new(graph, FALSE, 0);
     g_graph_edge_array_add(other_graph->edges, edge);
     return TRUE;
   }
@@ -107,7 +107,7 @@ g_graph_remove(GGraph* graph)
   GGraphArray* separate_graphs;
   guint iter;
   
-  g_return_val_if_fail(graph != NULL);
+  g_return_val_if_fail(graph != NULL, NULL);
   
   separate_graphs = g_graph_array_new();
   g_n = g_graph_all_neighbours(graph);
@@ -149,7 +149,7 @@ g_graph_free(GGraph* graph)
     guint iter2;
     for (iter2 = 0; iter2 < n_e->len; iter2++)
     {
-      GGraphEdge* edge = g_graph_edge_array_index(n_e, iter2));
+      GGraphEdge* edge = g_graph_edge_array_index(n_e, iter2);
       g_graph_edge_free(edge);
     }
     g_graph_edge_array_free(n_e, TRUE);
@@ -332,13 +332,13 @@ g_graph_edge(GGraph* graph,
 {
   guint iter;
   GGraphEdgeArray* g_e;
-  g_return_val_if_fail(graph != NULL);
-  g_return_val_if_fail(other_graph != NULL);
+  g_return_val_if_fail(graph != NULL, NULL);
+  g_return_val_if_fail(other_graph != NULL, NULL);
   g_e = graph->edges;
   for (iter = 0; iter < g_e->len; iter++)
   {
     GGraphEdge* edge = g_graph_edge_array_index(g_e, iter);
-    if (edge->graph == other->graph)
+    if (edge->graph == other_graph)
     {
       return edge;
     }
@@ -422,7 +422,7 @@ g_graph_break_connection(GGraph* graph,
     return FALSE;
   }
   other_edge = g_graph_edge(other_graph, graph);
-  g_return_val_if_fail(other_edge != NULL);
+  g_return_val_if_fail(other_edge != NULL, FALSE);
   g_graph_edge_array_remove(graph->edges, edge);
   g_graph_edge_array_remove(other_graph->edges, other_edge);
   g_graph_edge_free(edge);
@@ -627,7 +627,7 @@ _g_graph_recurrent_connection_check(GGraph* graph,
   {
     return FALSE;
   }
-  g_hash_table_insert(visited_nodes, graph, TRUE);
+  g_hash_table_insert(visited_nodes, graph, NULL);
   g_e = graph->edges;
   for (iter = 0; iter < g_e->len; iter++)
   {
@@ -651,7 +651,7 @@ _g_graph_recurrent_connection_check(GGraph* graph,
  * Returns: a #GGraphArray* that must be freed with g_graph_array_free().
  */
 static GGraphArray*
-_g_graph_array(GGraph* graph
+_g_graph_array(GGraph* graph,
                gboolean connected_only)
 {
   GHashTable* visited_nodes = g_hash_table_new(NULL, NULL);
@@ -688,7 +688,7 @@ _g_graph_recurrent_array_append(GGraph* graph,
   {
     return;
   }
-  g_hash_table_insert(visited_nodes, graph, TRUE);
+  g_hash_table_insert(visited_nodes, graph, NULL);
   g_graph_array_add(graph_array, graph);
   g_e = graph->edges;
   for (iter = 0; iter < g_e->len; iter++)
@@ -717,7 +717,7 @@ _g_graph_recurrent_array_append_connected(GGraph* graph,
   {
     return;
   }
-  g_hash_table_insert(visited_nodes, graph, TRUE);
+  g_hash_table_insert(visited_nodes, graph, NULL);
   g_graph_array_add(graph_array, graph);
   g_e = graph->edges;
   for (iter = 0; iter < g_e->len; iter++)

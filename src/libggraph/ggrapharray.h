@@ -6,6 +6,7 @@
 #define _G_GRAPH_ARRAY_H_
 
 #include <glib.h>
+#include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraph.h>
 
 /**
@@ -14,7 +15,6 @@
  * An array holding pointers to #GGraph instances. It is a #GPtrArray, so its
  * functions can be used on this type.
  */
-typedef GPtrArray GGraphArray;
 
 /**
  * g_graph_array_new:

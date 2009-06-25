@@ -88,7 +88,7 @@ g_sgraph_remove(GSGraph* sgraph)
   GSGraphArray* separate_sgraphs;
   guint iter;
   
-  g_return_val_if_fail(sgraph != NULL);
+  g_return_val_if_fail(sgraph != NULL, NULL);
   
   separate_sgraphs = g_sgraph_array_new();
   s_n = sgraph->neighbours;
@@ -369,7 +369,7 @@ _g_sgraph_recurrent_connection_check(GSGraph* sgraph,
   {
     return FALSE;
   }
-  g_hash_table_insert(visited_nodes, sgraph, TRUE);
+  g_hash_table_insert(visited_nodes, sgraph, NULL);
   s_n = sgraph->neighbours;
   for (iter = 0; iter < s_n->len; iter++)
   {
@@ -418,7 +418,7 @@ _g_sgraph_recurrent_array_append(GSGraph* sgraph,
   {
     return;
   }
-  g_hash_table_insert(visited_nodes, sgraph, TRUE);
+  g_hash_table_insert(visited_nodes, sgraph, NULL);
   g_sgraph_array_add(sgraph_array, sgraph);
   s_n = sgraph->neighbours;
   for (iter = 0; iter < s_n->len; iter++)

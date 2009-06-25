@@ -1,6 +1,6 @@
 SUBDIRS = src
 
-DIST_SUBDIRS = m4
+DIST_SUBDIRS = src m4
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -9,7 +9,7 @@ dist-hook:
 	then \
 	        echo Creating ChangeLog && \
 	        ( cd "$(top_srcdir)" && \
-	          $(top_srcdir)/scripts/missing --run git log --date=short --pretty=format:"@@@@%cd  %an  <%ae>%n%n%s%n%n%b" | \
+	          $(top_srcdir)/missing --run git log --date=short --pretty=format:"@@@@%cd  %an  <%ae>%n%n%s%n%n%b" | \
 	          @PERL@ -ne 'if ( m/^\s*$$/ ) { if (!$$blank) { print; $$blank=1; } } else {$$blank=0; if (!s/^@@@@// && !/^\t/) { print "\t"; } print; }') > ChangeLog.tmp \
 	        && mv -f ChangeLog.tmp $(top_distdir)/ChangeLog \
 	        || ( rm -f ChangeLog.tmp ; \

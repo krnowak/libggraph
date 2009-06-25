@@ -3,6 +3,9 @@
 
 #define _LIB_G_GRAPH_H_INSIDE_
 
+#include <libggraph/ggraphtypedefs.h>
+#include <libggraph/gsgraphtypedefs.h>
+
 #include <libggraph/ggraph.h>
 #include <libggraph/ggraphedge.h>
 #include <libggraph/ggrapharray.h>

@@ -6,6 +6,7 @@
 #define _G_SGRAPH_H_
 
 #include <glib.h>
+#include <libggraph/gsgraphtypedefs.h>
 #include <libggraph/gsgrapharray.h>
 
 G_BEGIN_DECLS
@@ -19,13 +20,11 @@ G_BEGIN_DECLS
  * it's neighbours.
  * If you want to have weights or one way edges or both - use #GGraph.
  */
-typedef struct _GSGraph GSGraph;
-
 struct _GSGraph
 {
   gpointer data;
   GSGraphArray* neighbours;
-}
+};
 
 GSGraph*
 g_sgraph_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
@@ -48,7 +47,7 @@ g_sgraph_foreach(GSGraph* graph,
                  GFunc func,
                  gpointer user_data);
 
-GSGraph*
+gboolean
 g_sgraph_break_connection(GSGraph* graph,
                           GSGraph* other_graph) G_GNUC_WARN_UNUSED_RESULT;
 

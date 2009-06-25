@@ -1,8 +1,8 @@
 libggraph_c = ggraph.c ggrapharray.c ggraphedge.c ggraphedgearray.c gsgraph.c gsgrapharray.c
-libggraph_h = $(libggraph_c:.c=.h)
+libggraph_h = $(libggraph_c:.c=.h) ggraphtypedefs.h gsgraphtypedefs.h
 
 libggraph_includedir = $(includedir)/@libggraph_libname@/@libggraph_name@
-libggraph_include_HEADERS = $(libbgraph_h)
+libggraph_include_HEADERS = $(libggraph_h)
 
 lib_LTLIBRARIES = libggraph-1.0.la
 libggraph_1_0_la_SOURCES = $(libggraph_c)

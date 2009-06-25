@@ -6,6 +6,7 @@
 #define _G_GRAPH_EDGE_ARRAY_H_
 
 #include <glib.h>
+#include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraphedge.h>
 
 /**
@@ -14,7 +15,6 @@
  * An array holding pointers to #GGraphEdge instances. It is a #GPtrArray, so
  * its functions can be used on this type.
  */
-typedef GPtrArray GGraphEdgeArray;
 
 /**
  * g_graph_edge_array_new:

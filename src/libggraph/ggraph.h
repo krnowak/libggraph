@@ -6,6 +6,7 @@
 #define _G_GRAPH_H_
 
 #include <glib.h>
+#include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraphedge.h>
 #include <libggraph/ggrapharray.h>
 #include <libggraph/ggraphedgearray.h>
@@ -23,13 +24,11 @@ G_BEGIN_DECLS
  * By term "node A being connected to node B" we mean that there is directed
  * edge from A to B.
  */
-typedef struct _GGraph GGraph;
-
 struct _GGraph
 {
   gpointer data;
   GGraphEdgeArray* edges;
-}
+};
 
 GGraph*
 g_graph_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
@@ -74,11 +73,11 @@ GGraphEdge*
 g_graph_edge(GGraph* graph,
              GGraph* other_graph) G_GNUC_WARN_UNUSED_RESULT;
 
-GGraph*
+gboolean
 g_graph_remove_connection(GGraph* graph,
                           GGraph* other_graph) G_GNUC_WARN_UNUSED_RESULT;
 
-GGraph*
+gboolean
 g_graph_break_connection(GGraph* graph,
                          GGraph* other_graph) G_GNUC_WARN_UNUSED_RESULT;
 

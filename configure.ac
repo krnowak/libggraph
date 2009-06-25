@@ -79,6 +79,7 @@ AC_SUBST(glib_LIBS)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
+                 m4/Makefile
                  src/Makefile
                  src/]LIBGGRAPH_LIBNAME[.pc
                  src/]LIBGGRAPH_NAME[/Makefile])
