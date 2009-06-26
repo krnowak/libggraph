@@ -1,8 +1,10 @@
-SUBDIRS = src
+SUBDIRS = src docs
 
-DIST_SUBDIRS = src m4
+DIST_SUBDIRS = $(SUBDIRS) m4
 
 ACLOCAL_AMFLAGS = -I m4
+
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; \

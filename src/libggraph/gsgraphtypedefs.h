@@ -2,7 +2,8 @@
 #error "Only <libggraph.h> can be included directly."
 #endif
 
-/* This exist because there is circular dependency:
+/*
+ * This exist because there is circular dependency:
  * .-> GSGraph -> GSGraphArray -.
  * `----------------------------'
  * So here exists typedefs to these structs. It should be enough, because
@@ -16,6 +17,12 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GSGraphArray:
+ *
+ * An array holding pointers to #GSGraph instances. It is a #GPtrArray, so its
+ * function can be safely used on this type.
+ */
 typedef GPtrArray GSGraphArray;
 
 typedef struct _GSGraph GSGraph;

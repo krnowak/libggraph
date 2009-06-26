@@ -31,7 +31,8 @@ _g_graph_neighbours_condition(GGraph* graph,
 
 // function definitions
 
-/** g_graph_new:
+/**
+ * g_graph_new:
  * @data: data.
  *
  * Creates new separate graph consisting of only one node containing @data.
@@ -47,7 +48,8 @@ g_graph_new(gpointer data)
   return graph;
 }
 
-/** g_graph_connect:
+/**
+ * g_graph_connect:
  * @graph: a graph.
  * @other_graph: a soon to be neighbour of @graph.
  * @weight: weight of the connection.
@@ -89,7 +91,8 @@ g_graph_connect(GGraph* graph,
   }
 }
 
-/** g_graph_remove:
+/**
+ * g_graph_remove:
  * @graph: a node.
  *
  * Removes and frees a node. Data of this node should be freed earlier, if
@@ -124,7 +127,8 @@ g_graph_remove(GGraph* graph)
   return separate_graphs;
 }
 
-/** g_graph_free:
+/**
+ * g_graph_free:
  * @graph: a graph.
  *
  * Frees whole graph to which @graph belongs. Each node's data should be freed
@@ -158,7 +162,8 @@ g_graph_free(GGraph* graph)
   g_graph_array_free(graph_array, TRUE);
 }
 
-/** g_graph_count:
+/**
+ * g_graph_count:
  * @graph: a graph.
  *
  * Counts number of nodes in graph.
@@ -179,7 +184,8 @@ g_graph_count(GGraph* graph)
   return count;
 }
 
-/** g_graph_count_connected:
+/**
+ * g_graph_count_connected:
  * @graph: a graph.
  *
  * Counts number of nodes @graph is directly or indirectly connected to in
@@ -201,7 +207,8 @@ g_graph_count_connected(GGraph* graph)
   return count;
 }
 
-/** g_graph_foreach:
+/**
+ * g_graph_foreach:
  * @graph: a node.
  * @func: the function to call with each element's data.
  * @user_data: data passed to @func.
@@ -228,7 +235,8 @@ g_graph_foreach(GGraph* graph,
   g_graph_array_free(graph_array, TRUE);
 }
 
-/** g_graph_foreach_connected:
+/**
+ * g_graph_foreach_connected:
  * @graph: a node.
  * @func: the function to call with element's data.
  * @user_data: data passed to @func.
@@ -255,7 +263,8 @@ g_graph_foreach_connected(GGraph* graph,
   g_graph_array_free(graph_array, TRUE);
 }
 
-/** g_graph_all_neighbours:
+/**
+ * g_graph_all_neighbours:
  * @graph: a node.
  *
  * Gets an array of neighbours, to which @graph is not connected.
@@ -286,7 +295,8 @@ g_graph_all_neighbours(GGraph* graph)
   return neighbours_array;
 }
 
-/** g_graph_connected_neighbours:
+/**
+ * g_graph_connected_neighbours:
  * @graph: a node.
  *
  * Gets an array of neighbours, to which @graph is connected.
@@ -302,7 +312,8 @@ g_graph_connected_neighbours(GGraph* graph)
   return _g_graph_neighbours_condition(graph, TRUE);
 }
 
-/** g_graph_not_connected_neighbours:
+/**
+ * g_graph_not_connected_neighbours:
  * @graph: a node.
  *
  * Gets an array of neighbours, to which @graph is not connected.
@@ -318,7 +329,8 @@ g_graph_not_connected_neighbours(GGraph* graph)
   return _g_graph_neighbours_condition(graph, FALSE);
 }
 
-/** g_graph_edge:
+/**
+ * g_graph_edge:
  * @graph: a node.
  * @other_graph: other node which is @graph's neighbour.
  *
@@ -346,7 +358,8 @@ g_graph_edge(GGraph* graph,
   return NULL;
 }
 
-/** g_graph_remove_connection:
+/**
+ * g_graph_remove_connection:
  * @graph: a node.
  * @other_graph: other node which is @graph's neighbour.
  *
@@ -393,7 +406,8 @@ g_graph_remove_connection(GGraph* graph,
   return FALSE;
 }
 
-/** g_graph_break_connection:
+/**
+ * g_graph_break_connection:
  * @graph: a node.
  * @other_graph: other node which is @graph's neighbour.
  *
@@ -430,7 +444,8 @@ g_graph_break_connection(GGraph* graph,
   return _g_graph_no_indirect_connection(graph, other_graph);
 }
 
-/** g_graph_find:
+/**
+ * g_graph_find:
  * @graph: a node.
  * @data: the element data to find.
  *
@@ -445,7 +460,8 @@ g_graph_find(GGraph* graph,
   return g_graph_find_custom(graph, data, g_direct_equal);
 }
 
-/** g_graph_find_connected:
+/**
+ * g_graph_find_connected:
  * @graph: a node.
  * @data: the element data to find.
  *
@@ -461,7 +477,8 @@ g_graph_find_connected(GGraph* graph,
   return g_graph_find_custom_connected(graph, data, g_direct_equal);
 }
 
-/** g_graph_find_custom:
+/**
+ * g_graph_find_custom:
  * @graph: a node.
  * @data: data passed to @func.
  * @func: the function to call for each element.
@@ -506,7 +523,8 @@ g_graph_find_custom(GGraph* graph,
   return matching_graphs;
 }
 
-/** g_graph_find_custom_connected:
+/**
+ * g_graph_find_custom_connected:
  * @graph: a node.
  * @data: data passed to @func.
  * @func: the function to call for each element.
@@ -551,7 +569,8 @@ g_graph_find_custom_connected(GGraph* graph,
   return matching_graphs;
 }
 
-/** g_graph_data:
+/**
+ * g_graph_data:
  * @graph: a node.
  *
  * It's an accessor function for language bindings.
@@ -564,7 +583,8 @@ g_graph_data(GGraph* graph)
   return graph->data;
 }
 
-/** g_graph_edges:
+/**
+ * g_graph_edges:
  * @graph: a node.
  *
  * It's an accessor function for language bindings.
@@ -579,7 +599,8 @@ g_graph_edges(GGraph* graph)
 
 // static function definitions
 
-/* _g_graph_no_indirect_connection:
+/*
+ * _g_graph_no_indirect_connection:
  * @graph: starting node.
  * @other_graph: node for which we want to check if it has series of edges to
  * @graph.
@@ -602,7 +623,8 @@ _g_graph_no_indirect_connection(GGraph* graph,
   return not_connected;
 }
 
-/* _g_graph_recurrent_connection_check:
+/*
+ * _g_graph_recurrent_connection_check:
  * @graph: starting node.
  * @other_graph: other node.
  * @visited_nodes: #GHashTable holding information which nodes were already
@@ -641,7 +663,8 @@ _g_graph_recurrent_connection_check(GGraph* graph,
   return FALSE;
 }
 
-/* _g_graph_array:
+/*
+ * _g_graph_array:
  * @graph: graph, which will be put into an array.
  * @connected_only: %TRUE if only connected nodes should be put.
  *
@@ -669,7 +692,8 @@ _g_graph_array(GGraph* graph,
   return graph_array;
 }
 
-/* _g_graph_recurrent_array_append:
+/*
+ * _g_graph_recurrent_array_append:
  * @graph: node which will be (probably) put into @graph_array.
  * @graph_array: array of nodes of a whole graph.
  * @visited_nodes: #GHashTable holding information which nodes were already
@@ -698,7 +722,8 @@ _g_graph_recurrent_array_append(GGraph* graph,
   }
 }
 
-/* _g_graph_recurrent_array_append_connected:
+/*
+ * _g_graph_recurrent_array_append_connected:
  * @graph: node which will be (probably) put into @graph_array.
  * @graph_array: array of nodes of a graph.
  * @visited_nodes: #GHashTable holding information which nodes were already
@@ -731,7 +756,8 @@ _g_graph_recurrent_array_append_connected(GGraph* graph,
   }
 }
 
-/* _g_graph_neighbours_condition:
+/*
+ * _g_graph_neighbours_condition:
  * @graph: node which neighbours are to be returned.
  * @connected: set it to %TRUE, if function have to return nodes @graph is
  * connected to.

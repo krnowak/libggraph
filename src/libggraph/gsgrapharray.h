@@ -10,13 +10,6 @@
 #include <libggraph/gsgraph.h>
 
 /**
- * GSGraphArray:
- *
- * An array holding pointers to #GSGraph instances. It is a #GPtrArray, so its
- * function can be safely used on this type.
- */
-
-/**
  * g_sgraph_array_new:
  *
  * Convenience type-safe macro, creating a new #GSGraphArray.

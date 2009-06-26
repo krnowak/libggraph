@@ -21,7 +21,8 @@ _g_sgraph_recurrent_array_append(GSGraph* sgraph,
 
 // function definitions
 
-/** g_sgraph_new:
+/**
+ * g_sgraph_new:
  * @data: data.
  *
  * Creates new separate graph consisting of only one node containing @data.
@@ -37,7 +38,8 @@ g_sgraph_new(gpointer data)
   return sgraph;
 }
 
-/** g_sgraph_connect:
+/**
+ * g_sgraph_connect:
  * @sgraph: a graph.
  * @other_sgraph: a soon to be neighbour of @sgraph.
  *
@@ -70,7 +72,8 @@ g_sgraph_connect(GSGraph* sgraph,
   return TRUE;
 }
 
-/** g_sgraph_remove:
+/**
+ * g_sgraph_remove:
  * @sgraph: a node.
  *
  * Removes and frees a node. Data of this node should be freed earlier, if
@@ -104,7 +107,8 @@ g_sgraph_remove(GSGraph* sgraph)
   return separate_sgraphs;
 }
 
-/** g_sgraph_free:
+/**
+ * g_sgraph_free:
  * @sgraph: a graph.
  *
  * Frees whole graph to which @sgraph belongs. Each node's data should be freed
@@ -131,7 +135,8 @@ g_sgraph_free(GSGraph* sgraph)
   g_sgraph_array_free(sgraph_array, TRUE);
 }
 
-/** g_sgraph_count:
+/**
+ * g_sgraph_count:
  * @sgraph: a graph.
  *
  * Counts number of nodes in graph.
@@ -152,7 +157,8 @@ g_sgraph_count(GSGraph* sgraph)
   return count;
 }
 
-/** g_sgraph_foreach:
+/**
+ * g_sgraph_foreach:
  * @sgraph: a node.
  * @func: the function to call with each element's data.
  * @user_data: data passed to @func.
@@ -179,7 +185,8 @@ g_sgraph_foreach(GSGraph* sgraph,
   g_sgraph_array_free(sgraph_array, TRUE);
 }
 
-/** g_sgraph_break_connection:
+/**
+ * g_sgraph_break_connection:
  * @sgraph: a node.
  * @other_sgraph: other node which is @sgraph's neighbour.
  *
@@ -233,7 +240,8 @@ g_sgraph_break_connection(GSGraph* sgraph,
   return _g_sgraph_no_indirect_connection(sgraph, other_sgraph);
 }
 
-/** g_sgraph_find:
+/**
+ * g_sgraph_find:
  * @sgraph: a node.
  * @data: the element data to find.
  *
@@ -248,7 +256,8 @@ g_sgraph_find(GSGraph* sgraph,
   return g_sgraph_find_custom(sgraph, data, g_direct_equal);
 }
 
-/** g_sgraph_find_custom:
+/**
+ * g_sgraph_find_custom:
  * @sgraph: a node.
  * @data: data passed to @func.
  * @func: the function to call for each element.
@@ -293,7 +302,8 @@ g_sgraph_find_custom(GSGraph* sgraph,
   return matching_sgraphs;
 }
 
-/** g_sgraph_data:
+/**
+ * g_sgraph_data:
  * @sgraph: a node.
  *
  * It's an accessor function for language bindings.
@@ -306,7 +316,8 @@ g_sgraph_data(GSGraph* sgraph)
   return sgraph->data;
 }
 
-/** g_sgraph_neighbours:
+/**
+ * g_sgraph_neighbours:
  * @sgraph: a node.
  *
  * It's an accessor function for language bindings.
@@ -322,7 +333,8 @@ g_sgraph_neighbours(GSGraph* sgraph)
 
 // static function definitions
 
-/* _g_sgraph_no_indirect_connection:
+/*
+ * _g_sgraph_no_indirect_connection:
  * @sgraph: starting node.
  * @other_sgraph: node for which we want to check if it has series of
  * connections to @sgraph.
@@ -344,7 +356,8 @@ _g_sgraph_no_indirect_connection(GSGraph* sgraph,
   return not_connected;
 }
 
-/* _g_sgraph_recurrent_connection_check:
+/*
+ * _g_sgraph_recurrent_connection_check:
  * @sgraph: starting node.
  * @other_sgraph: other node.
  * @visited_nodes: #GHashTable holding information which nodes were already
@@ -382,7 +395,8 @@ _g_sgraph_recurrent_connection_check(GSGraph* sgraph,
   return FALSE;
 }
 
-/* _g_sgraph_array:
+/*
+ * _g_sgraph_array:
  * @sgraph: graph, which will be put into an array.
  *
  * Puts whole graph into an array, so every node can be accessed without hassle.
@@ -399,7 +413,8 @@ _g_sgraph_array(GSGraph* sgraph)
   return sgraph_array;
 }
 
-/* _g_sgraph_recurrent_array_append:
+/*
+ * _g_sgraph_recurrent_array_append:
  * @sgraph: node which will be (probably) put into @sgraph_array.
  * @sgraph_array: array of nodes of a whole graph.
  * @visited_nodes: #GHashTable holding information which nodes were already

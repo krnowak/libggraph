@@ -10,13 +10,6 @@
 #include <libggraph/ggraphedge.h>
 
 /**
- * GGraphEdgeArray:
- *
- * An array holding pointers to #GGraphEdge instances. It is a #GPtrArray, so
- * its functions can be used on this type.
- */
-
-/**
  * g_graph_edge_array_new:
  *
  * Convenience type-safe macro, creating a new #GGraphEdgeArray.

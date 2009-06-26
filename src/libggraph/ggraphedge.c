@@ -1,6 +1,7 @@
 #include "ggraphedge.h"
 
-/** g_graph_edge_new:
+/**
+ * g_graph_edge_new:
  * @graph: node it connects to.
  * @connection: if node containing this edge is connected to @graph.
  * @weight: weight of the connection.
@@ -29,7 +30,8 @@ g_graph_edge_new(GGraph* graph,
   return edge;
 }
 
-/** g_graph_edge_free:
+/**
+ * g_graph_edge_free:
  * @edge: an edge to free.
  *
  * Frees an edge. A #GGraph pointed by @edge is not freed, but is returned.
@@ -48,7 +50,8 @@ g_graph_edge_free(GGraphEdge* edge)
   return graph;
 }
 
-/** g_graph_edge_graph:
+/**
+ * g_graph_edge_graph:
  * @edge: an edge.
  *
  * It's an accessor function for language bindings.
@@ -61,7 +64,8 @@ g_graph_edge_graph(GGraphEdge* edge)
   return edge->graph;
 }
 
-/** g_graph_edge_connection:
+/**
+ * g_graph_edge_connected:
  * @edge: an edge.
  *
  * It's an accessor function for language bindings.
@@ -74,7 +78,8 @@ g_graph_edge_connected(GGraphEdge* edge)
   return edge->connected;
 }
 
-/** g_graph_edge_weight:
+/**
+ * g_graph_edge_weight:
  * @edge: an edge.
  *
  * It's an accessor function for language bindings.
