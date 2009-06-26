@@ -63,7 +63,7 @@ g_sgraph_find_custom(GSGraph* graph,
 gpointer
 g_sgraph_data(GSGraph* sgraph);
 
-GSGraphArray*
+const GSGraphArray*
 g_sgraph_neighbours(GSGraph* sgraph);
 
 G_END_DECLS

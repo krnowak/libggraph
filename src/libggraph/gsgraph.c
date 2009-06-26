@@ -88,6 +88,7 @@ GSGraphArray*
 g_sgraph_remove(GSGraph* sgraph)
 {
   GSGraphArray* s_n;
+  GSGraphArray* c_n;
   GSGraphArray* separate_sgraphs;
   guint iter;
   
@@ -95,15 +96,21 @@ g_sgraph_remove(GSGraph* sgraph)
   
   separate_sgraphs = g_sgraph_array_new();
   s_n = sgraph->neighbours;
+  c_n = g_sgraph_array_sized_new(s_n->len);
   for (iter = 0; iter < s_n->len; iter++)
   {
-    GSGraph* other_sgraph = g_sgraph_array_index(s_n, iter);
+    g_sgraph_array_add(c_n, g_sgraph_array_index(s_n, iter));
+  }
+  for (iter = 0; iter < c_n->len; iter++)
+  {
+    GSGraph* other_sgraph = g_sgraph_array_index(c_n, iter);
     if (g_sgraph_break_connection(sgraph, other_sgraph))
     {
       g_sgraph_array_add(separate_sgraphs, other_sgraph);
     }
   }
   g_sgraph_free(sgraph);
+  g_sgraph_array_free(c_n, TRUE);
   return separate_sgraphs;
 }
 
@@ -325,7 +332,7 @@ g_sgraph_data(GSGraph* sgraph)
  * Returns: #GSGraphArray associated to @sgraph, which shouldn't be
  * modified.
  */
-GSGraphArray*
+const GSGraphArray*
 g_sgraph_neighbours(GSGraph* sgraph)
 {
   return sgraph->neighbours;

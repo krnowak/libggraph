@@ -62,7 +62,7 @@ AM_INIT_AUTOMAKE
 
 # Checks for programs.
 
-AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 AC_CHECK_PROGS(PERL, perl5 perl)
 GTK_DOC_CHECK([1.9])
@@ -80,13 +80,17 @@ AC_SUBST(glib_LIBS)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 
+
                  m4/Makefile
-                 
+
                  src/Makefile
                  src/]LIBGGRAPH_LIBNAME[.pc
                  src/]LIBGGRAPH_NAME[/Makefile
-                 
+
                  docs/Makefile
-                 docs/reference/Makefile])
+                 docs/reference/Makefile]
+
+                 examples/Makefile
+                 examples/simple_graph/Makefile
+                 examples/graph/Makefile)
 AC_OUTPUT

@@ -1,4 +1,4 @@
-SUBDIRS = src docs
+SUBDIRS = src docs examples
 
 DIST_SUBDIRS = $(SUBDIRS) m4
 

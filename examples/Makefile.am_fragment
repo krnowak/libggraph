@@ -1,0 +1,6 @@
+local_lib = $(top_builddir)/src/libggraph/$(libggraph_libname).la
+
+examples_ldadd = $(local_lib) @glib_LIBS@
+
+examples_include = -I$(top_builddir)/src -I$(top_srcdir)/src @glib_CFLAGS@
+
