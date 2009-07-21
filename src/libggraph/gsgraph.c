@@ -114,6 +114,61 @@ g_sgraph_remove(GSGraph* sgraph)
   return separate_sgraphs;
 }
 
+GSGraph*
+g_sgraph_copy(GSGraph* graph)
+{
+  return g_sgraph_copy_deep(graph, NULL, NULL);
+}
+
+GSGraph*
+g_sgraph_copy_deep(GSGraph* graph,
+                   GCopyFunc copy_func,
+                   gpointer user_data)
+{
+  GSGraphArray* sgraph_array = _g_sgraph_array(graph);
+  GHashTable* nodes_to_dups = g_hash_table_new(NULL, NULL);
+  GSGraph* dup_graph;
+  guint iter;
+  
+  if (!graph)
+  {
+    return NULL;
+  }
+  
+  for (iter = 0; iter < sgraph_array->len; iter++)
+  {
+    GSGraph* node = g_sgraph_array_index(sgraph_array, iter);
+    GSGraph* dup_node = g_slice_new(GSGraph);
+    if (copy_func)
+    {
+      dup_node->data = (*copy_func)(node->data, user_data);
+    }
+    else
+    {
+      dup_node->data = node->data;
+    }
+    g_hash_table_insert(nodes_to_dups, node, dup_node);
+  }
+  for (iter = 0; iter < sgraph_array->len; iter++)
+  {
+    GSGraph* node = g_sgraph_array_index(sgraph_array, iter);
+    GSGraph* dup_node = g_hash_table_lookup(nodes_to_dups, node);
+    GSGraphArray* dup_neighbours = g_sgraph_array_sized_new(node->neighbours->len);
+    guint iter2;
+    for (iter2 = 0; iter2 < node->neighbours->len; iter++)
+    {
+      GSGraph* neighbour = g_sgraph_array_index(node->neighbours, iter2);
+      GSGraph* dup_neighbour = g_hash_table_lookup(nodes_to_dups, neighbour);
+      g_sgraph_array_add(dup_neighbours, dup_neighbour);
+    }
+    dup_node->neighbours = dup_neighbours;
+  }
+  dup_graph = g_hash_table_lookup(nodes_to_dups, graph);
+  g_hash_table_unref(nodes_to_dups);
+  g_sgraph_array_free(sgraph_array, TRUE);
+  return dup_graph;
+}
+
 /**
  * g_sgraph_free:
  * @sgraph: a graph.

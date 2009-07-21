@@ -36,6 +36,14 @@ g_sgraph_connect(GSGraph* graph,
 GSGraphArray*
 g_sgraph_remove(GSGraph* graph) G_GNUC_WARN_UNUSED_RESULT;
 
+GSGraph*
+g_sgraph_copy(GSGraph* graph);
+
+GSGraph*
+g_sgraph_copy_deep(GSGraph* graph,
+                   GCopyFunc copy_func,
+                   gpointer user_data);
+
 void
 g_sgraph_free(GSGraph* graph);
 
