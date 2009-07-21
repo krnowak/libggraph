@@ -63,7 +63,7 @@ AM_INIT_AUTOMAKE
 # Checks for programs.
 
 AM_PROG_CC_C_O
-AC_PROG_LIBTOOL
+LT_INIT
 AC_CHECK_PROGS(PERL, perl5 perl)
 GTK_DOC_CHECK([1.9])
 
