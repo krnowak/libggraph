@@ -102,7 +102,7 @@ g_graph_find_custom_connected(GGraph* graph,
 gpointer
 g_graph_data(GGraph* graph);
 
-const GGraphEdgeArray*
+G_CONST_RETURN GGraphEdgeArray*
 g_graph_edges(GGraph* graph);
 
 G_END_DECLS

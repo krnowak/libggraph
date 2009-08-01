@@ -1,5 +1,7 @@
 #include "ggraphedge.h"
 
+// function definitions
+
 /**
  * g_graph_edge_new:
  * @graph: node it connects to.

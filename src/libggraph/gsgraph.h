@@ -18,7 +18,8 @@ G_BEGIN_DECLS
  *
  * Single node of simple graph. It contains data and an array of pointers to all
  * it's neighbours.
- * If you want to have weights or one way edges or both - use #GGraph.
+ * If you want to have weights, one way edges, multiple edges between two nodes,
+ * data on edges - use #GGraph.
  */
 struct _GSGraph
 {
@@ -71,7 +72,7 @@ g_sgraph_find_custom(GSGraph* graph,
 gpointer
 g_sgraph_data(GSGraph* sgraph);
 
-const GSGraphArray*
+G_CONST_RETURN GSGraphArray*
 g_sgraph_neighbours(GSGraph* sgraph);
 
 G_END_DECLS

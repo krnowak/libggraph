@@ -1,5 +1,7 @@
 #include "ggrapharray.h"
 
+// function definitions
+
 /**
  * g_graph_array_add:
  * @array: an array.

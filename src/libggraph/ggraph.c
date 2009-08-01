@@ -591,7 +591,7 @@ g_graph_data(GGraph* graph)
  *
  * Returns: #GGraphEdgeArray associated to @graph, which shouldn't be modified.
  */
-const GGraphEdgeArray*
+G_CONST_RETURN GGraphEdgeArray*
 g_graph_edges(GGraph* graph)
 {
   return graph->edges;

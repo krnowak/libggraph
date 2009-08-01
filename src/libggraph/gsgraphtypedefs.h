@@ -3,7 +3,7 @@
 #endif
 
 /*
- * This exist because there is circular dependency:
+ * This header exist because there is circular dependency:
  * .-> GSGraph -> GSGraphArray -.
  * `----------------------------'
  * So here exists typedefs to these structs. It should be enough, because

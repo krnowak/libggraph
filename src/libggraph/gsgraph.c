@@ -408,7 +408,7 @@ g_sgraph_data(GSGraph* sgraph)
  * Returns: #GSGraphArray associated to @sgraph, which shouldn't be
  * modified.
  */
-const GSGraphArray*
+G_CONST_RETURN GSGraphArray*
 g_sgraph_neighbours(GSGraph* sgraph)
 {
   return sgraph->neighbours;
