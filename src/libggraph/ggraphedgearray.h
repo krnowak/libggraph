@@ -54,4 +54,4 @@ g_graph_edge_array_remove(GGraphEdgeArray* array,
 #define g_graph_edge_array_free(array, free_segment) \
 ((GGraphEdge**)(g_ptr_array_free((array), (free_segment))))
 
-#endif // _G_GRAPH_EDGE_ARRAY_H_
+#endif /* _G_GRAPH_EDGE_ARRAY_H_ */

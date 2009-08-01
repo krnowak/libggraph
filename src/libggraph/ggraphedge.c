@@ -1,6 +1,6 @@
 #include "ggraphedge.h"
 
-// function definitions
+/* function definitions */
 
 /**
  * g_graph_edge_new:

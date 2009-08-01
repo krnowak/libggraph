@@ -29,4 +29,4 @@ typedef struct _GSGraph GSGraph;
 
 G_END_DECLS
 
-#endif // _G_SGRAPH_TYPEDEFS_H_
+#endif /* _G_SGRAPH_TYPEDEFS_H_ */

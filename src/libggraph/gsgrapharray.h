@@ -65,4 +65,4 @@ GSGraph*
 g_sgraph_array_remove_index(GSGraphArray* array,
                             guint index);
 
-#endif // _G_SGRAPH_ARRAY_H_
+#endif /* _G_SGRAPH_ARRAY_H_ */

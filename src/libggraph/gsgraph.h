@@ -77,4 +77,4 @@ g_sgraph_neighbours(GSGraph* sgraph);
 
 G_END_DECLS
 
-#endif // _G_SGRAPH_H_
+#endif /* _G_SGRAPH_H_ */

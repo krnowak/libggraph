@@ -1,6 +1,6 @@
 #include "gsgrapharray.h"
 
-// function definitions
+/* function definitions */
 
 /**
  * g_sgraph_array_add:

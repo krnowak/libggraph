@@ -1,6 +1,6 @@
 #include "ggraphedgearray.h"
 
-// functions definitions
+/* functions definitions */
 
 /**
  * g_graph_edge_array_add:

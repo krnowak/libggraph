@@ -1,6 +1,6 @@
 #include "ggraph.h"
 
-// static declarations
+/* static declarations */
 
 static gboolean
 _g_graph_no_indirect_connection(GGraph* graph,
@@ -29,7 +29,7 @@ static GGraphArray*
 _g_graph_neighbours_condition(GGraph* graph,
                               gboolean connected);
 
-// function definitions
+/* function definitions */
 
 /**
  * g_graph_new:
@@ -597,7 +597,7 @@ g_graph_edges(GGraph* graph)
   return graph->edges;
 }
 
-// static function definitions
+/* static function definitions */
 
 /*
  * _g_graph_no_indirect_connection:

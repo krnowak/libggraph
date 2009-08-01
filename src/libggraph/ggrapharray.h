@@ -61,4 +61,4 @@ void
 g_graph_array_add(GGraphArray* array,
                   GGraph* graph);
 
-#endif // _G_GRAPH_ARRAY_H_
+#endif /* _G_GRAPH_ARRAY_H_ */

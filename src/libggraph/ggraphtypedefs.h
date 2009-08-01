@@ -39,4 +39,4 @@ typedef GPtrArray GGraphArray;
 
 G_END_DECLS
 
-#endif // _G_GRAPH_TYPEDEFS_H_
+#endif /* _G_GRAPH_TYPEDEFS_H_ */

@@ -1,6 +1,6 @@
 #include "gsgraph.h"
 
-// static declarations
+/* static declarations */
 
 static gboolean
 _g_sgraph_no_indirect_connection(GSGraph* sgraph,
@@ -19,7 +19,7 @@ _g_sgraph_recurrent_array_append(GSGraph* sgraph,
                                  GSGraphArray* sgraph_array,
                                  GHashTable* visited_nodes);
 
-// function definitions
+/* function definitions */
 
 /**
  * g_sgraph_new:
@@ -414,7 +414,7 @@ g_sgraph_neighbours(GSGraph* sgraph)
   return sgraph->neighbours;
 }
 
-// static function definitions
+/* static function definitions */
 
 /*
  * _g_sgraph_no_indirect_connection:

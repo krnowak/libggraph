@@ -107,4 +107,4 @@ g_graph_edges(GGraph* graph);
 
 G_END_DECLS
 
-#endif // _G_GRAPH_H_
+#endif /* _G_GRAPH_H_ */

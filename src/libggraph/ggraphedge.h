@@ -42,4 +42,4 @@ g_graph_edge_connected(GGraphEdge* edge);
 gdouble
 g_graph_edge_weight(GGraphEdge* edge);
 
-#endif // _G_GRAPH_EDGE_H_
+#endif /* _G_GRAPH_EDGE_H_ */
