@@ -39,6 +39,29 @@ g_sgraph_new(gpointer data)
 }
 
 /**
+ * g_sgraph_construct:
+ * @data_pairs: array of #GSGraphDataPair instances.
+ * @count: length of @data_pairs.
+ *
+ * Creates a graph from passed data pairs. Resulting construction can be several
+ * separate graphs, so an array of them is returned. Also, if any of
+ * #GSGraphDataPair members are %NULL, then this connection is omitted. If
+ * @count is -1, it is assumed that @data_pairs is %NULL terminated.
+ *
+ * Returns: array of newly created separate graphs.
+ */
+GSGraphArray*
+g_sgraph_construct(GGraphDataPair** data_pairs,
+                   gint count)
+{
+  
+  
+  g_return_val_if_fail(data_pairs != NULL, NULL);
+  
+  return NULL;
+}
+
+/**
  * g_sgraph_connect:
  * @sgraph: a graph.
  * @other_sgraph: a soon to be neighbour of @sgraph.

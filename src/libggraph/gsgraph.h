@@ -8,6 +8,7 @@
 #include <glib.h>
 #include <libggraph/gsgraphtypedefs.h>
 #include <libggraph/gsgrapharray.h>
+#include <libggraph/gsgraphdatapair.h>
 
 G_BEGIN_DECLS
 
@@ -29,6 +30,10 @@ struct _GSGraph
 
 GSGraph*
 g_sgraph_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
+
+GSGraphArray*
+g_sgraph_construct(GGraphDataPair** data_pairs,
+                   gint count) G_GNUC_WARN_UNUSED_RESULT;
 
 gboolean
 g_sgraph_connect(GSGraph* graph,
