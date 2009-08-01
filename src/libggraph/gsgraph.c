@@ -114,23 +114,44 @@ g_sgraph_remove(GSGraph* sgraph)
   return separate_sgraphs;
 }
 
+/**
+ * g_sgraph_copy:
+ * @sgraph: a node of graph to be copied.
+ *
+ * Does a shallow copy of @sgraph. This means that original graph and its copy
+ * shares the data, so when freeing both graphs you should be careful not to
+ * free same data twice.
+ *
+ * Returns: A copy of @sgraph.
+ */
 GSGraph*
-g_sgraph_copy(GSGraph* graph)
+g_sgraph_copy(GSGraph* sgraph)
 {
-  return g_sgraph_copy_deep(graph, NULL, NULL);
+  return g_sgraph_copy_deep(sgraph, NULL, NULL);
 }
 
+/**
+ * g_sgraph_copy_deep:
+ * @sgraph: a node of graph to be copied.
+ * @copy_func: function copying data.
+ * @user_data: data passed to copying function.
+ *
+ * Does a deep copy of @sgraph. Each node in @sgraph copy is duplicated using
+ * passed function. If @copy_func is NULL, then shallow copy is done.
+ *
+ * Returns: A copy of @sgraph.
+ */
 GSGraph*
-g_sgraph_copy_deep(GSGraph* graph,
+g_sgraph_copy_deep(GSGraph* sgraph,
                    GCopyFunc copy_func,
                    gpointer user_data)
 {
-  GSGraphArray* sgraph_array = _g_sgraph_array(graph);
+  GSGraphArray* sgraph_array = _g_sgraph_array(sgraph);
   GHashTable* nodes_to_dups = g_hash_table_new(NULL, NULL);
   GSGraph* dup_graph;
   guint iter;
   
-  if (!graph)
+  if (!sgraph)
   {
     return NULL;
   }
@@ -163,7 +184,7 @@ g_sgraph_copy_deep(GSGraph* graph,
     }
     dup_node->neighbours = dup_neighbours;
   }
-  dup_graph = g_hash_table_lookup(nodes_to_dups, graph);
+  dup_graph = g_hash_table_lookup(nodes_to_dups, sgraph);
   g_hash_table_unref(nodes_to_dups);
   g_sgraph_array_free(sgraph_array, TRUE);
   return dup_graph;
