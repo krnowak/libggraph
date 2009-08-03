@@ -1,6 +1,6 @@
 #include <libggraph.h>
 
-// See topology.png.
+/* See topology.png. */
 
 GSGraph*
 create_graph()
@@ -53,16 +53,17 @@ int main()
 {
   GSGraph* graph = create_graph();
   g_print("There are %u nodes in graph.\n", g_sgraph_count(graph));
-  // Here we search for "I" nodes and break connections to all its neighbours.
-  // In this topology there is only one such node and has only one neighbour.
+  /* Here we search for "I" nodes and break connections to all its neighbours.
+   * In this topology there is only one such node and has only one neighbour.
+   */
   GSGraphArray* array_I = g_sgraph_find_custom(graph, "I", g_str_equal);
   g_print("\"I\" nodes found: %u\n", array_I->len);
   guint i_nodes_iter;
-  // For every node that has "I"...
+  /* For every node that has "I"... */
   for (i_nodes_iter = 0; i_nodes_iter < array_I->len; i_nodes_iter++)
   {
     GSGraph* node_I = g_sgraph_array_index(array_I, i_nodes_iter);
-    // ...get its neighbours,...
+    /* ...get its neighbours,... */
     const GSGraphArray* node_I_neighbours = g_sgraph_neighbours(node_I);
     g_print("%u \"I\" node's neighbours count: %u\n", i_nodes_iter,
             node_I_neighbours->len);
@@ -72,8 +73,9 @@ int main()
     {
       GSGraph* node_I_neighbour = g_sgraph_array_index(node_I_neighbours,
                                                        neighbours_iter);
-      // ...if after breaking connection both nodes are in separate graphs,
-      // print info about it...
+      /* ...if after breaking connection both nodes are in separate graphs,
+       * print info about it...
+       */
       if (g_sgraph_break_connection(node_I, node_I_neighbour))
       {
         g_print("%u \"I\" node and its neighbour nr %u (\"%s\" node) are now in "
@@ -81,7 +83,7 @@ int main()
                 (gchar*)(g_sgraph_data(node_I_neighbour)));
       }
     }
-    // ...and remove the "I" node.
+    /* ...and remove the "I" node. */
     g_free(g_sgraph_data(node_I));
     g_sgraph_free(node_I);
     g_print("\"I\" node nr %u deleted.\n", i_nodes_iter);
@@ -96,10 +98,10 @@ int main()
     g_print(" `%s'", (gchar*)(g_sgraph_data(node)));
   }
   g_print("\n");
-  // Now lets remove the "A" node.
+  /* Now lets remove the "A" node. */
   g_free(g_sgraph_data(graph));
   GSGraphArray* separate_graphs = g_sgraph_remove(graph);
-  // Print names of all nodes in all separate graphs and delete the subgraph.
+  /* Print names of all nodes in all separate graphs and delete the subgraph. */
   g_print("There are now %u separate graphs.\n", separate_graphs->len);
   guint s_g_iter;
   for (s_g_iter = 0; s_g_iter < separate_graphs->len; s_g_iter++)
