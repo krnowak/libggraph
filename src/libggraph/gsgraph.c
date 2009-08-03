@@ -75,17 +75,17 @@ g_sgraph_new(gpointer data)
  *   <listitem>
  *     <para>
  *       A, B
- *     </para<
+ *     </para>
  *   </listitem>
  *   <listitem>
  *     <para>
  *       A, C
- *     </para<
+ *     </para>
  *   </listitem>
  *   <listitem>
  *     <para>
  *       C, D
- *     </para<
+ *     </para>
  *   </listitem>
  * </itemizedlist>
  * This way we never create a separate graph, because in given pair one of the
