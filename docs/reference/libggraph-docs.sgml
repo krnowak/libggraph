@@ -3,25 +3,29 @@
                "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
 [
   <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+  <!ENTITY version SYSTEM "version.xml">
 ]>
 <book id="index">
   <bookinfo>
     <title>libggraph Reference Manual</title>
     <releaseinfo>
-      for libggraph [VERSION]
+      for libggraph &version;
+      <!--
       The latest version of this documentation can be found on-line at
       <ulink role="online-location" url="http://[SERVER]/libggraph/index.html">http://[SERVER]/libggraph/</ulink>.
+      -->
     </releaseinfo>
   </bookinfo>
 
   <chapter>
-    <title>[Insert title here]</title>
-        <xi:include href="xml/gsgraph.xml"/>
-    <xi:include href="xml/ggraphedge.xml"/>
+    <title>Libggraph overview</title>
+    <xi:include href="xml/gsgraph.xml"/>
+    <xi:include href="xml/gsgraphdatapair.xml"/>
+    <xi:include href="xml/gsgrapharray.xml"/>
     <xi:include href="xml/ggraph.xml"/>
+    <xi:include href="xml/ggraphedge.xml"/>
     <xi:include href="xml/ggrapharray.xml"/>
     <xi:include href="xml/ggraphedgearray.xml"/>
-    <xi:include href="xml/gsgrapharray.xml"/>
 
   </chapter>
   <chapter id="object-tree">

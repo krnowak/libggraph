@@ -88,9 +88,10 @@ AC_CONFIG_FILES([Makefile
                  src/]LIBGGRAPH_NAME[/Makefile
 
                  docs/Makefile
-                 docs/reference/Makefile]
+                 docs/reference/Makefile
+                 docs/reference/version.xml
 
                  examples/Makefile
                  examples/simple_graph/Makefile
-                 examples/graph/Makefile)
+                 examples/graph/Makefile])
 AC_OUTPUT
