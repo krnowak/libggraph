@@ -25,19 +25,17 @@ struct _GSGraphDataPair
 
 GSGraphDataPair*
 g_sgraph_data_pair_new(gpointer first,
-                       gpointer second) _G_GNUC_WARN_UNUSED_RESULT;
+                       gpointer second) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphDataPair*
-g_sgraph_data_pair_copy(GSGraphDataPair* data_pair) _G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_data_pair_copy(GSGraphDataPair* data_pair) G_GNUC_WARN_UNUSED_RESULT;
 
 void
 g_sgraph_data_pair_free(GSGraphDataPair* data_pair);
 
-gpointer
-g_sgraph_data_pair_get_first(GSGraphDataPair* data_pair);
-
-gpointer
-g_sgraph_data_pair_get_second(GSGraphDataPair* data_pair);
+void
+g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
+                          gint count);
 
 G_END_DECLS
 

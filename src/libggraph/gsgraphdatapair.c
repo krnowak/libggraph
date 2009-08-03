@@ -48,29 +48,36 @@ g_sgraph_data_pair_free(GSGraphDataPair* data_pair)
 }
 
 /**
- * g_sgraph_data_get_first:
- * @data_pair: data pair.
+ * g_sgraph_data_pair_free_v:
+ * @data_pairs: #GSGraphDataPair array to free.
+ * @count: length of @data_pairs.
  *
- * Gets first member of @data_pair.
- *
- * Returns: first member of @data_pair.
+ * Frees all #GSGraphDataPair in array and then frees the array itself using
+ * g_free(). If count is -1, it is assumed that @data_pairs is %NULL terminated.
  */
-gpointer
-g_sgraph_data_pair_get_first(GSGraphDataPair* data_pair)
+void
+g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
+                          gint count)
 {
-  return data_pair->first;
-}
-
-/**
- * g_sgraph_data_get_second:
- * @data_pair: data pair.
- *
- * Gets second member of @data_pair.
- *
- * Returns: second member of @data_pair.
- */
-gpointer
-g_sgraph_data_pair_get_second(GSGraphDataPair* data_pair)
-{
-  return data_pair->second;
+  gint iter;
+  
+  if ((data_pairs == NULL) || (count == 0))
+  {
+    return;
+  }
+  
+  if (count == -1)
+  {
+    count = 0;
+    while (data_pairs[count])
+    {
+      count++;
+    }
+  }
+  
+  for (iter = 0; iter < count; iter++)
+  {
+    g_sgraph_data_pair_free(data_pairs[iter]);
+  }
+  g_free(data_pairs);
 }
