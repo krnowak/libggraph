@@ -15,20 +15,3 @@ g_sgraph_array_add(GSGraphArray* array,
 {
   g_ptr_array_add(array, sgraph);
 }
-
-/**
- * g_sgraph_array_remove_index:
- * @array: an array.
- * @index: index of graph to be removed from @array.
- *
- * Convenience type-safe function, removing #GSGraph from #GSGraphArray,
- * preserving order.
- *
- * Returns: Removed #GSGraph.
- */
-GSGraph*
-g_sgraph_array_remove_index(GSGraphArray* array,
-                            guint index)
-{
-  return g_ptr_array_remove_index(array, index);
-}

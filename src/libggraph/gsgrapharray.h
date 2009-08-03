@@ -12,7 +12,7 @@
 /**
  * g_sgraph_array_new:
  *
- * Convenience type-safe macro, creating a new #GSGraphArray.
+ * Convenience type-safe macro creating a new #GSGraphArray.
  *
  * Returns: newly created array.
  */
@@ -23,7 +23,7 @@
  * g_sgraph_array_sized_new:
  * @num: size of array.
  *
- * Convenience type-safe macro, creating a new #GSGraphArray with given size.
+ * Convenience type-safe macro creating a new #GSGraphArray with given size.
  *
  * Returns: newly created array.
  */
@@ -35,7 +35,7 @@
  * @array: an array.
  * @index: index of the #GSGraph to return.
  *
- * Convenience type-safe macro, returning a #GSGraph at given index.
+ * Convenience type-safe macro returning a #GSGraph at given index.
  *
  * Returns: #GGraph at given index.
  */
@@ -47,7 +47,7 @@
  * @array: an array to free.
  * @free_segment: %TRUE if the actual pointer array has to be freed.
  *
- * Convenience type-safe macro, freeing an array. If @free_segment is %TRUE,
+ * Convenience type-safe macro freeing an array. If @free_segment is %TRUE,
  * then underlying pointer array will be freed and %NULL will be returned,
  * otherwise this pointer array will be returned.
  *
@@ -61,8 +61,30 @@ void
 g_sgraph_array_add(GSGraphArray* array,
                    GSGraph* sgraph);
 
-GSGraph*
-g_sgraph_array_remove_index(GSGraphArray* array,
-                            guint index);
+/**
+ * g_sgraph_array_remove_index:
+ * @array: an array.
+ * @index: index of graph to be removed from @array.
+ *
+ * Convenience type-safe macro removing #GSGraph from #GSGraphArray,
+ * preserving order.
+ *
+ * Returns: Removed #GSGraph.
+ */
+#define g_sgraph_array_remove_index(array, index) \
+((GSGraph*)(g_ptr_array_remove_index((array), (index))))
+
+/**
+ * g_sgraph_array_remove_index_fast:
+ * @array: an array.
+ * @index: index of graph to be removed from @array.
+ *
+ * Convenience type-safe macro removing #GSGraph from #GSGraphArray,
+ * not preserving order, but faster than g_sgraph_array_remove_index().
+ *
+ * Returns: Removed #GSGraph.
+ */
+#define g_sgraph_array_remove_index_fast(array, index) \
+((GSGraph*)(g_ptr_array_remove_index_fast((array), (index))))
 
 #endif /* _G_SGRAPH_ARRAY_H_ */
