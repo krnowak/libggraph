@@ -64,7 +64,7 @@ int main()
   {
     GSGraph* node_I = g_sgraph_array_index(array_I, i_nodes_iter);
     /* ...get its neighbours,... */
-    const GSGraphArray* node_I_neighbours = g_sgraph_neighbours(node_I);
+    GSGraphArray* node_I_neighbours = node_I->neighbours;
     g_print("%u \"I\" node's neighbours count: %u\n", i_nodes_iter,
             node_I_neighbours->len);
     guint neighbours_iter;
@@ -80,26 +80,26 @@ int main()
       {
         g_print("%u \"I\" node and its neighbour nr %u (\"%s\" node) are now in "
                 "separate graphs.\n", i_nodes_iter, neighbours_iter,
-                (gchar*)(g_sgraph_data(node_I_neighbour)));
+                (gchar*)(node_I_neighbour->data));
       }
     }
     /* ...and remove the "I" node. */
-    g_free(g_sgraph_data(node_I));
+    g_free(node_I->data);
     g_sgraph_free(node_I);
     g_print("\"I\" node nr %u deleted.\n", i_nodes_iter);
   }
   g_sgraph_array_free(array_I, TRUE);
-  GSGraphArray* node_A_neighbours = g_sgraph_neighbours(graph);
+  GSGraphArray* node_A_neighbours = graph->neighbours;
   guint A_iter;
   g_print("\"A\" node neighbours:");
   for (A_iter = 0; A_iter < node_A_neighbours->len; A_iter++)
   {
     GSGraph* node = g_sgraph_array_index(node_A_neighbours, A_iter);
-    g_print(" `%s'", (gchar*)(g_sgraph_data(node)));
+    g_print(" `%s'", (gchar*)(node->data));
   }
   g_print("\n");
   /* Now lets remove the "A" node. */
-  g_free(g_sgraph_data(graph));
+  g_free(graph->data);
   GSGraphArray* separate_graphs = g_sgraph_remove(graph);
   /* Print names of all nodes in all separate graphs and delete the subgraph. */
   g_print("There are now %u separate graphs.\n", separate_graphs->len);

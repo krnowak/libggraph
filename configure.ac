@@ -95,5 +95,6 @@ AC_CONFIG_FILES([Makefile
 
                  examples/Makefile
                  examples/simple_graph/Makefile
+                 examples/simple_graph_construct/Makefile
                  examples/graph/Makefile])
 AC_OUTPUT
