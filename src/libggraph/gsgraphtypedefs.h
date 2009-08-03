@@ -34,7 +34,7 @@ typedef struct _GSGraph GSGraph;
  *
  * Specifies the type of functions passed to g_sgraph_foreach_node().
  */
-typedef void (GSGraphFunc*)(GSGraph* graph,
+typedef void (*GSGraphFunc)(GSGraph* graph,
                             gpointer user_data);
 
 G_END_DECLS
