@@ -1,10 +1,20 @@
 #include "gsgraph.h"
 
+/* internal types */
+
+typedef enum
+{
+  G_SGRAPH_NONE = 0,
+  G_SGRAPH_FIRST = 1 << 0,
+  G_SGRAPH_SECOND = 1 << 1,
+  G_SGRAPH_BOTH = G_SGRAPH_FIRST | G_SGRAPH_SECOND
+} GSGraphConstructFlags;
+
 /* static declarations */
 
 static gboolean
-_g_sgraph_no_indirect_connection(GSGraph* sgraph,
-                                 GSGraph* other_sgraph);
+_g_sgraph_is_separate(GSGraph* sgraph,
+                      GSGraph* other_sgraph);
 
 static gboolean
 _g_sgraph_recurrent_connection_check(GSGraph* sgraph,
@@ -18,6 +28,9 @@ static void
 _g_sgraph_recurrent_array_append(GSGraph* sgraph,
                                  GSGraphArray* sgraph_array,
                                  GHashTable* visited_nodes);
+
+static gboolean
+_data_pair_is_valid(GSGraphDataPair* data_pair);
 
 /* function definitions */
 
@@ -40,25 +53,182 @@ g_sgraph_new(gpointer data)
 
 /**
  * g_sgraph_construct:
- * @data_pairs: array of #GSGraphDataPair instances.
+ * @data_pairs: array of #GSGraphDataPair.
  * @count: length of @data_pairs.
  *
  * Creates a graph from passed data pairs. Resulting construction can be several
  * separate graphs, so an array of them is returned. Also, if any of
- * #GSGraphDataPair members are %NULL, then this connection is omitted. If
+ * #GSGraphDataPair members are %NULL, then this pair is omitted in creation. If
  * @count is -1, it is assumed that @data_pairs is %NULL terminated.
+ * For performance reasons it would be good if in second and later pairs one
+ * of node have data describing already created node.
+ * Lets assume we want to create this graph:
+ * <informalexample>
+ *   <programlisting>
+ *     A--B
+ *     |
+ *     C--D
+ *   </programlisting>
+ * </informalexample>
+ * So best order of pairs is:
+ * <itemizedlist>
+ *   <listitem>
+ *     <para>
+ *       A, B
+ *     </para<
+ *   </listitem>
+ *   <listitem>
+ *     <para>
+ *       A, C
+ *     </para<
+ *   </listitem>
+ *   <listitem>
+ *     <para>
+ *       C, D
+ *     </para<
+ *   </listitem>
+ * </itemizedlist>
+ * This way we never create a separate graph, because in given pair one of the
+ * members is already created, so newly will be its neighbour and a part of
+ * larger graph.
+ * Swaping second and third pair will cause creation of a separate graph while
+ * processing second pair and checking if two graphs are one when processing
+ * third pair.
  *
- * Returns: array of newly created separate graphs.
+ * Returns: array of newly created separate graphs or %NULL if no nodes were
+ * created.
  */
 GSGraphArray*
-g_sgraph_construct(GGraphDataPair** data_pairs,
+g_sgraph_construct(GSGraphDataPair** data_pairs,
                    gint count)
 {
-  
+  GSGraphArray* separate_graphs;
+  GHashTable* all_nodes;
+  gint iter;
   
   g_return_val_if_fail(data_pairs != NULL, NULL);
   
-  return NULL;
+  if (count < 0)
+  {
+    count = 0;
+    while (data_pairs[count])
+    {
+      count++;
+    }
+  }
+  
+  if (!count)
+  {
+    return NULL;
+  }
+  
+  separate_graphs = g_sgraph_array_new();
+  all_nodes = g_hash_table_new(NULL, NULL);
+  for (iter = 0; iter < count; iter++)
+  {
+    GSGraphDataPair* data_pair = data_pairs[iter];
+    
+    if (_data_pair_is_valid(data_pair))
+    {
+      GSGraph* first_node;
+      GSGraph* second_node;
+      GSGraphConstructFlags created = G_SGRAPH_NONE;
+      
+      if (!g_hash_table_lookup_extended(all_nodes, data_pair->first, NULL,
+                                        (gpointer*)&first_node))
+      {
+        first_node = g_sgraph_new(data_pair->first);
+        g_hash_table_insert(all_nodes, data_pair->first, first_node);
+        created |= G_SGRAPH_FIRST;
+      }
+      
+      if (!g_hash_table_lookup_extended(all_nodes, data_pair->second, NULL,
+                                        (gpointer*)&second_node))
+      {
+        second_node = g_sgraph_new(data_pair->second);
+        g_hash_table_insert(all_nodes, data_pair->second, second_node);
+        created |= G_SGRAPH_SECOND;
+      }
+      
+      if (g_sgraph_connect(first_node, second_node))
+      {
+        switch (created)
+        {
+          case G_SGRAPH_NONE:
+          {
+            /* no nodes were created, so they can join two separate graphs. */
+            gint iter2;
+            gint iter3;
+            gboolean hit = FALSE;
+            
+            for (iter2 = 0; iter2 < (separate_graphs->len - 1); iter2++)
+            {
+              for (iter3 = 1; iter3 < separate_graphs->len; iter3++)
+              {
+                /* lets reuse the variables, they won't be needed. */
+                first_node = g_sgraph_array_index(separate_graphs, iter2);
+                second_node = g_sgraph_array_index(separate_graphs, iter3);
+                if (!_g_sgraph_is_separate(first_node, second_node))
+                {
+                  g_sgraph_array_remove_index_fast(separate_graphs, iter3);
+                  hit = TRUE;
+                  break;
+                }
+              }
+              if (hit)
+              {
+                break;
+              }
+            }
+            break;
+          }
+          case G_SGRAPH_FIRST:
+          case G_SGRAPH_SECOND:
+          { 
+            /* newly created node belongs to already created graph. */
+            break;
+          }
+          case G_SGRAPH_BOTH:
+          {
+            /* if both nodes were created then they create separate graph. */
+            g_sgraph_array_add(separate_graphs, first_node);
+            break;
+          }
+        }
+      }
+      /* should not ever happen. */
+      else if (created)
+      {
+        guint iter2;
+        
+        if (created & G_SGRAPH_FIRST)
+        {
+          g_sgraph_free(first_node);
+        }
+        if (created & G_SGRAPH_SECOND)
+        {
+          g_sgraph_free(second_node);
+        }
+        
+        for (iter2 = 0; iter2 < separate_graphs->len; iter2++)
+        {
+          GSGraph* sgraph = g_sgraph_array_index(separate_graphs, iter2);
+          g_sgraph_free(sgraph);
+        }
+        
+        g_sgraph_array_free(separate_graphs, TRUE);
+        g_hash_table_unref(all_nodes);
+        g_return_val_if_reached(NULL);
+      }
+    }
+  }
+  g_hash_table_unref(all_nodes);
+  if (!separate_graphs->len)
+  {
+    g_sgraph_array_free(separate_graphs, TRUE);
+    separate_graphs = NULL;
+  }
+  return separate_graphs;
 }
 
 /**
@@ -343,7 +513,7 @@ g_sgraph_break_connection(GSGraph* sgraph,
     }
   }
   
-  return _g_sgraph_no_indirect_connection(sgraph, other_sgraph);
+  return _g_sgraph_is_separate(sgraph, other_sgraph);
 }
 
 /**
@@ -408,39 +578,10 @@ g_sgraph_find_custom(GSGraph* sgraph,
   return matching_sgraphs;
 }
 
-/**
- * g_sgraph_data:
- * @sgraph: a node.
- *
- * It's an accessor function for language bindings.
- *
- * Returns: data associated to @sgraph.
- */
-gpointer
-g_sgraph_data(GSGraph* sgraph)
-{
-  return sgraph->data;
-}
-
-/**
- * g_sgraph_neighbours:
- * @sgraph: a node.
- *
- * It's an accessor function for language bindings.
- *
- * Returns: #GSGraphArray associated to @sgraph, which shouldn't be
- * modified.
- */
-G_CONST_RETURN GSGraphArray*
-g_sgraph_neighbours(GSGraph* sgraph)
-{
-  return sgraph->neighbours;
-}
-
 /* static function definitions */
 
 /*
- * _g_sgraph_no_indirect_connection:
+ * _g_sgraph_is_separate:
  * @sgraph: starting node.
  * @other_sgraph: node for which we want to check if it has series of
  * connections to @sgraph.
@@ -451,8 +592,8 @@ g_sgraph_neighbours(GSGraph* sgraph)
  * Returns: %TRUE if @sgraph and @other_sgraph are in separate graphs.
  */
 static gboolean
-_g_sgraph_no_indirect_connection(GSGraph* sgraph,
-                                 GSGraph* other_sgraph)
+_g_sgraph_is_separate(GSGraph* sgraph,
+                      GSGraph* other_sgraph)
 {
   GHashTable* visited_nodes = g_hash_table_new(NULL, NULL);
   gboolean not_connected = !_g_sgraph_recurrent_connection_check(sgraph,
@@ -547,4 +688,18 @@ _g_sgraph_recurrent_array_append(GSGraph* sgraph,
     GSGraph* node = g_sgraph_array_index(s_n, iter);
     _g_sgraph_recurrent_array_append(node, sgraph_array, visited_nodes);
   }
+}
+
+/*
+ * _data_pair_is_valid:
+ * @data_pair: a #GSGraphDataPair to check
+ *
+ * Checks if both members of @data_pair are not %NULL.
+ *
+ * Returns: %TRUE if both members are not %NULL, otherwise %FALSE.
+ */
+static gboolean
+_data_pair_is_valid(GSGraphDataPair* data_pair)
+{
+  return ((data_pair->first != NULL) && (data_pair->second != NULL));
 }

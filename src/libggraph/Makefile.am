@@ -1,4 +1,4 @@
-libggraph_c = ggraph.c ggrapharray.c ggraphedge.c ggraphedgearray.c gsgraph.c gsgrapharray.c
+libggraph_c = ggraph.c ggrapharray.c ggraphedge.c ggraphedgearray.c gsgraph.c gsgrapharray.c gsgraphdatapair.c
 libggraph_h = $(libggraph_c:.c=.h) ggraphtypedefs.h gsgraphtypedefs.h
 
 libggraph_includedir = $(includedir)/@libggraph_libname@/@libggraph_name@
