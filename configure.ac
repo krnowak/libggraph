@@ -59,11 +59,13 @@ AC_SUBST([libggraph_libname])
 AC_SUBST([libggraph_maintainer_mail])
 
 AM_INIT_AUTOMAKE
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
 
 AM_PROG_CC_C_O
 LT_INIT
+DOLT
 AC_CHECK_PROGS(PERL, perl5 perl)
 GTK_DOC_CHECK([1.9])
 
