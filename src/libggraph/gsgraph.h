@@ -32,53 +32,52 @@ GSGraph*
 g_sgraph_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphArray*
-g_sgraph_construct(GGraphDataPair** data_pairs,
+g_sgraph_construct(GSGraphDataPair** data_pairs,
                    gint count) G_GNUC_WARN_UNUSED_RESULT;
 
 gboolean
-g_sgraph_connect(GSGraph* graph,
-                 GSGraph* other_graph);
+g_sgraph_connect(GSGraph* sgraph,
+                 GSGraph* other_sgraph);
 
 GSGraphArray*
-g_sgraph_remove(GSGraph* graph) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_remove(GSGraph* sgraph) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraph*
-g_sgraph_copy(GSGraph* graph);
+g_sgraph_copy(GSGraph* sgraph);
 
 GSGraph*
-g_sgraph_copy_deep(GSGraph* graph,
+g_sgraph_copy_deep(GSGraph* sgraph,
                    GCopyFunc copy_func,
                    gpointer user_data);
 
 void
-g_sgraph_free(GSGraph* graph);
+g_sgraph_free(GSGraph* sgraph);
 
 guint
-g_sgraph_count(GSGraph* graph);
+g_sgraph_count(GSGraph* sgraph);
 
 void
-g_sgraph_foreach(GSGraph* graph,
+g_sgraph_foreach(GSGraph* sgraph,
                  GFunc func,
                  gpointer user_data);
 
+void
+g_sgraph_foreach_node(GSGraph* sgraph,
+                      GSGraphFunc func,
+                      gpointer user_data);
+
 gboolean
-g_sgraph_break_connection(GSGraph* graph,
-                          GSGraph* other_graph) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_break_connection(GSGraph* sgraph,
+                          GSGraph* other_sgraph) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphArray*
-g_sgraph_find(GSGraph* graph,
+g_sgraph_find(GSGraph* sgraph,
               gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphArray*
-g_sgraph_find_custom(GSGraph* graph,
+g_sgraph_find_custom(GSGraph* sgraph,
                      gconstpointer data,
                      GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
-
-gpointer
-g_sgraph_data(GSGraph* sgraph);
-
-G_CONST_RETURN GSGraphArray*
-g_sgraph_neighbours(GSGraph* sgraph);
 
 G_END_DECLS
 

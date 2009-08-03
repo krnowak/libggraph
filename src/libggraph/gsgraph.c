@@ -462,6 +462,36 @@ g_sgraph_foreach(GSGraph* sgraph,
 }
 
 /**
+ * g_sgraph_foreach_node:
+ * @sgraph: a node.
+ * @func: the function to call with each node.
+ * @user_data: data passed to @func.
+ *
+ * Calls @func for each node in graph @sgraph belongs to. The difference between
+ * this function and g_sgraph_foreach is that this function calls @func on
+ * nodes, not only on their data.
+ */
+void
+g_sgraph_foreach_node(GSGraph* sgraph,
+                      GSGraphFunc func,
+                      gpointer user_data)
+{
+  GSGraphArray* sgraph_array;
+  guint iter;
+  
+  g_return_if_fail(sgraph != NULL);
+  g_return_if_fail(func != NULL);
+  
+  sgraph_array = _g_sgraph_array(sgraph);
+  for (iter = 0; iter < sgraph_array->len; iter++)
+  {
+    GSGraph* node = g_sgraph_array_index(sgraph_array, iter);
+    (*func)(node, user_data);
+  }
+  g_sgraph_array_free(sgraph_array, TRUE);
+}
+
+/**
  * g_sgraph_break_connection:
  * @sgraph: a node.
  * @other_sgraph: other node which is @sgraph's neighbour.
