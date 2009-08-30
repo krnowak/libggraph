@@ -1,5 +1,13 @@
 #include "ggraphedge.h"
 
+/* static declarations */
+
+gboolean
+_g_graph_edge_general_member_check(GGraphEdge* edge,
+                                   GGraph* node,
+                                   gboolean* check_result,
+                                   gboolean check_for_first);
+
 /* function definitions */
 
 /**
@@ -14,21 +22,18 @@
  * Returns: newly created #GGraphEdge.
  */
 GGraphEdge*
-g_graph_edge_new(GGraph* graph,
-                 gboolean connected,
-                 gdouble weight)
+g_graph_edge_new(GGraph* first,
+                 GGraph* second,
+                 GGraphEdgeConnected connected,
+                 gpointer data)
 {
-  GGraphEdge* edge = g_slice_new(GGraphEdge);
-  edge->graph = graph;
+  GGraphEdge* edge;
+  
+  edge = g_slice_new(GGraphEdge);
+  edge->first = first;
+  edge->second = second;
   edge->connected = connected;
-  if (connected)
-  {
-    edge->weight = weight;
-  }
-  else
-  {
-    edge->weight = 0;
-  }
+  edge->data = data;
   return edge;
 }
 
@@ -36,64 +41,183 @@ g_graph_edge_new(GGraph* graph,
  * g_graph_edge_free:
  * @edge: an edge to free.
  *
- * Frees an edge. A #GGraph pointed by @edge is not freed, but is returned.
+ * Frees an edge. A #GGraph members in @edge are not freed, so it is up to
+ * programmist to get pointers to them if needed. Data also is not freed, but
+ * a pointer is returned.
  *
- * Returns: #GGraph pointed by @edge or %NULL if @edge was %NULL also.
+ * Returns: Data in freed @edge or %NULL if @edge was %NULL also.
  */
-GGraph*
+gpointer
 g_graph_edge_free(GGraphEdge* edge)
 {
+  gpointer data;
+  
   if (!edge)
   {
     return NULL;
   }
-  GGraph* graph = edge->graph;
+  data = edge->data;
   g_slice_free(GGraphEdge, edge);
-  return graph;
+  return data;
 }
 
 /**
  * g_graph_edge_graph:
  * @edge: an edge.
+ * @node: a node using this connection.
  *
- * It's an accessor function for language bindings.
+ * Gets a node to which a @node is connected. If @node is not a part of @edge,
+ * this function will return %NULL.
  *
- * Returns: #GGraph associated to @edge.
+ * Returns: #GGraph associated to @edge being a neighbour of @node.
  */
 GGraph*
-g_graph_edge_graph(GGraphEdge* edge)
+g_graph_edge_graph(GGraphEdge* edge
+                   GGraph* node)
 {
-  return edge->graph;
+  if (edge->first == node)
+  {
+    return edge->second;
+  }
+  else if (edge->second == node)
+  {
+    return edge->first;
+  }
+  return NULL;
 }
 
 /**
- * g_graph_edge_connected:
+ * g_graph_edge_is_first:
  * @edge: an edge.
+ * @node: a node to check.
  *
- * It's an accessor function for language bindings.
+ * Checks if node is first member of connection. Returned %FALSE does not mean
+ * that @node is second member of @edge.
  *
- * Returns: if @edge is connected to graph.
+ * Returns: %TRUE, if @node is first member of @edge, %FALSE otherwise.
  */
 gboolean
-g_graph_edge_connected(GGraphEdge* edge)
+g_graph_edge_is_first(GGraphEdge* edge,
+                      GGraph* node)
 {
-  return edge->connected;
+  return (edge->first == node);
 }
 
 /**
- * g_graph_edge_weight:
+ * g_graph_edge_is_second:
  * @edge: an edge.
+ * @node: a node to check.
  *
- * It's an accessor function for language bindings.
+ * Checks if node is second member of connection. Returned %FALSE does not mean
+ * that @node is first member of @edge.
  *
- * Returns: @edge's weight or 0 if @edge is not connected to graph.
+ * Returns: %TRUE, if @node is second member of @edge, %FALSE otherwise.
  */
-gdouble
-g_graph_edge_weight(GGraphEdge* edge)
+gboolean
+g_graph_edge_is_second(GGraphEdge* edge,
+                       GGraph* node)
 {
-  if (edge->connected)
+  return (edge->second == node);
+}
+
+/**
+ * g_graph_edge_is_first_extended:
+ * @edge: an edge.
+ * @node: a node to check.
+ * @is_first: pointer to #gboolean where check is stored.
+ *
+ * Checks if node is first member of connection. Returned %FALSE means that 
+ * @node is not first nor second member of @edge. Information about being
+ * a first member is saved in @is_first. If @is_first is %NULL, then no
+ * no information there is stored, so this function then can actually serve as
+ * a checker if @node is a member of @edge.
+ *
+ * Returns: %TRUE, if @node is member (first or second) of @edge, %FALSE
+ * otherwise.
+ */
+gboolean
+g_graph_edge_is_first_extended(GGraphEdge* edge,
+                               GGraph* node,
+                               gboolean* is_first)
+{
+  return _g_graph_edge_general_member_check(edge, node, is_first, TRUE);
+}
+
+/**
+ * g_graph_edge_is_second_extended:
+ * @edge: an edge.
+ * @node: a node to check.
+ * @is_second: pointer to #gboolean where check is stored.
+ *
+ * Checks if node is second member of connection. Returned %FALSE means that 
+ * @node is not first nor second member of @edge. Information about being
+ * a second member is saved in @is_second. If @is_second is %NULL, then no
+ * no information there is stored, so this function then can actually serve as
+ * a checker if @node is a member of @edge.
+ *
+ * Returns: %TRUE, if @node is member (first or second) of @edge, %FALSE
+ * otherwise.
+ */
+gboolean
+g_graph_edge_is_second_extended(GGraphEdge* edge,
+                                GGraph* node,
+                                gboolean* is_second)
+{
+  return _g_graph_edge_general_member_check(edge, node, is_first, FALSE);
+}
+
+/* static definitions */
+
+/*
+ * _g_graph_edge_general_member_check:
+ * @edge: an edge.
+ * @node: a node to check.
+ * @check_result: pointer to #gboolean where check is stored.
+ * @check_for_first: #gboolean indicating against which member check has to be
+ * made.
+ *
+ * Checks if @node is a member of @edge. Which to check is indicated by
+ * @check_for_first - if %TRUE than function will check if @node is first member
+ * of @edge; if %FALSE - second member.
+ *
+ * Returns: %TRUE if @node is a member (first or second) of @edge, otherwise
+ * %FALSE. 
+ */
+gboolean
+_g_graph_edge_general_member_check(GGraphEdge* edge,
+                                   GGraph* node,
+                                   gboolean* check_result,
+                                   gboolean check_for_first)
+{
+  GGraph* check_node;
+  GGraph* other_node;
+  
+  if (check_for_first)
   {
-    return edge->weight;
+    check_node = edge->first;
+    other_node = edge->second;
   }
-  return 0;
+  else
+  {
+    check_node = edge->second;
+    other_node = edge->first;
+  }
+  
+  if (node == check_node)
+  {
+    if (check_result)
+    {
+      *check_result = TRUE;
+    }
+    return TRUE;
+  }
+  if (check_result)
+  {
+    *check_result = FALSE;
+  }
+  else if (node == other_node)
+  {
+    return TRUE;
+  }
+  return FALSE;
 }

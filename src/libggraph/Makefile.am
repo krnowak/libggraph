@@ -1,5 +1,5 @@
 libggraph_c = ggraph.c ggrapharray.c ggraphedge.c ggraphedgearray.c gsgraph.c gsgrapharray.c gsgraphdatapair.c
-libggraph_h = $(libggraph_c:.c=.h) ggraphtypedefs.h gsgraphtypedefs.h
+libggraph_h = $(libggraph_c:.c=.h) ggraphtypedefs.h gsgraphtypedefs.h ggraphedgeconnected.h
 
 libggraph_includedir = $(includedir)/@libggraph_libname@/@libggraph_name@
 libggraph_include_HEADERS = $(libggraph_h)
