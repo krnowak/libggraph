@@ -1,24 +1,43 @@
+## general
 Makefile
 Makefile.in
 .deps
 .libs
-config.*
-INSTALL
-aclocal.m4
-compile
-configure
-depcomp
-docs/reference/version.xml
-doltcompile
-doltlibtool
-gtk-doc.make
-install-sh
+*.l[ao]
+*.[ao]
+*.pc
+stamp-*
+
+## root
+/config.*
+/INSTALL
+/aclocal.m4
+/compile
+/configure
+/depcomp
+/doltcompile
+/doltlibtool
+/gtk-doc.make
+/install-sh
 libtool
-ltmain.sh
-autom4te.cache
-m4/lt*
-m4/libtool.m4
-m4/gtk-doc.m4
-missing
-src/libggraph-1.0.pc
-stamp-h1
+/ltmain.sh
+/autom4te.cache/
+/missing
+
+## m4
+/m4/lt*
+/m4/libtool.m4
+/m4/gtk-doc.m4
+
+## docs
+/docs/reference/
+!docs/reference/libggraph-docs.sgml
+!docs/reference/libggraph-sections.txt
+!docs/reference/version.xml.in
+!docs/reference/Makefile.am
+
+## examples
+
+/examples/graph/graph
+/examples/simple_graph/simple_graph
+/examples/simple_graph_construct/simple_graph_construct

@@ -86,7 +86,7 @@ AC_CONFIG_FILES([Makefile
                  m4/Makefile
 
                  src/Makefile
-                 src/]LIBGGRAPH_LIBNAME[.pc
+                 src/]LIBGGRAPH_LIBNAME[.pc:src/]LIBGGRAPH_NAME[.pc.in
                  src/]LIBGGRAPH_NAME[/Makefile
 
                  docs/Makefile

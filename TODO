@@ -1,1 +1,2 @@
-- write examples.
+- write dependencies in README.
+- add warning flags instead of hardcoding them in Makefiles.

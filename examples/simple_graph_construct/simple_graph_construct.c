@@ -2,6 +2,12 @@
 
 /* See topology.png. */
 
+void free_node_data(gpointer data,
+                    gpointer user_data G_GNUC_UNUSED)
+{
+  g_free(data);
+}
+
 GSGraph*
 create_graph()
 {
@@ -36,18 +42,13 @@ create_graph()
     for (iter = 1; iter < graph_array->len; iter++)
     {
       GSGraph* separate_graph = g_sgraph_array_index(graph_array, iter);
+      g_sgraph_foreach(separate_graph, free_node_data, NULL);
       g_sgraph_free(separate_graph);
     }
   }
   graph = g_sgraph_array_index(graph_array, 0);
   g_sgraph_array_free(graph_array, TRUE);
   return graph;
-}
-
-void free_node_data(gpointer data,
-                    gpointer user_data G_GNUC_UNUSED)
-{
-  g_free(data);
 }
 
 /* This function prints neighbours of a node. */
