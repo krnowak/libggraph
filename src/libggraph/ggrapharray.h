@@ -9,26 +9,27 @@
 #include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraph.h>
 
-/**
- * g_graph_array_new:
- *
- * Convenience type-safe macro, creating a new #GGraphArray.
- *
- * Returns: newly created array.
- */
-#define g_graph_array_new() \
-((GGraphArray*)(g_ptr_array_new()))
+G_BEGIN_DECLS
 
 /**
- * g_graph_array_sized_new:
- * @num: size of array.
+ * GGraphArray:
  *
- * Convenience type-safe macro, creating a new #GGraphArray with given size.
- *
- * Returns: newly created array.
+ * Contains the public fields of an array.
  */
+
+GGraphArray*
+g_graph_array_new(void);
+/*
+#define g_graph_array_new() \
+((GGraphArray*)(g_ptr_array_new()))
+*/
+
+GGraphArray*
+g_graph_array_sized_new(guint reserved_size);
+/*
 #define g_graph_array_sized_new(num) \
 ((GGraphArray*)(g_ptr_array_sized_new(num)))
+*/
 
 /**
  * g_graph_array_index:
@@ -37,28 +38,33 @@
  *
  * Convenience type-safe macro, returning a #GGraph at given index.
  *
+ * See also: g_ptr_array_index()
+ *
  * Returns: #GGraph at given index.
  */
 #define g_graph_array_index(array, index) \
 ((GGraph*)(g_ptr_array_index((array), (index))))
 
-/**
- * g_graph_array_free:
- * @array: an array to free.
- * @free_segment: %TRUE if the actual pointer array has to be freed.
- *
- * Convenience type-safe macro, freeing an array. If @free_segment is %TRUE,
- * then underlying pointer array will be freed and %NULL will be returned,
- * otherwise this pointer array will be returned.
- *
- * Returns: %NULL if @free_segment was %TRUE, otherwise pointer to array of
- * #GGraph is returned - it should be freed with g_free().
- */
+GGraph**
+g_graph_array_free(GGraphArray* array,
+                   gboolean free_segment);
+/*
 #define g_graph_array_free(array, free_segment) \
 ((GGraph**)(g_ptr_array_free((array), (free_segment))))
+*/
 
 void
 g_graph_array_add(GGraphArray* array,
                   GGraph* graph);
+
+GGraph*
+g_graph_array_remove_index_fast(GGraphArray* array,
+                                guint index);
+/*
+#define g_graph_array_remove_index_fast(array, index) \
+((GGraph*)(g_ptr_array_remove_index_fast((array), (index))))
+*/
+
+G_END_DECLS
 
 #endif /* _G_GRAPH_ARRAY_H_ */

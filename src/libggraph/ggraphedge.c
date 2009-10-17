@@ -1,15 +1,45 @@
 #include "ggraphedge.h"
+#include "libggraphinternal.h"
+
+/**
+ * SECTION: ggraphedge
+ * @title: Graph edges
+ * @short_description: edges connecting graphs and containing user data.
+ * @include: libggraph.h
+ * @see_also: #GGraph, #GGraphEdgeConnected
+ *
+ * Edges connect two nodes in graph, describes its relation and holds data. If
+ * there is connection between two nodes, there are three possible option, which
+ * are described with #GGraphEdgeConnected.
+ *
+ * To create new edge, use g_graph_edge_new().
+ *
+ * To free it, use g_graph_edge_free().
+ *
+ * To get a neighbour of a node in edge, use g_graph_edge_get_graph().
+ *
+ * To check which member of edge node is, use g_graph_edge_is_first(),
+ * g_graph_edge_is_first_extended(), g_graph_edge_is_second() or
+ * g_graph_edge_is_second_extended().
+ *
+ * To check if node is connected to other, use g_graph_edge_is_graph_connected()
+ * or g_graph_edge_is_graph_connected_extended().
+ */
 
 /* static declarations */
 
-gboolean
+static gboolean
 _g_graph_edge_general_member_check(GGraphEdge* edge,
                                    GGraph* node,
                                    gboolean* check_result,
                                    gboolean check_for_first);
 
+static gboolean
+_g_graph_edge_disjoin(GGraphEdge* edge);
+
 /* function definitions */
 
+/* TODO: fix docs. */
 /**
  * g_graph_edge_new:
  * @graph: node it connects to.
@@ -34,6 +64,11 @@ g_graph_edge_new(GGraph* first,
   edge->second = second;
   edge->connected = connected;
   edge->data = data;
+  g_graph_edge_array_append(first->edges, edge);
+  if (first != second)
+  {
+    g_graph_edge_array_append(second->edges, edge);
+  }
   return edge;
 }
 
@@ -62,7 +97,7 @@ g_graph_edge_free(GGraphEdge* edge)
 }
 
 /**
- * g_graph_edge_graph:
+ * g_graph_edge_get_graph:
  * @edge: an edge.
  * @node: a node using this connection.
  *
@@ -72,8 +107,8 @@ g_graph_edge_free(GGraphEdge* edge)
  * Returns: #GGraph associated to @edge being a neighbour of @node.
  */
 GGraph*
-g_graph_edge_graph(GGraphEdge* edge
-                   GGraph* node)
+g_graph_edge_get_graph(GGraphEdge* edge,
+                       GGraph* node)
 {
   if (edge->first == node)
   {
@@ -152,8 +187,8 @@ g_graph_edge_is_first_extended(GGraphEdge* edge,
  * Checks if node is second member of connection. Returned %FALSE means that 
  * @node is not first nor second member of @edge. Information about being
  * a second member is saved in @is_second. If @is_second is %NULL, then no
- * no information there is stored, so this function then can actually serve as
- * a checker if @node is a member of @edge.
+ * information there is stored, so this function then can actually serve as a
+ * checker if @node is a member of @edge.
  *
  * Returns: %TRUE, if @node is member (first or second) of @edge, %FALSE
  * otherwise.
@@ -163,7 +198,114 @@ g_graph_edge_is_second_extended(GGraphEdge* edge,
                                 GGraph* node,
                                 gboolean* is_second)
 {
-  return _g_graph_edge_general_member_check(edge, node, is_first, FALSE);
+  return _g_graph_edge_general_member_check(edge, node, is_second, FALSE);
+}
+
+/**
+ * g_graph_edge_is_graph_connected:
+ * @edge: an edge.
+ * @node: a node to check.
+ *
+ * Checks if @node is connected to other node in @edge. Returned %FALSE can mean
+ * that @node is not a part of @edge.
+ *
+ * Returns: %TRUE, if @node is connected, %FALSE otherwise.
+ */
+gboolean
+g_graph_edge_is_graph_connected(GGraphEdge* edge,
+                                GGraph* node)
+{
+  return ((g_graph_edge_is_first(edge, node) && (edge->connected & G_GRAPH_EDGE_CONNECTED_FIRST_TO_SECOND)) ||
+          (g_graph_edge_is_second(edge, node) && (edge->connected & G_GRAPH_EDGE_CONNECTED_SECOND_TO_FIRST)));
+}
+
+/**
+ * g_graph_edge_is_graph_connected_extended:
+ * @edge: an edge.
+ * @node: a node to check.
+ * @is_connected: pointer to #gboolean where check is stored.
+ *
+ * Checks if @node is connected to other node in @edge. Returned %FALSE means
+ * that @node is not a member of @edge. Information about being connected is
+ * saved in @is_connected. If @is_connected is %NULL, then no information there
+ * is stored, so this function then can actually serve as a checker if @node is
+ * a member of @edge.
+ *
+ * Returns: %TRUE, if @node is member (first or second) of @edge, %FALSE
+ * otherwise.
+ */
+gboolean
+g_graph_edge_is_graph_connected_extended(GGraphEdge* edge,
+                                         GGraph* node,
+                                         gboolean* is_connected)
+{
+  gboolean is_first;
+  
+  if (g_graph_edge_is_first_extended(edge, node, &is_first))
+  {
+    if (is_connected)
+    {
+      *is_connected = ((is_first && (edge->connected & G_GRAPH_EDGE_CONNECTED_FIRST_TO_SECOND)) ||
+                       (!is_first && (edge->connected & G_GRAPH_EDGE_CONNECTED_SECOND_TO_FIRST)));
+    }
+    return TRUE;
+  }
+  if (is_connected)
+  {
+    *is_connected = FALSE;
+  }
+  return FALSE;
+}
+
+/* TODO: document it. */
+gboolean
+g_graph_edge_remove(GGraphEdge* edge)
+{
+  gboolean result;
+  
+  g_return_val_if_fail(edge != NULL, FALSE);
+  
+  result = _g_graph_edge_disjoin(edge);
+  g_graph_edge_free(edge);
+  return result;
+}
+
+/* TODO: document it. */
+gboolean
+g_graph_edge_disconnect(GGraphEdge* edge)
+{
+  g_return_val_if_fail(edge != NULL, FALSE);
+  
+  return _g_graph_edge_disjoin(edge);
+}
+
+/* TODO: document it. */
+gboolean
+g_graph_edge_connect_graph(GGraphEdge* edge,
+                           GGraph* graph)
+{
+  g_return_if_fail(edge != NULL);
+  g_return_if_fail(graph != NULL);
+  
+  if (g_graph_edge_is_first(edge, graph))
+  {
+    edge->connected |= G_GRAPH_EDGE_CONNECTED_FIRST_TO_SECOND;
+    return TRUE;
+  }
+  else if (g_graph_edge_is_second(edge, graph))
+  {
+    edge->connected |= G_GRAPH_EDGE_CONNECTED_SECOND_TO_FIRST;
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/* TODO: document it. rethink it. */
+gboolean
+g_graph_edge_remove_connection(GGraphEdge* edge,
+                               GGraph* graph)
+{
+  g_return_val_if_fail(edge != NULL, FALSE);
 }
 
 /* static definitions */
@@ -183,7 +325,7 @@ g_graph_edge_is_second_extended(GGraphEdge* edge,
  * Returns: %TRUE if @node is a member (first or second) of @edge, otherwise
  * %FALSE. 
  */
-gboolean
+static gboolean
 _g_graph_edge_general_member_check(GGraphEdge* edge,
                                    GGraph* node,
                                    gboolean* check_result,
@@ -220,4 +362,25 @@ _g_graph_edge_general_member_check(GGraphEdge* edge,
     return TRUE;
   }
   return FALSE;
+}
+
+/* TODO: static - document it. */
+static gboolean
+_g_graph_edge_disjoin(GGraphEdge* edge)
+{
+  gboolean are_separate;
+  
+  g_graph_edge_array_remove(edge->first->edges, edge);
+  if (edge->first != edge->second)
+  {
+    g_graph_edge_array_remove(edge->second->edges, edge);
+    are_separate = _libggraph_internal_are_separate(edge->first, edge->second);
+  }
+  else
+  {
+    are_separate = FALSE;
+  }
+  edge->first = NULL;
+  edge->second = NULL;
+  return are_separate;
 }

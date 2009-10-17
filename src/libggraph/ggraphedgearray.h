@@ -9,15 +9,23 @@
 #include <libggraph/ggraphtypedefs.h>
 #include <libggraph/ggraphedge.h>
 
+G_BEGIN_DECLS
+
 /**
- * g_graph_edge_array_new:
+ * GGraphEdgeArray:
  *
- * Convenience type-safe macro, creating a new #GGraphEdgeArray.
- *
- * Returns: newly created array.
+ * Contains the public fields of an array.
  */
+
+GGraphEdgeArray*
+g_graph_edge_array_new(void);
+/*
 #define g_graph_edge_array_new() \
 ((GGraphEdgeArray*)(g_ptr_array_new()))
+*/
+
+GGraphEdgeArray*
+g_graph_edge_array_sized_new(guint reserved_size);
 
 /**
  * g_graph_edge_array_index:
@@ -25,6 +33,8 @@
  * @index: index of the #GGraphEdge to return.
  *
  * Convenience type-safe macro, returning a #GGraphEdge at given index.
+ *
+ * See also: g_ptr_array_index()
  *
  * Returns: #GGraphEdge at given index.
  */
@@ -39,19 +49,14 @@ gboolean
 g_graph_edge_array_remove(GGraphEdgeArray* array,
                           GGraphEdge* edge);
 
-/**
- * g_graph_edge_array_free:
- * @array: an array to free.
- * @free_segment: %TRUE if the actual pointer array has to be freed.
- *
- * Convenience type-safe macro, freeing an array. If @free_segment is %TRUE,
- * then underlying pointer array will be freed and %NULL will be returned,
- * otherwise this pointer array will be returned.
- *
- * Returns: %NULL if @free_segment was %TRUE, otherwise pointer to array of
- * #GGraphEdge is returned - it should be freed with g_free().
- */
+GGraphEdge**
+g_graph_edge_array_free(GGraphEdgeArray* array,
+                        gboolean free_segment);
+/*
 #define g_graph_edge_array_free(array, free_segment) \
 ((GGraphEdge**)(g_ptr_array_free((array), (free_segment))))
+*/
+
+G_END_DECLS
 
 #endif /* _G_GRAPH_EDGE_ARRAY_H_ */

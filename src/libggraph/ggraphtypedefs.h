@@ -3,11 +3,15 @@
 #endif
 
 /*
- * This header exist because there is circular dependency:
+ * This header exist because there are circular dependencies:
  * .-> GGraph -> GGraphEdgeArray -> GGraphEdge -.
  * `--------------------------------------------'
- * So here exists typedefs to these structs. It should be enough, because
- * none of them needs information about sizes of other structs.
+ *
+ * .-> GGraph -> GGraphArray -.
+ * `--------------------------'
+ *
+ * So here typedefs to these structs exist. It should be enough, because none of
+ * them needs information about sizes of other structs.
  */
 
 #include <glib.h>
@@ -17,24 +21,12 @@
 
 G_BEGIN_DECLS
 
-/**
- * GGraphEdgeArray:
- *
- * An array holding pointers to #GGraphEdge instances. It is a #GPtrArray, so
- * its functions can be used on this type.
- */
 typedef GPtrArray GGraphEdgeArray;
 
 typedef struct _GGraphEdge GGraphEdge;
 
 typedef struct _GGraph GGraph;
 
-/**
- * GGraphArray:
- *
- * An array holding pointers to #GGraph instances. It is a #GPtrArray, so its
- * functions can be used on this type.
- */
 typedef GPtrArray GGraphArray;
 
 G_END_DECLS
