@@ -17,25 +17,9 @@
 
 G_BEGIN_DECLS
 
-/**
- * GSGraphArray:
- *
- * An array holding pointers to #GSGraph instances. It is a #GPtrArray, so its
- * function can be safely used on this type.
- */
 typedef GPtrArray GSGraphArray;
 
 typedef struct _GSGraph GSGraph;
-
-/**
- * GSGraphFunc:
- * @graph: a node.
- * @user_data: user data passed to g_sgraph_foreach_node().
- *
- * Specifies the type of functions passed to g_sgraph_foreach_node().
- */
-typedef void (*GSGraphFunc)(GSGraph* graph,
-                            gpointer user_data);
 
 G_END_DECLS
 

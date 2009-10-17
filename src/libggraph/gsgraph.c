@@ -1,5 +1,38 @@
 #include "gsgraph.h"
 
+/**
+ * SECTION: gsgraph
+ * @title: Simple graphs
+ * @short_description: simple graphs for non advanced purposes.
+ * @include: libggraph.h
+ *
+ * Single node of simple graph. It contains data and an array of pointers to all
+ * it's neighbours. If you want one way edges, data on edges - use #GGraph.
+ *
+ * To create a single node, use g_sgraph_new(). If you have a set of data you
+ * can use g_sgraph_construct() to build graphs.
+ *
+ * To connect two nodes use g_sgraph_connect().
+ *
+ * To remove a node from graph and delete it, use g_sgraph_remove(). If you
+ * don't want to delete the node itself, use g_sgraph_break_connection() on all
+ * its neighbours.
+ *
+ * To get neighbours, use its public field.
+ *
+ * To get count of a graph, use g_sgraph_count().
+ *
+ * To free whole graph, use g_sgraph_free().
+ *
+ * <note>
+ *   <para>
+ *     Remember to always take care about data graph holds. Especially when
+ *     freeing nodes. So, for example, when freeing whole graph, it is
+ *     good to use g_sgraph_foreach() to free data before.
+ *   </para>
+ * </note>
+ */
+
 /* internal types */
 
 typedef enum
@@ -13,8 +46,8 @@ typedef enum
 /* static declarations */
 
 static gboolean
-_g_sgraph_is_separate(GSGraph* sgraph,
-                      GSGraph* other_sgraph);
+_g_sgraph_are_separate(GSGraph* sgraph,
+                       GSGraph* other_sgraph);
 
 static gboolean
 _g_sgraph_recurrent_connection_check(GSGraph* sgraph,
@@ -53,7 +86,7 @@ g_sgraph_new(gpointer data)
 
 /**
  * g_sgraph_construct:
- * @data_pairs: array of #GSGraphDataPair.
+ * @data_pairs: array of data pairs.
  * @count: length of @data_pairs.
  *
  * Creates a graph from passed data pairs. Resulting construction can be several
@@ -150,75 +183,49 @@ g_sgraph_construct(GSGraphDataPair** data_pairs,
         created |= G_SGRAPH_SECOND;
       }
       
-      if (g_sgraph_connect(first_node, second_node))
+      g_sgraph_connect(first_node, second_node);
+      switch (created)
       {
-        switch (created)
+        case G_SGRAPH_NONE:
         {
-          case G_SGRAPH_NONE:
+          /* no nodes were created, so they can join two separate graphs. */
+          guint iter2;
+          guint iter3;
+          gboolean hit = FALSE;
+          
+          for (iter2 = 0; iter2 < (separate_graphs->len - 1); iter2++)
           {
-            /* no nodes were created, so they can join two separate graphs. */
-            gint iter2;
-            gint iter3;
-            gboolean hit = FALSE;
-            
-            for (iter2 = 0; iter2 < (separate_graphs->len - 1); iter2++)
+            for (iter3 = iter2 + 1; iter3 < separate_graphs->len; iter3++)
             {
-              for (iter3 = 1; iter3 < separate_graphs->len; iter3++)
+              /* lets reuse the variables, they won't be needed. */
+              first_node = g_sgraph_array_index(separate_graphs, iter2);
+              second_node = g_sgraph_array_index(separate_graphs, iter3);
+              if (!_g_sgraph_are_separate(first_node, second_node))
               {
-                /* lets reuse the variables, they won't be needed. */
-                first_node = g_sgraph_array_index(separate_graphs, iter2);
-                second_node = g_sgraph_array_index(separate_graphs, iter3);
-                if (!_g_sgraph_is_separate(first_node, second_node))
-                {
-                  g_sgraph_array_remove_index_fast(separate_graphs, iter3);
-                  hit = TRUE;
-                  break;
-                }
-              }
-              if (hit)
-              {
+                g_sgraph_array_remove_index_fast(separate_graphs, iter3);
+                hit = TRUE;
                 break;
               }
             }
-            break;
+            if (hit)
+            {
+              break;
+            }
           }
-          case G_SGRAPH_FIRST:
-          case G_SGRAPH_SECOND:
-          { 
-            /* newly created node belongs to already created graph. */
-            break;
-          }
-          case G_SGRAPH_BOTH:
-          {
-            /* if both nodes were created then they create separate graph. */
-            g_sgraph_array_add(separate_graphs, first_node);
-            break;
-          }
+          break;
         }
-      }
-      /* should not ever happen. */
-      else if (created)
-      {
-        guint iter2;
-        
-        if (created & G_SGRAPH_FIRST)
+        case G_SGRAPH_FIRST:
+        case G_SGRAPH_SECOND:
+        { 
+          /* newly created node belongs to already created graph. */
+          break;
+        }
+        case G_SGRAPH_BOTH:
         {
-          g_sgraph_free(first_node);
+          /* if both nodes were created then they create separate graph. */
+          g_sgraph_array_add(separate_graphs, first_node);
+          break;
         }
-        if (created & G_SGRAPH_SECOND)
-        {
-          g_sgraph_free(second_node);
-        }
-        
-        for (iter2 = 0; iter2 < separate_graphs->len; iter2++)
-        {
-          GSGraph* sgraph = g_sgraph_array_index(separate_graphs, iter2);
-          g_sgraph_free(sgraph);
-        }
-        
-        g_sgraph_array_free(separate_graphs, TRUE);
-        g_hash_table_unref(all_nodes);
-        g_return_val_if_reached(NULL);
       }
     }
   }
@@ -236,20 +243,18 @@ g_sgraph_construct(GSGraphDataPair** data_pairs,
  * @sgraph: a graph.
  * @other_sgraph: a soon to be neighbour of @sgraph.
  *
- * Creates a connection between @sgraph and @other_sgraph. Returns %TRUE if making
- * connection succeeded. Returns %FALSE if connection already existed.
- *
- * Returns: %TRUE if succeeded, %FALSE otherwise.
+ * Creates a connection between @sgraph and @other_sgraph. If connection already
+ * existed, it does nothing.
  */
-gboolean
+void
 g_sgraph_connect(GSGraph* sgraph,
                  GSGraph* other_sgraph)
 {
   guint iter;
   GSGraphArray* s_n;
   
-  g_return_val_if_fail(sgraph != NULL, FALSE);
-  g_return_val_if_fail(other_sgraph != NULL, FALSE);
+  g_return_if_fail(sgraph != NULL);
+  g_return_if_fail(other_sgraph != NULL);
   
   s_n = sgraph->neighbours;
   for (iter = 0; iter < s_n->len; iter++)
@@ -257,12 +262,11 @@ g_sgraph_connect(GSGraph* sgraph,
     GSGraph* node = g_sgraph_array_index(s_n, iter);
     if (node == other_sgraph)
     {
-      return FALSE;
+      return;
     }
   }
   g_sgraph_array_add(s_n, other_sgraph);
   g_sgraph_array_add(other_sgraph->neighbours, sgraph);
-  return TRUE;
 }
 
 /**
@@ -543,7 +547,7 @@ g_sgraph_break_connection(GSGraph* sgraph,
     }
   }
   
-  return _g_sgraph_is_separate(sgraph, other_sgraph);
+  return _g_sgraph_are_separate(sgraph, other_sgraph);
 }
 
 /**
@@ -608,10 +612,55 @@ g_sgraph_find_custom(GSGraph* sgraph,
   return matching_sgraphs;
 }
 
+/**
+ * g_sgraph_find_custom_node:
+ * @sgraph: a node.
+ * @node: node passed to @func.
+ * @func: the function to call for each element.
+ *
+ * Finds an element in a #GSGraph, using a supplied function to find the desired
+ * elements. It iterates over the whole graph, calling the given function which
+ * should return %TRUE when the desired element is found. The function takes two
+ * #GSGraph arguments, the #GSGraph from graph as the first argument and @node
+ * as second. If an element is found it is added to a #GSGraphArray.
+ *
+ * Returns: a #GSGraphArray* that must be freed with g_sgraph_array_free().
+ */
+GSGraphArray*
+g_sgraph_find_custom_node(GSGraph* sgraph,
+                          GSGraph* node,
+                          GSGraphEqualFunc func)
+{
+  GSGraphArray* matching_sgraphs;
+  GSGraphArray* sgraph_array;
+  guint iter;
+  
+  g_return_val_if_fail(sgraph != NULL, NULL);
+  g_return_val_if_fail(func != NULL, NULL);
+  
+  matching_sgraphs = g_sgraph_array_new();
+  sgraph_array = _g_sgraph_array(sgraph);
+  for (iter = 0; iter < sgraph_array->len; iter++)
+  {
+    GSGraph* other_node = g_sgraph_array_index(sgraph_array, iter);
+    if ((*func)(other_node, node))
+    {
+      g_sgraph_array_add(matching_sgraphs, other_node);
+    }
+  }
+  g_sgraph_array_free(sgraph_array, TRUE);
+  if (!matching_sgraphs->len)
+  {
+    g_sgraph_array_free(matching_sgraphs, TRUE);
+    matching_sgraphs = NULL;
+  }
+  return matching_sgraphs;
+}
+
 /* static function definitions */
 
 /*
- * _g_sgraph_is_separate:
+ * _g_sgraph_are_separate:
  * @sgraph: starting node.
  * @other_sgraph: node for which we want to check if it has series of
  * connections to @sgraph.
@@ -622,8 +671,8 @@ g_sgraph_find_custom(GSGraph* sgraph,
  * Returns: %TRUE if @sgraph and @other_sgraph are in separate graphs.
  */
 static gboolean
-_g_sgraph_is_separate(GSGraph* sgraph,
-                      GSGraph* other_sgraph)
+_g_sgraph_are_separate(GSGraph* sgraph,
+                       GSGraph* other_sgraph)
 {
   GHashTable* visited_nodes = g_hash_table_new(NULL, NULL);
   gboolean not_connected = !_g_sgraph_recurrent_connection_check(sgraph,

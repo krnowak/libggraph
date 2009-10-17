@@ -35,7 +35,7 @@ GSGraphArray*
 g_sgraph_construct(GSGraphDataPair** data_pairs,
                    gint count) G_GNUC_WARN_UNUSED_RESULT;
 
-gboolean
+void
 g_sgraph_connect(GSGraph* sgraph,
                  GSGraph* other_sgraph);
 
@@ -61,6 +61,16 @@ g_sgraph_foreach(GSGraph* sgraph,
                  GFunc func,
                  gpointer user_data);
 
+/**
+ * GSGraphFunc:
+ * @graph: a node.
+ * @user_data: user data passed to g_sgraph_foreach_node().
+ *
+ * Specifies the type of functions passed to g_sgraph_foreach_node().
+ */
+typedef void (*GSGraphFunc)(GSGraph* graph,
+                            gpointer user_data);
+
 void
 g_sgraph_foreach_node(GSGraph* sgraph,
                       GSGraphFunc func,
@@ -78,6 +88,23 @@ GSGraphArray*
 g_sgraph_find_custom(GSGraph* sgraph,
                      gconstpointer data,
                      GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+
+/**
+ * GSGraphEqualFunc:
+ * @sgraph: a node.
+ * @other_sgraph: other node.
+ *
+ * Specifies the type of functions passed to g_sgraph_find_custom_node().
+ *
+ * Returns: %TRUE if @sgraph and @other_sgraph are equal, otherwise %FALSE.
+ */
+typedef gboolean (*GSGraphEqualFunc)(GSGraph* sgraph,
+                                     GSGraph* other_sgraph);
+
+GSGraphArray*
+g_sgraph_find_custom_node(GSGraph* sgraph,
+                          GSGraph* node,
+                          GSGraphEqualFunc func);
 
 G_END_DECLS
 

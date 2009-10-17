@@ -9,26 +9,28 @@
 #include <libggraph/gsgraphtypedefs.h>
 #include <libggraph/gsgraph.h>
 
-/**
- * g_sgraph_array_new:
- *
- * Convenience type-safe macro creating a new #GSGraphArray.
- *
- * Returns: newly created array.
- */
-#define g_sgraph_array_new() \
-((GSGraphArray*)(g_ptr_array_new()))
+G_BEGIN_DECLS
 
 /**
- * g_sgraph_array_sized_new:
- * @num: size of array.
+ * GSGraphArray:
  *
- * Convenience type-safe macro creating a new #GSGraphArray with given size.
- *
- * Returns: newly created array.
+ * An array holding pointers to #GSGraph instances. It is a #GPtrArray, so its
+ * function can be safely used on this type.
  */
+
+GSGraphArray*
+g_sgraph_array_new(void);
+/* 
+#define g_sgraph_array_new() \
+((GSGraphArray*)(g_ptr_array_new()))
+*/
+
+GSGraphArray*
+g_sgraph_array_sized_new(guint reserved_size);
+/*
 #define g_sgraph_array_sized_new(num) \
 ((GSGraphArray*)(g_ptr_array_sized_new(num)))
+*/
 
 /**
  * g_sgraph_array_index:
@@ -37,54 +39,37 @@
  *
  * Convenience type-safe macro returning a #GSGraph at given index.
  *
+ * See also: g_ptr_array_index()
+ *
  * Returns: #GGraph at given index.
  */
 #define g_sgraph_array_index(array, index) \
 ((GSGraph*)(g_ptr_array_index((array), (index))))
 
-/**
- * g_sgraph_array_free:
- * @array: an array to free.
- * @free_segment: %TRUE if the actual pointer array has to be freed.
- *
- * Convenience type-safe macro freeing an array. If @free_segment is %TRUE,
- * then underlying pointer array will be freed and %NULL will be returned,
- * otherwise this pointer array will be returned.
- *
- * Returns: %NULL if @free_segment was %TRUE, otherwise pointer to array of
- * #GSGraph is returned - it should be freed with g_free().
- */
+GSGraph**
+g_sgraph_array_free(GSGraphArray* array,
+                    gboolean free_segment);
+/*
 #define g_sgraph_array_free(array, free_segment) \
 (g_ptr_array_free((array), (free_segment)))
+*/
 
 void
 g_sgraph_array_add(GSGraphArray* array,
                    GSGraph* sgraph);
 
-/**
- * g_sgraph_array_remove_index:
- * @array: an array.
- * @index: index of graph to be removed from @array.
- *
- * Convenience type-safe macro removing #GSGraph from #GSGraphArray,
- * preserving order.
- *
- * Returns: Removed #GSGraph.
- */
-#define g_sgraph_array_remove_index(array, index) \
-((GSGraph*)(g_ptr_array_remove_index((array), (index))))
+GSGraph*
+g_sgraph_array_remove_index(GSGraphArray* array,
+                            guint index);
 
-/**
- * g_sgraph_array_remove_index_fast:
- * @array: an array.
- * @index: index of graph to be removed from @array.
- *
- * Convenience type-safe macro removing #GSGraph from #GSGraphArray,
- * not preserving order, but faster than g_sgraph_array_remove_index().
- *
- * Returns: Removed #GSGraph.
- */
+GSGraph*
+g_sgraph_array_remove_index_fast(GSGraphArray* array,
+                                 guint index);
+/*
 #define g_sgraph_array_remove_index_fast(array, index) \
 ((GSGraph*)(g_ptr_array_remove_index_fast((array), (index))))
+*/
+
+G_END_DECLS
 
 #endif /* _G_SGRAPH_ARRAY_H_ */

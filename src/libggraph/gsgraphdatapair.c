@@ -1,5 +1,26 @@
 #include "gsgraphdatapair.h"
 
+/**
+ * SECTION: gsgraphdatapair
+ * @title: Data pairs
+ * @short_description: data pairs for constructing simple graphs
+ * @include: libggraph.h
+ * @see_also: #GSGraph, g_sgraph_construct()
+ *
+ * Data pair are used primarly for constructing simple graphs by
+ * g_sgraph_construct(). They contain all necessary data to create a pair of
+ * nodes - nodes data.
+ *
+ * To create new data pair, use g_sgraph_data_pair_new().
+ *
+ * To copy it, use g_sgraph_data_pair_copy().
+ *
+ * To free it, use g_sgraph_data_pair_free().
+ *
+ * Convenient function for freeing an array of data pairs is also provided -
+ * g_sgraph_data_pair_free_v().
+ */
+
 /* function definitions */
 
 /**
