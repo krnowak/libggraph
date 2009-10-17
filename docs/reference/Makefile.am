@@ -49,12 +49,12 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/src/libggraph/*.h
-CFILE_GLOB=$(top_srcdir)/src/libggraph/*.c
+HFILE_GLOB=$(top_srcdir)/src/libggraph/gsgraph*.h
+CFILE_GLOB=$(top_srcdir)/src/libggraph/gsgraph*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=
+IGNORE_HFILES=$(top_srcdir)/src/libggraph/ggraph*.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -90,5 +90,5 @@ EXTRA_DIST += version.xml.in
 #DISTCLEANFILES +=
 
 # Comment this out if you want your docs-status tested during 'make check'
-#TESTS = $(GTKDOC_CHECK)
+TESTS = $(GTKDOC_CHECK)
 
