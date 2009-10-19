@@ -1,7 +1,7 @@
 #include "gsgraphnodearray.h"
 
 /**
- * SECTION: gsgrapharray
+ * SECTION: gsgraphnodearray
  * @title: Array of simple graphs
  * @short_description: arrays of pointers to #GSGraphNode, which grow automatically
  * as new elements are added
