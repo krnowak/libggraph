@@ -3,9 +3,9 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: @libggraph_libname@
+Name: GSGraph-1.0
 Description: Simple graph library.
 Requires: glib-2.0
 Version: @libggraph_version@
-Libs: -L${libdir} -l@libggraph_name_no_lib@-@libggraph_api_version@
+Libs: -L${libdir} -lgsgraph-@libggraph_api_version@
 Cflags: -I${includedir}/@libggraph_libname@
