@@ -9,25 +9,17 @@ Makefile.in
 stamp-*
 
 ## root
-/config.*
-/INSTALL
 /aclocal.m4
-/compile
-/configure
-/depcomp
-/doltcompile
-/doltlibtool
-/gtk-doc.make
-/install-sh
-libtool
-/ltmain.sh
 /autom4te.cache/
-/missing
+/config.*
+/configure
+/gtk-doc.make
+/INSTALL
+/libtool
 
-## m4
-/m4/lt*
-/m4/libtool.m4
-/m4/gtk-doc.m4
+## build
+/build/
+!/build/placeholder
 
 ## docs
 /docs/reference/
@@ -37,7 +29,5 @@ libtool
 !docs/reference/Makefile.am
 
 ## examples
-
-/examples/graph/graph
 /examples/simple_graph/simple_graph
 /examples/simple_graph_construct/simple_graph_construct

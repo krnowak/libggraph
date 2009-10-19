@@ -20,9 +20,10 @@ m4_define([LIBGGRAPH_MAINTAINER_MAIL], [qdlacz@gmail.com])
 
 AC_PREREQ([2.63])
 AC_INIT(LIBGGRAPH_LIBNAME, LIBGGRAPH_VERSION, LIBGGRAPH_MAINTAINER_MAIL)
-AC_CONFIG_SRCDIR([src/]LIBGGRAPH_NAME[.h])
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_SRCDIR([gsgraph/gsgraph.h])
+AC_CONFIG_AUX_DIR([build])
+AC_CONFIG_MACRO_DIR([build])
+AC_CONFIG_HEADERS([build/config.h])
 
 libggraph_major_version=LIBGGRAPH_MAJOR_VERSION
 libggraph_minor_version=LIBGGRAPH_MINOR_VERSION
@@ -65,15 +66,17 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_PROG_CC_C_O
 LT_INIT
-DOLT
 AC_CHECK_PROGS(PERL, perl5 perl)
 GTK_DOC_CHECK([1.9])
 
 # Checks for libraries.
 
 PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.10])
+PKG_CHECK_MODULES([gobject], [gobject-2.0 >= 2.10])
 AC_SUBST(glib_CFLAGS)
 AC_SUBST(glib_LIBS)
+AC_SUBST(gobject_CFLAGS)
+AC_SUBST(gobject_LIBS)
 
 # Checks for header files.
 
@@ -83,11 +86,9 @@ AC_SUBST(glib_LIBS)
 
 AC_CONFIG_FILES([Makefile
 
-                 m4/Makefile
+                 gsgraph/Makefile
 
-                 src/Makefile
-                 src/]LIBGGRAPH_LIBNAME[.pc:src/]LIBGGRAPH_NAME[.pc.in
-                 src/]LIBGGRAPH_NAME[/Makefile
+                 pc/gsgraph-]LIBGGRAPH_API_VERSION[.pc:pc/gsgraph.pc.in
 
                  docs/Makefile
                  docs/reference/Makefile

@@ -1,8 +1,8 @@
-SUBDIRS = src docs examples
+SUBDIRS = gsgraph docs examples pc
 
-DIST_SUBDIRS = $(SUBDIRS) m4
+DIST_SUBDIRS = $(SUBDIRS) build
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I build
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 

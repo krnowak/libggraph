@@ -19,9 +19,9 @@
 
   <chapter>
     <title>libGGraph Overview</title>
-    <xi:include href="xml/gsgraph.xml"/>
+    <xi:include href="xml/gsgraphnode.xml"/>
     <xi:include href="xml/gsgraphdatapair.xml"/>
-    <xi:include href="xml/gsgrapharray.xml"/>
+    <xi:include href="xml/gsgraphnodearray.xml"/>
 
   </chapter>
   <!--

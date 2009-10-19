@@ -1,5 +1,5 @@
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_LIB_G_GRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
-#error "Only <libggraph.h> can be included directly."
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
 #ifndef _G_SGRAPH_DATA_PAIR_H_
