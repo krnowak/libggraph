@@ -30,7 +30,6 @@ g_sgraph_data_pair_free_v
 
 <SECTION>
 <FILE>gsgraphnodearray</FILE>
-GSGraphNodeArray
 g_sgraph_node_array_new
 g_sgraph_node_array_sized_new
 g_sgraph_node_array_index
@@ -39,4 +38,3 @@ g_sgraph_node_array_add
 g_sgraph_node_array_remove_index
 g_sgraph_node_array_remove_index_fast
 </SECTION>
-

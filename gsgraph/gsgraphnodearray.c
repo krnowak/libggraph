@@ -24,10 +24,11 @@
  * @title: Array of simple graphs
  * @short_description: arrays of pointers to #GSGraphNode, which grow automatically
  * as new elements are added
- * @include: libggraph.h
+ * @include: gsgraph/gsgraph.h
  * @see_also: #GPtrArray
  *
- * Array of simple graphs is a type-safe wrapper around #GPtrArray.
+ * Array of simple graphs is a type-safe wrapper around #GPtrArray - its
+ * functions can be safely used here.
  */
 
 /* function definitions */

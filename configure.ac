@@ -19,7 +19,7 @@ m4_define([LIBGGRAPH_LIBNAME], [LIBGGRAPH_NAME-LIBGGRAPH_API_VERSION])
 m4_define([LIBGGRAPH_MAINTAINER_MAIL], [qdlacz@gmail.com])
 
 AC_PREREQ([2.63])
-AC_INIT(LIBGGRAPH_LIBNAME, LIBGGRAPH_VERSION, LIBGGRAPH_MAINTAINER_MAIL)
+AC_INIT(LIBGGRAPH_NAME, LIBGGRAPH_VERSION, LIBGGRAPH_MAINTAINER_MAIL)
 AC_CONFIG_SRCDIR([gsgraph/gsgraph.h])
 AC_CONFIG_AUX_DIR([build])
 AC_CONFIG_MACRO_DIR([build])
@@ -62,14 +62,10 @@ AC_SUBST([libggraph_maintainer_mail])
 AM_INIT_AUTOMAKE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-# Checks for programs.
-
 AM_PROG_CC_C_O
 LT_INIT
 AC_CHECK_PROGS(PERL, perl5 perl)
 GTK_DOC_CHECK([1.9])
-
-# Checks for libraries.
 
 PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.10])
 PKG_CHECK_MODULES([gobject], [gobject-2.0 >= 2.10])
@@ -78,22 +74,22 @@ AC_SUBST(glib_LIBS)
 AC_SUBST(gobject_CFLAGS)
 AC_SUBST(gobject_LIBS)
 
-# Checks for header files.
-
-# Checks for typedefs, structures, and compiler characteristics.
-
-# Checks for library functions.
+AC_LANG([C])
+MMSA_ARG_ENABLE_WARNINGS([libggraph_WFLAGS],
+                         [-Wall],
+                         [-pedantic -Wall -Wextra],
+                         [G])
 
 AC_CONFIG_FILES([Makefile
 
                  gsgraph/Makefile
 
                  pc/Makefile
-                 pc/gsgraph-]LIBGGRAPH_API_VERSION[.pc:pc/gsgraph.pc.in
+                 pc/gsgraph-${libggraph_api_version}.pc:pc/gsgraph.pc.in
 
                  docs/Makefile
                  docs/reference/Makefile
-                 docs/reference/version.xml
+                 docs/reference/libggraph-docs.sgml
 
                  examples/Makefile
                  examples/simple_graph/Makefile

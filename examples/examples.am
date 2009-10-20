@@ -1,0 +1,6 @@
+local_lib = $(top_builddir)/gsgraph/libgsgraph-$(libggraph_api_version).la
+
+examples_ldadd = $(local_lib) $(glib_LIBS)
+
+examples_include = -I$(top_builddir)/ -I$(top_srcdir)/ $(glib_CFLAGS) $(libggraph_WFLAGS)
+

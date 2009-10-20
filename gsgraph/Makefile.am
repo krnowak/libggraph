@@ -13,6 +13,6 @@ gsgraph_include_HEADERS = $(gsgraph_h)
 
 lib_LTLIBRARIES = libgsgraph-@libggraph_api_version@.la
 libgsgraph_@libggraph_api_version@_la_SOURCES = $(gsgraph_c)
-libgsgraph_@libggraph_api_version@_la_LDFLAGS = -version-info @libggraph_so_version@
+libgsgraph_@libggraph_api_version@_la_LDFLAGS = -version-info $(libggraph_so_version)
 libgsgraph_@libggraph_api_version@_la_LIBADD = $(glib_LIBS)
-libgsgraph_@libggraph_api_version@_la_CFLAGS = $(glib_CFLAGS) -D_LIB_G_GRAPH_COMPILATION_ -I$(top_srcdir) -I$(top_srcdir)/gsgraph -pedantic -Wall -Wextra -Werror
+libgsgraph_@libggraph_api_version@_la_CFLAGS = $(glib_CFLAGS) -D_LIB_G_GRAPH_COMPILATION_ -I$(top_srcdir) -I$(top_srcdir)/gsgraph $(libggraph_WFLAGS)

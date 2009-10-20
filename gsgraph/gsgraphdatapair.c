@@ -23,8 +23,8 @@
  * SECTION: gsgraphdatapair
  * @title: Data pairs
  * @short_description: data pairs for constructing simple graphs
- * @include: libggraph.h
- * @see_also: #GSGraph, g_sgraph_construct()
+ * @include: gsgraph/gsgraph.h
+ * @see_also: #GSGraphNode, g_sgraph_node_construct()
  *
  * Data pair are used primarly for constructing simple graphs by
  * g_sgraph_construct(). They contain all necessary data to create a pair of

@@ -31,13 +31,6 @@
 
 G_BEGIN_DECLS
 
-/**
- * GSGraphNodeArray:
- *
- * An array holding pointers to #GSGraphNode instances. It is a #GPtrArray, so
- * its functions can be safely used on this type.
- */
-
 GSGraphNodeArray*
 g_sgraph_node_array_new(void);
 

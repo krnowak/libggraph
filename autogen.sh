@@ -1,13 +1,17 @@
 #!/bin/sh
 
-echo "autogen.sh: running: gtkdocize --flavour no-tmpl"
-gtkdocize --flavour no-tmpl || exit $?
-echo "autogen.sh: running: autoreconf -visW all"
-autoreconf -visW all || exit $?
+gtkdocizecommand="gtkdocize --flavour no-tmpl"
+autoreconfcommand="autoreconf -visfW all"
+configurecommand="./configure $@"
+
+echo "autogen.sh: running: $gtkdocizecommand"
+$gtkdocizecommand || exit $?
+echo "autogen.sh: running: $autoreconfcommand"
+$autoreconfcommand || exit $?
 if test "x$NOCONFIGURE" = "x"
 then
-	echo "autogen.sh: running: ./configure $@"
-	./configure "$@" || exit $?
+	echo "autogen.sh: running: $configurecommand"
+	$configurecommand || exit $?
 	echo "autogen.sh: run \`make' to compile project"
 else
 	echo "autogen.sh: not running configure"
