@@ -1,1 +1,19 @@
 Simple graph library using GLib. Rather nothing professional.
+
+Runtime dependencies:
+- gsgraph:
+  * glib
+- ggraph
+  * glib
+  * glib-object
+
+Build from tarball dependencies:
+
+- same as above + their development files
+
+Build from git dependencies:
+
+- same as above
+- recent autotools
+- perl and git for ChangeLog generation
+- gtk-doc >= 1.9 for documentation
