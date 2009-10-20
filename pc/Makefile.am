@@ -1,4 +1,2 @@
 libggraph_pkgconfigdir = $(libdir)/pkgconfig
-libggraph_pkgconfig_DATA = @libggraph_libname@.pc
-
-EXTRA_DIST = gsgraph.pc.in
+libggraph_pkgconfig_DATA = gsgraph-@libggraph_api_version@.pc

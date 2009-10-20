@@ -88,6 +88,7 @@ AC_CONFIG_FILES([Makefile
 
                  gsgraph/Makefile
 
+                 pc/Makefile
                  pc/gsgraph-]LIBGGRAPH_API_VERSION[.pc:pc/gsgraph.pc.in
 
                  docs/Makefile
