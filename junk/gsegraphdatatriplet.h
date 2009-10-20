@@ -1,48 +1,74 @@
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_LIB_G_GRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
-#error "Only <libggraph.h> can be included directly."
+/*
+ * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ *
+ * This file is part of libggraph.
+ *
+ * libggraph is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libggraph is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#error "Only <gsgraph/gsegraph.h> can be included directly."
 #endif
 
-#ifndef _G_GRAPH_DATA_QUADRUPLET_H_
-#define _G_GRAPH_DATA_QUADRUPLET_H_
+#ifndef _G_SEGRAPH_DATA_TRIPLET_H_
+#define _G_SEGRAPH_DATA_TRIPLET_H_
 
 #include <glib.h>
-
-#include <libggraph/ggraphedgeconnected.h>
 
 G_BEGIN_DECLS
 
 /**
- * GGraphDataQuadruplet:
+ * GSEGraphDataTriplet:
  *
- * Convenience struct holding three #gpointer and one #GGraphEdgeConnected
- * variables. Used mainly for g_graph_construct().
+ * Convenience struct holding three #gpointer variables. Used mainly for
+ * g_segraph_construct().
  */
-typedef struct _GGraphDataQuadruplet GGraphDataQuadruplet;
+typedef struct _GSEGraphDataTriplet GSEGraphDataTriplet;
 
-struct _GGraphDataQuadruplet
+struct _GSEGraphDataTriplet
 {
   gpointer first;
   gpointer second;
-  gpointer data;
-  GGraphEdgeConnected connected;
+  gpointer edge;
 };
 
-GGraphDataQuadruplet*
-g_graph_data_quadruplet_new(gpointer first,
-                            gpointer second,
-                            gpointer data,
-                            GGraphEdgeConnected connected) G_GNUC_WARN_UNUSED_RESULT;
+GSEGraphDataTriplet*
+g_segraph_data_triplet_new(gpointer first,
+                           gpointer second,
+                           gpointer edge) G_GNUC_WARN_UNUSED_RESULT;
 
-GGraphDataQuadruplet*
-g_graph_data_quadruplet_copy(GGraphDataQuadruplet* data_quadruplet) G_GNUC_WARN_UNUSED_RESULT;
-
-void
-g_graph_data_quadruplet_free(GGraphDataQuadruplet* data_quadruplet);
+GSEGraphDataTriplet*
+g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet) G_GNUC_WARN_UNUSED_RESULT;
 
 void
-g_graph_data_quadruplet_free_v(GGraphDataQuadruplet** data_quadruplets,
-                               gint count);
+g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet);
+
+void
+g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
+                              gint count);
+
+void
+g_segraph_data_triplet_free_with_funcs(GSEGraphDataTriplet* data_triplet,
+                                       GDestroyNotify node_free_func,
+                                       GDestroyNotify edge_free_func);
+
+void
+g_segraph_data_triplet_free_v_with_funcs(GSEGraphDataTriplet** data_triplets,
+                                         gint count,
+                                         GDestroyNotify node_free_func,
+                                         GDestroyNotify edge_free_func);
 
 G_END_DECLS
 
-#endif /* _G_GRAPH_DATA_QUADRUPLET_H_ */
+#endif /* _G_SEGRAPH_DATA_TRIPLET_H_ */
