@@ -23,7 +23,7 @@
  * SECTION: GSEGraphDataTriplet
  * @title: Data triplets
  * @short_description: data triplets for constructing graphs.
- * @include: libggraph.h
+ * @include: gsgraph/gsegraph.h
  * @see_also: #GSEGraph, g_segraph_construct()
  *
  * Data triplets are used primarly for constructing graphs by
