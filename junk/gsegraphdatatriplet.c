@@ -82,7 +82,7 @@ g_segraph_data_triplet_new(gpointer first,
  * g_segraph_data_triplet_copy:
  * @data_triplet: a triplet.
  *
- * Creates a copy of @data_triplet.
+ * Creates a shallow copy of @data_triplet.
  *
  * Returns: newly created #GSEGraphDataTriplet.
  */
@@ -101,82 +101,23 @@ g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
 void
 g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet)
 {
-  g_segraph_data_triplet_free(data_triplet, NULL, NULL);
+  g_slice_free(GSEGraphDataTriplet, data_triplet);
 }
 
 /**
  * g_segraph_data_triplet_free_v:
  * @data_triplets: #GSEGraphDataTriplet array to free.
  * @count: length of @data_triplets.
+ * @free_array: whether to free an array.
  *
- * Frees all #GSEGraphDataTriplet in array and then frees the array itself using
- * g_free(). If count is -1 or less, it is assumed that @data_triplets is %NULL
- * terminated.
- */
-void
-g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                               gint count)
-{
-  g_segraph_data_triplet_free_v_with_funcs(data_triplets, count, NULL, NULL);
-}
-
-/**
- * g_segraph_data_triplet_free_with_funcs:
- * @data_triplet: data triplet to free.
- * @node_free_func: function freeing first and second member of @data_triplet.
- * @edge_free_func: function freeing edge member of @data_triplet.
- *
- * Frees all memory allocated to members with given functions and then to data
- * triplet.
- */
-void
-g_segraph_data_triplet_free_with_funcs(GSEGraphDataTriplet* data_triplet,
-                                       GDestroyNotify node_free_func,
-                                       GDestroyNotify edge_free_func)
-{
-  if (!data_triplet)
-  {
-    return;
-  }
-  
-  if (node_free_func)
-  {
-    if (data_triplet->first)
-    {
-      (*node_free_func)(data_triplet->first);
-    }
-    
-    if (data_triplet->second)
-    {
-      (*node_free_func)(data_triplet->second);
-    }
-  }
-  
-  if (edge_free_func && data_triplet->edge)
-  {
-    (*edge_free_func)(data_triplet->edge);
-  }
-  
-  g_slice_free(GSEGraphDataTriplet, data_triplet);
-}
-
-/**
- * g_segraph_data_triplet_free_v_with_funcs:
- * @data_triplets: #GSEGraphDataTriplet array to free.
- * @count: length of @data_triplets.
- * @node_free_func: function freeing first and second member of each @data_triplets element.
- * @edge_free_func: function freeing edge member of each @data_triplets element.
- *
- * Frees all #GSEGraphDataTriplet in array using
- * g_segraph_data_triplet_free_with_free_func() with given functions and then
+ * Frees all #GSEGraphDataTriplet in array and then if @free_array is %TRUE,
  * frees the array itself using g_free(). If count is -1 or less, it is assumed
  * that @data_triplets is %NULL terminated.
  */
 void
-g_segraph_data_triplet_free_v_with_funcs(GSEGraphDataTriplet** data_triplets,
-                                         gint count,
-                                         GDestroyNotify node_free_func,
-                                         GDestroyNotify edge_free_func)
+g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
+                              gint count,
+                              gboolean free_array);
 {
   gint iter;
   
@@ -196,7 +137,10 @@ g_segraph_data_triplet_free_v_with_funcs(GSEGraphDataTriplet** data_triplets,
   
   for (iter = 0; iter < count; iter++)
   {
-    g_segraph_data_triplet_free_with_func(data_triplets[iter], node_free_func, edge_free_func);
+    g_segraph_data_triplet_free(data_triplets[iter]);
   }
-  g_free(data_triplets);
+  if (free_array)
+  {
+    g_free(data_triplets);
+  }
 }

@@ -56,18 +56,8 @@ g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet);
 
 void
 g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                              gint count);
-
-void
-g_segraph_data_triplet_free_with_funcs(GSEGraphDataTriplet* data_triplet,
-                                       GDestroyNotify node_free_func,
-                                       GDestroyNotify edge_free_func);
-
-void
-g_segraph_data_triplet_free_v_with_funcs(GSEGraphDataTriplet** data_triplets,
-                                         gint count,
-                                         GDestroyNotify node_free_func,
-                                         GDestroyNotify edge_free_func);
+                              gint count,
+                              gboolean free_array);
 
 G_END_DECLS
 
