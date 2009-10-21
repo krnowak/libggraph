@@ -20,8 +20,8 @@
 #include "gsegraphedgearray.h"
 
 /**
- * SECTION: ggraphedgearray
- * @title: Array of edges to graphs
+ * SECTION: gsegraphedgearray
+ * @title: Array of edges to simple edged graphs
  * @short_description: arrays of pointers to #GSEGraphEdge, which grow
  * automatically as new elements are added
  * @include: gsgraph/gsegraph.h
