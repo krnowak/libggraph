@@ -30,9 +30,11 @@ G_BEGIN_DECLS
 
 /**
  * SECTION: gsegraphenums
- * @title: GSEGraph enums
- * @short_description: Enums used by GSEGraph.
+ * @title: Enums and flags
+ * @short_description: GSEGraph enumerations.
  * @include: gsgraph/gsegraph.h
+ *
+ * Enums used by GSEGraph.
  */
 
 /**

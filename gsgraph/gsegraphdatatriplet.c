@@ -20,7 +20,7 @@
 #include "gsegraphdatatriplet.h"
 
 /**
- * SECTION: GSEGraphDataTriplet
+ * SECTION: gsegraphdatatriplet
  * @title: Data triplets
  * @short_description: data triplets for constructing graphs.
  * @include: gsgraph/gsegraph.h
