@@ -24,11 +24,11 @@
  * @title: Data triplets
  * @short_description: data triplets for constructing graphs.
  * @include: gsgraph/gsegraph.h
- * @see_also: #GSEGraph, g_segraph_construct()
+ * @see_also: #GSEGraphWhole, g_segraph_whole_construct()
  *
  * Data triplets are used primarly for constructing graphs by
- * g_segraph_construct(). They contain all necessary data to create a pair of
- * nodes - nodes data and edge data.
+ * g_segraph_whole_construct(). They contain all necessary data to create a pair
+ * of nodes - nodes data and edge data.
  *
  * To create new data triplet, use g_segraph_data_triplet_new().
  *
@@ -39,28 +39,22 @@
  * Convenient function for freeing an array of data triplets is also
  * provided - g_segraph_data_triplet_free_v().
  *
- * If you want to provide free functions for node and edge data then use
- * g_segraph_data_triplet_free_with_funcs() and
- * g_segraph_data_triplet_free_v_with_funcs().
- *
  * <note>
  *   <para>
- *     Use g_segraph_data_triplet_free_v() or
- *     g_segraph_data_triplet_free_v_with_funcs() only when you created the
- *     array with g_malloc() or function using it. That is - the array is freed
- *     with g_free().
+ *     If data in triplet was allocated dynamically then upon freeing triplet
+ *     that was used in g_segraph_whole_construct() do not free its data - they
+ *     are holded by created nodes and edges.
  *   </para>
  * </note>
  */
 
-/* function definitions */
+/* public function definitions */
 
 /**
  * g_segraph_data_triplet_new:
  * @first: first data.
  * @second: second data.
  * @data: connection data.
- * @connected: connection option.
  *
  * Creates new data triplet.
  *
@@ -71,7 +65,11 @@ g_segraph_data_triplet_new(gpointer first,
                            gpointer second,
                            gpointer edge)
 {
-  GSEGraphDataTriplet* data_triplet = g_slice_new(GSEGraphDataTriplet);
+  GSEGraphDataTriplet* data_triplet;
+
+  g_return_val_if_fail((first != NULL) || (second != NULL), NULL);
+
+  data_triplet = g_slice_new(GSEGraphDataTriplet);
   data_triplet->first = first;
   data_triplet->second = second;
   data_triplet->edge = edge;
@@ -89,6 +87,8 @@ g_segraph_data_triplet_new(gpointer first,
 GSEGraphDataTriplet*
 g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
 {
+  g_return_val_if_fail(data_triplet != NULL, NULL);
+
   return g_segraph_data_triplet_new(data_triplet->first, data_triplet->second, data_triplet->edge);
 }
 
@@ -101,6 +101,8 @@ g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
 void
 g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet)
 {
+  g_return_if_fail(data_triplet != NULL);
+
   g_slice_free(GSEGraphDataTriplet, data_triplet);
 }
 
@@ -111,30 +113,26 @@ g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet)
  * @free_array: whether to free an array.
  *
  * Frees all #GSEGraphDataTriplet in array and then if @free_array is %TRUE,
- * frees the array itself using g_free(). If count is -1 or less, it is assumed
- * that @data_triplets is %NULL terminated.
+ * frees the array itself using g_free(). If count is 0, it is assumed that
+ * @data_triplets is %NULL terminated.
  */
 void
 g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                              gint count,
-                              gboolean free_array);
+                              guint count,
+                              gboolean free_array)
 {
-  gint iter;
-  
-  if ((!data_triplets) || (!count))
+  guint iter;
+
+  g_return_if_fail(data_triplets != NULL);
+
+  if (!count)
   {
-    return;
-  }
-  
-  if (count < 0)
-  {
-    count = 0;
     while (data_triplets[count])
     {
       count++;
     }
   }
-  
+
   for (iter = 0; iter < count; iter++)
   {
     g_segraph_data_triplet_free(data_triplets[iter]);
@@ -143,4 +141,21 @@ g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
   {
     g_free(data_triplets);
   }
+}
+
+/**
+ * g_segraph_data_triplet_is_valid:
+ * @data_triplet: a triplet.
+ *
+ * Checks if @data_triplet is valid, that is - if at least one of first and
+ * second member of @data_triplet is not %NULL.
+ *
+ * Returns: %TRUE if @data_triplet is valid, otherwise %FALSE.
+ */
+gboolean
+g_segraph_data_triplet_is_valid(GSEGraphDataTriplet* data_triplet)
+{
+  g_return_val_if_fail(data_triplet != NULL, FALSE);
+
+  return ((data_triplet->first != NULL) || (data_triplet->second != NULL));
 }

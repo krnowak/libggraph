@@ -32,7 +32,7 @@ G_BEGIN_DECLS
  * GSEGraphDataTriplet:
  *
  * Convenience struct holding three #gpointer variables. Used mainly for
- * g_segraph_construct().
+ * g_segraph_whole_construct().
  */
 typedef struct _GSEGraphDataTriplet GSEGraphDataTriplet;
 
@@ -56,8 +56,11 @@ g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet);
 
 void
 g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                              gint count,
+                              guint count,
                               gboolean free_array);
+
+gboolean
+g_segraph_data_triplet_is_valid(GSEGraphDataTriplet* data_triplet);
 
 G_END_DECLS
 
