@@ -56,7 +56,9 @@ CFILE_GLOB=$(top_srcdir)/gsgraph/*.c
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES=			\
 	gsgraph.h		\
-	gsgraphtypedefs.h
+	gsgraphtypedefs.h	\
+	gsegraph.h		\
+	gsegraphtypedefs.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

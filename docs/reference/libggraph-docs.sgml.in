@@ -8,7 +8,7 @@
   <bookinfo>
     <title>libGGraph Reference Manual</title>
     <releaseinfo>
-      for libggraph $(libggraph_version), API version $(libggraph_api_version)
+      for libggraph @libggraph_version@, API version @libggraph_api_version@
       <!--
       The latest version of this documentation can be found on-line at
       <ulink role="online-location" url="http://[SERVER]/libggraph/index.html">http://[SERVER]/libggraph/</ulink>.
@@ -17,11 +17,19 @@
   </bookinfo>
 
   <chapter>
-    <title>libGGraph Overview</title>
+    <title>GSGraph overview</title>
     <xi:include href="xml/gsgraphnode.xml"/>
     <xi:include href="xml/gsgraphdatapair.xml"/>
     <xi:include href="xml/gsgraphnodearray.xml"/>
+  </chapter>
 
+  <chapter>
+    <title>GSEGraph overview</title>
+    <xi:include href="xml/gsegraphnode.xml"/>
+    <xi:include href="xml/gsegraphedge.xml"/>
+    <xi:include href="xml/gsegraphdatatriplet.xml"/>
+    <xi:include href="xml/gsegraphenums.xml"/>
+    <xi:include href="xml/gsegraphwhole.xml"/>
   </chapter>
   <!--
   <chapter id="object-tree">

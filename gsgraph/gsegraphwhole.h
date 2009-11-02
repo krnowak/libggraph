@@ -32,9 +32,9 @@
 
 G_BEGIN_DECLS
 
-/*
+/**
  * GSEGraphWhole:
- * @graph_array: array of all nodes in graph.
+ * @node_array: array of all nodes in graph.
  * @edge_array: array of all edges in graph.
  *
  * Convenient structure holding whole graph in two arrays.
