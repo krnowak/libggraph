@@ -26,7 +26,7 @@
  * @include: gsgraph/gsgraph.h
  * @see_also: #GSGraphNode, g_sgraph_node_construct()
  *
- * Data pair are used primarly for constructing simple graphs by
+ * Data pairs are used primarly for constructing simple graphs by
  * g_sgraph_construct(). They contain all necessary data to create a pair of
  * nodes - nodes data.
  *
@@ -38,6 +38,8 @@
  *
  * Convenient function for freeing an array of data pairs is also provided -
  * g_sgraph_data_pair_free_v().
+ *
+ * To check whether data pair is valid, use g_sgraph_data_pair_is_valid().
  */
 
 /* function definitions */
@@ -47,7 +49,7 @@
  * @first: first data.
  * @second: second data.
  *
- * Creates new data pair.
+ * Creates new data pair. Neither @first nor @second can be %NULL.
  *
  * Returns: newly created #GSGraphDataPair.
  */
@@ -55,7 +57,11 @@ GSGraphDataPair*
 g_sgraph_data_pair_new(gpointer first,
                        gpointer second)
 {
-  GSGraphDataPair* data_pair = g_slice_new(GSGraphDataPair);
+  GSGraphDataPair* data_pair;
+
+  g_return_val_if_fail((first != NULL) && (second != NULL), NULL);
+
+  data_pair = g_slice_new(GSGraphDataPair);
   data_pair->first = first;
   data_pair->second = second;
   return data_pair;
@@ -72,6 +78,8 @@ g_sgraph_data_pair_new(gpointer first,
 GSGraphDataPair*
 g_sgraph_data_pair_copy(GSGraphDataPair* data_pair)
 {
+  g_return_val_if_fail(data_pair != NULL, NULL);
+
   return g_sgraph_data_pair_new(data_pair->first, data_pair->second);
 }
 
@@ -84,6 +92,8 @@ g_sgraph_data_pair_copy(GSGraphDataPair* data_pair)
 void
 g_sgraph_data_pair_free(GSGraphDataPair* data_pair)
 {
+  g_return_if_fail(data_pair != NULL);
+
   g_slice_free(GSGraphDataPair, data_pair);
 }
 
@@ -91,33 +101,43 @@ g_sgraph_data_pair_free(GSGraphDataPair* data_pair)
  * g_sgraph_data_pair_free_v:
  * @data_pairs: #GSGraphDataPair array to free.
  * @count: length of @data_pairs.
+ * @free_array: whether to free array.
  *
- * Frees all #GSGraphDataPair in array and then frees the array itself using
- * g_free(). If count is -1, it is assumed that @data_pairs is %NULL terminated.
+ * Frees all #GSGraphDataPair in array and then, if @free_array is %TRUE, frees
+ * the array itself using g_free(). If count is 0, it is assumed that
+ * @data_pairs is %NULL terminated.
  */
 void
 g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
-                          gint count)
+                          guint count,
+                          gboolean free_array)
 {
-  gint iter;
-  
-  if ((data_pairs == NULL) || (count == 0))
+  guint iter;
+
+  g_return_if_fail(data_pairs != NULL);
+
+  if (!count)
   {
-    return;
-  }
-  
-  if (count == -1)
-  {
-    count = 0;
     while (data_pairs[count])
     {
       count++;
     }
   }
-  
+
   for (iter = 0; iter < count; iter++)
   {
     g_sgraph_data_pair_free(data_pairs[iter]);
   }
-  g_free(data_pairs);
+  if (free_array)
+  {
+    g_free(data_pairs);
+  }
+}
+
+gboolean
+g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair)
+{
+  g_return_val_if_fail(data_pair != NULL, FALSE);
+
+  return (data_pair->first && data_pair->second);
 }

@@ -32,7 +32,7 @@ G_BEGIN_DECLS
  * GSGraphDataPair:
  *
  * Convenience struct holding two #gpointer variables. Used mainly for
- * g_sgraph_construct().
+ * g_sgraph_node_construct().
  */
 typedef struct _GSGraphDataPair GSGraphDataPair;
 
@@ -54,7 +54,11 @@ g_sgraph_data_pair_free(GSGraphDataPair* data_pair);
 
 void
 g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
-                          gint count);
+                          guint count,
+                          gboolean free_array);
+
+gboolean
+g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair);
 
 G_END_DECLS
 
