@@ -1,11 +1,9 @@
 gsgraph_c = 			\
 	gsgraphnode.c		\
-	gsgraphnodearray.c	\
 	gsgraphdatapair.c
 
 gsgraph_h = 			\
 	$(gsgraph_c:.c=.h)	\
-	gsgraphtypedefs.h	\
 	gsgraph.h
 
 gsegraph_c = 			\

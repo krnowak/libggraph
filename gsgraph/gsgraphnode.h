@@ -26,8 +26,6 @@
 
 #include <glib.h>
 
-#include <gsgraph/gsgraphtypedefs.h>
-#include <gsgraph/gsgraphnodearray.h>
 #include <gsgraph/gsgraphdatapair.h>
 
 G_BEGIN_DECLS
@@ -35,23 +33,25 @@ G_BEGIN_DECLS
 /**
  * GSGraphNode:
  * @data: #gpointer containing user defined data.
- * @neighbours: #GSGraphNodeArray containing pointers to neighbours.
+ * @neighbours: #GPtrArray containing pointers to neighbours.
  *
  * Single node of simple graph. It contains data and an array of pointers to all
  * it's neighbours.
  * If you want to have weights, one way edges, multiple edges between two nodes,
  * data on edges - use #GGraph.
  */
+typedef struct _GSGraphNode GSGraphNode;
+
 struct _GSGraphNode
 {
   gpointer data;
-  GSGraphNodeArray* neighbours;
+  GPtrArray* neighbours;
 };
 
 GSGraphNode*
 g_sgraph_node_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
-GSGraphNodeArray*
+GPtrArray*
 g_sgraph_node_construct(GSGraphDataPair** data_pairs,
                         gint count) G_GNUC_WARN_UNUSED_RESULT;
 
@@ -59,7 +59,7 @@ void
 g_sgraph_node_connect(GSGraphNode* sgraph_node,
                       GSGraphNode* other_sgraph_node);
 
-GSGraphNodeArray*
+GPtrArray*
 g_sgraph_node_remove(GSGraphNode* sgraph_node) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphNode*
@@ -76,6 +76,7 @@ g_sgraph_node_free(GSGraphNode* sgraph_node);
 guint
 g_sgraph_node_count(GSGraphNode* sgraph_node);
 
+/* TODO: add traverse type option. */
 void
 g_sgraph_node_foreach(GSGraphNode* sgraph_node,
                       GFunc func,
@@ -91,6 +92,7 @@ g_sgraph_node_foreach(GSGraphNode* sgraph_node,
 typedef void (*GSGraphNodeFunc)(GSGraphNode* sgraph_node,
                                 gpointer user_data);
 
+/* TODO: add traverse type option. */
 void
 g_sgraph_node_foreach_node(GSGraphNode* sgraph_node,
                            GSGraphNodeFunc func,
@@ -100,11 +102,13 @@ gboolean
 g_sgraph_node_break_connection(GSGraphNode* sgraph_node,
                                GSGraphNode* other_sgraph_node) G_GNUC_WARN_UNUSED_RESULT;
 
-GSGraphNodeArray*
+/* TODO: add traverse type option. */
+GPtrArray*
 g_sgraph_node_find(GSGraphNode* sgraph_node,
                    gconstpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
-GSGraphNodeArray*
+/* TODO: add traverse type option. */
+GPtrArray*
 g_sgraph_node_find_custom(GSGraphNode* sgraph_node,
                           gconstpointer data,
                           GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
@@ -121,7 +125,8 @@ g_sgraph_node_find_custom(GSGraphNode* sgraph_node,
 typedef gboolean (*GSGraphNodeEqualFunc)(GSGraphNode* sgraph_node,
                                          GSGraphNode* other_sgraph_node);
 
-GSGraphNodeArray*
+/* TODO: add traverse type option. */
+GPtrArray*
 g_sgraph_node_find_custom_node(GSGraphNode* sgraph_node,
                                GSGraphNode* node,
                                GSGraphNodeEqualFunc func);
