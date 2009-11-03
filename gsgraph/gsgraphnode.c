@@ -64,6 +64,7 @@ typedef enum
 
 /* static declarations */
 
+/* TODO: make it public. */
 static gboolean
 _g_sgraph_node_are_separate(GSGraphNode* sgraph_node,
                             GSGraphNode* other_sgraph_node);
@@ -103,6 +104,7 @@ g_sgraph_node_new(gpointer data)
   return sgraph_node;
 }
 
+/* TODO: fix docs. */
 /**
  * g_sgraph_node_construct:
  * @data_pairs: array of data pairs.
@@ -152,17 +154,16 @@ g_sgraph_node_new(gpointer data)
  */
 GPtrArray*
 g_sgraph_node_construct(GSGraphDataPair** data_pairs,
-                        gint count)
+                        guint count)
 {
   GPtrArray* separate_graphs;
   GHashTable* all_nodes;
-  gint iter;
+  guint iter;
   
   g_return_val_if_fail(data_pairs != NULL, NULL);
   
-  if (count < 0)
+  if (!count)
   {
-    count = 0;
     while (data_pairs[count])
     {
       count++;

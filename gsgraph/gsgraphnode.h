@@ -53,7 +53,7 @@ g_sgraph_node_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 GPtrArray*
 g_sgraph_node_construct(GSGraphDataPair** data_pairs,
-                        gint count) G_GNUC_WARN_UNUSED_RESULT;
+                        guint count) G_GNUC_WARN_UNUSED_RESULT;
 
 void
 g_sgraph_node_connect(GSGraphNode* sgraph_node,
