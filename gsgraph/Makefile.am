@@ -1,10 +1,12 @@
 gsgraph_c = 			\
 	gsgraphnode.c		\
+	gsgraphwhole.c		\
 	gsgraphdatapair.c
 
 gsgraph_h = 			\
 	$(gsgraph_c:.c=.h)	\
-	gsgraph.h
+	gsgraph.h		\
+	gsgraphenums.h
 
 gsegraph_c = 			\
 	gsegraphnode.c		\
