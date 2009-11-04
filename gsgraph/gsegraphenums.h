@@ -52,4 +52,4 @@ typedef enum
 
 G_END_DECLS
 
-#endif /* _G_GRAPH_ENUMS_H_ */
+#endif /* _G_SEGRAPH_ENUMS_H_ */
