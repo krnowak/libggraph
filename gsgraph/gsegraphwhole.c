@@ -322,11 +322,10 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
               GSEGraphNode* temp_node;
 
               temp_node = g_ptr_array_index(joined_graphs[1]->node_array,
-                                                     iter2);
+                                            iter2);
               if (temp_node != check_nodes[1])
               {
-                g_ptr_array_add(joined_graphs[0]->node_array,
-                                         temp_node);
+                g_ptr_array_add(joined_graphs[0]->node_array, temp_node);
                 g_hash_table_insert(nodes_to_wholes, temp_node,
                                     joined_graphs[0]);
               }
@@ -337,11 +336,11 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
               GSEGraphEdge* temp_edge;
 
               temp_edge = g_ptr_array_index(joined_graphs[1]->edge_array,
-                                                     iter2);
+                                            iter2);
               g_ptr_array_add(joined_graphs[0]->edge_array, temp_edge);
             }
-            g_ptr_array_remove_fast(separate_graphs,
-                                              joined_graphs[1]);
+            g_ptr_array_remove_fast(separate_graphs, joined_graphs[1]);
+            g_segraph_whole_free(joined_graphs[1], FALSE);
           }
           g_ptr_array_add(joined_graphs[0]->edge_array, edge);
           #undef JOIN_COUNT
