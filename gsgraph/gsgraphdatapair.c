@@ -49,7 +49,8 @@
  * @first: first data.
  * @second: second data.
  *
- * Creates new data pair. Neither @first nor @second can be %NULL.
+ * Creates new data pair. Neither @first nor @second can be %NULL and both have
+ * to be different.
  *
  * Returns: newly created #GSGraphDataPair.
  */
@@ -59,7 +60,9 @@ g_sgraph_data_pair_new(gpointer first,
 {
   GSGraphDataPair* data_pair;
 
-  g_return_val_if_fail((first != NULL) && (second != NULL), NULL);
+  g_return_val_if_fail(first != NULL, NULL);
+  g_return_val_if_fail(second != NULL, NULL);
+  g_return_val_if_fail(first != second, NULL);
 
   data_pair = g_slice_new(GSGraphDataPair);
   data_pair->first = first;
@@ -139,5 +142,5 @@ g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair)
 {
   g_return_val_if_fail(data_pair != NULL, FALSE);
 
-  return (data_pair->first && data_pair->second);
+  return (data_pair->first && data_pair->second && data_pair->first != data_pair->second);
 }
