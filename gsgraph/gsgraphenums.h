@@ -17,16 +17,39 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _G_SGRAPH_H_
-#define _G_SGRAPH_H_
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#error "Only <gsgraph/gsgraph.h> can be included directly."
+#endif
 
-#define _G_SGRAPH_H_INSIDE_
+#ifndef _G_SGRAPH_ENUMS_H_
+#define _G_SGRAPH_ENUMS_H_
 
-#include <gsgraph/gsgraphnode.h>
-#include <gsgraph/gsgraphenums.h>
-#include <gsgraph/gsgraphwhole.h>
-#include <gsgraph/gsgraphdatapair.h>
+#include <glib.h>
 
-#undef _G_SGRAPH_H_INSIDE_
+G_BEGIN_DECLS
 
-#endif /* _G_SGRAPH_H_ */
+/**
+ * SECTION: gsgraphenums
+ * @title: Enums and flags
+ * @short_description: GSGraph enumerations.
+ * @include: gsgraph/gsgraph.h
+ *
+ * Enums used by GSGraph.
+ */
+
+/**
+ * GSGraphTraverseType:
+ * @G_SGRAPH_TRAVERSE_BFS: Breadth first search.
+ * @G_SGRAPH_TRAVERSE_DFS: Depth first search.
+ *
+ * Used to specify traversing algorithm.
+ */
+typedef enum
+{
+  G_SGRAPH_TRAVERSE_BFS,
+  G_SGRAPH_TRAVERSE_DFS
+} GSGraphTraverseType;
+
+G_END_DECLS
+
+#endif /* _G_SGRAPH_ENUMS_H_ */
