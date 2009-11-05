@@ -154,8 +154,8 @@ void
 g_sgraph_node_disconnect(GSGraphNode* node,
                          GSGraphNode* other_node)
 {
-  g_return_val_if_fail(node != NULL, FALSE);
-  g_return_val_if_fail(other_node != NULL, FALSE);
+  g_return_if_fail(node != NULL);
+  g_return_if_fail(other_node != NULL);
 
   if (!g_ptr_array_remove(node->neighbours, other_node))
   {

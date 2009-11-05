@@ -137,6 +137,15 @@ g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
   }
 }
 
+/**
+ * g_sgraph_data_pair_is_valid:
+ * @data_pair: a pair.
+ *
+ * Checks if @data_pair is valid, that is - if both members of @data_pair are
+ * not %NULL and are different.
+ *
+ * Returns: %TRUE if @data_pair is valid, otherwise %FALSE.
+ */
 gboolean
 g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair)
 {

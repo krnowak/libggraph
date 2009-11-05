@@ -191,7 +191,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
 
       created = G_SGRAPH_NONE;
       if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->first, NULL,
-                                        &first_node))
+                                        (gpointer*)&first_node))
       {
         first_node = g_sgraph_node_new(data_pair->first);
         g_hash_table_insert(data_to_nodes, data_pair->first, first_node);
@@ -199,7 +199,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
       }
 
       if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->second, NULL,
-                                        &second_node))
+                                        (gpointer*)&second_node))
       {
         second_node = g_sgraph_node_new(data_pair->second);
         g_hash_table_insert(data_to_nodes, data_pair->second, second_node);
@@ -298,7 +298,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
           /* if both nodes were created then they create separate graph. */
           GSGraphWhole* temp_graph;
 
-          temp_graph = _g_sgraph_whole_new_blank(2, TRUE);
+          temp_graph = _g_sgraph_whole_new_blank(2);
           g_ptr_array_add(temp_graph->node_array, first_node);
           g_ptr_array_add(temp_graph->node_array, second_node);
           g_ptr_array_add(separate_graphs, temp_graph);
@@ -451,7 +451,7 @@ g_sgraph_whole_get_size(GSGraphWhole* graph)
     GSGraphNode* node;
 
     node = g_ptr_array_index(graph->node_array, iter);
-    size += node->edges->len;
+    size += node->neighbours->len;
   }
 
   /* bitshifting is faster. :) */
@@ -544,11 +544,11 @@ _g_sgraph_whole_append_DFS(GSGraphNode* node,
 
   g_hash_table_insert(visited_nodes, node, NULL);
   g_ptr_array_add(node_array, node);
-  for (iter = 0; iter < node->edges->len; iter++)
+  for (iter = 0; iter < node->neighbours->len; iter++)
   {
     GSGraphNode* other_node;
 
-    other_node = g_ptr_array_index(node->edges, iter);
+    other_node = g_ptr_array_index(node->neighbours, iter);
     _g_sgraph_whole_append_DFS(other_node, node_array, visited_nodes);
   }
 }
@@ -582,11 +582,11 @@ _g_sgraph_whole_append_BFS(GSGraphNode* node,
 
     temp_node = g_queue_pop_head(queue);
 
-    for (iter = 0; iter < temp_node->edges->len; iter++)
+    for (iter = 0; iter < temp_node->neighbours->len; iter++)
     {
       GSGraphNode* other_node;
 
-      other_node = g_ptr_array_index(temp_node->edges, iter);
+      other_node = g_ptr_array_index(temp_node->neighbours, iter);
 
       if (g_hash_table_lookup_extended(visited_nodes, other_node, NULL, NULL))
       {
@@ -707,18 +707,18 @@ _g_sgraph_whole_copy_general(GSGraphWhole* graph,
 
     node = g_ptr_array_index(graph->node_array, iter);
     dup_node = g_ptr_array_index(dup_graph->node_array, iter);
-    dup_edges = g_ptr_array_sized_new(node->edges->len);
+    dup_edges = g_ptr_array_sized_new(node->neighbours->len);
 
-    for (iter2 = 0; iter2 < node->edges->len; iter2++)
+    for (iter2 = 0; iter2 < node->neighbours->len; iter2++)
     {
       GSGraphNode* neighbour;
       GSGraphNode* dup_neighbour;
 
-      neighbour = g_ptr_array_index(node->edges, iter2);
-      dup_neighbour = g_hash_table_lookup(nodes_to_dups, neighbour)
+      neighbour = g_ptr_array_index(node->neighbours, iter2);
+      dup_neighbour = g_hash_table_lookup(nodes_to_dups, neighbour);
       g_ptr_array_add(dup_edges, dup_neighbour);
     }
-    dup_node->edges = dup_edges;
+    dup_node->neighbours = dup_edges;
   }
 
   g_hash_table_unref(nodes_to_dups);
