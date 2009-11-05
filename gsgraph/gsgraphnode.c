@@ -76,110 +76,112 @@ _g_sgraph_node_recurrent_connection_check(GSGraphNode* sgraph_node,
 GSGraphNode*
 g_sgraph_node_new(gpointer data)
 {
-  GSGraphNode* sgraph_node = g_slice_new(GSGraphNode);
-  sgraph_node->data = data;
-  sgraph_node->neighbours = g_ptr_array_new();
-  return sgraph_node;
+  GSGraphNode* node;
+
+  node = g_slice_new(GSGraphNode);
+  node->data = data;
+  node->neighbours = g_ptr_array_new();
+  return node;
 }
 
 /**
  * g_sgraph_node_free:
- * @sgraph_node: a node.
+ * @node: a node.
  *
- * Frees memory allocated to @sgraph_node. It is recommended to call
- * g_sgraph_node_disconnect() and g_sgraph_node_are_separate() for all
- * @sgraph_node's neighbours.
+ * Frees memory allocated to @node. It is recommended to call
+ * g_sgraph_node_disconnect() and g_sgraph_node_are_separate() for all @node's
+ * neighbours.
  *
  * Returns: data of freed node.
  */
 gpointer
-g_sgraph_node_free(GSGraphNode* sgraph_node)
+g_sgraph_node_free(GSGraphNode* node)
 {
   gpointer data;
 
-  g_return_val_if_fail(sgraph_node != NULL, NULL);
+  g_return_val_if_fail(node != NULL, NULL);
 
-  data = sgraph_node->data;
+  data = node->data;
 
-  g_ptr_array_free(sgraph_node->neighbours, TRUE);
-  g_slice_free(GSGraphNode, sgraph_node);
+  g_ptr_array_free(node->neighbours, TRUE);
+  g_slice_free(GSGraphNode, node);
 
   return data;
 }
 
 /**
  * g_sgraph_node_connect:
- * @sgraph_node: a graph.
- * @other_sgraph_node: a soon to be neighbour of @sgraph_node.
+ * @node: a node.
+ * @other_node: other @node.
  *
- * Creates a connection between @sgraph_node and @other_sgraph_node. If
- * connection already existed, it does nothing.
+ * Creates a connection between @node and @other_node. If connection already
+ * existed, it does nothing.
  */
 void
-g_sgraph_node_connect(GSGraphNode* sgraph_node,
-                      GSGraphNode* other_sgraph_node)
+g_sgraph_node_connect(GSGraphNode* node,
+                      GSGraphNode* other_node)
 {
   guint iter;
 
-  g_return_if_fail(sgraph_node != NULL);
-  g_return_if_fail(other_sgraph_node != NULL);
-  g_return_if_fail(sgraph_node != other_sgraph_node);
+  g_return_if_fail(node != NULL);
+  g_return_if_fail(other_node != NULL);
+  g_return_if_fail(node != other_node);
 
-  for (iter = 0; iter < sgraph_node->neighbours->len; iter++)
+  for (iter = 0; iter < node->neighbours->len; iter++)
   {
-    GSGraphNode* node = g_ptr_array_index(sgraph_node->neighbours, iter);
-    if (node == other_sgraph_node)
+    GSGraphNode* temp_node;
+
+    temp_node = g_ptr_array_index(node->neighbours, iter);
+    if (temp_node == other_node)
     {
       return;
     }
   }
-  g_ptr_array_add(sgraph_node->neighbours, other_sgraph_node);
-  g_ptr_array_add(other_sgraph_node->neighbours, sgraph_node);
+  g_ptr_array_add(node->neighbours, other_node);
+  g_ptr_array_add(other_node->neighbours, node);
 }
 
 /**
  * g_sgraph_node_disconnect:
- * @sgraph_node: a node.
- * @other_sgraph_node: other node which is @sgraph_node's neighbour.
+ * @node: a node.
+ * @other_node: other node which is @node's neighbour.
  *
  * Removes connection from one node to another, so in effect they stop
- * being neighbours. If @sgraph_node and @other_sgraph_node are not neighbours
- * then nothing happens.
+ * being neighbours. If @node and @other_node are not neighbours then nothing
+ * happens.
  */
 void
-g_sgraph_node_disconnect(GSGraphNode* sgraph_node,
-                         GSGraphNode* other_sgraph_node)
+g_sgraph_node_disconnect(GSGraphNode* node,
+                         GSGraphNode* other_node)
 {
-  g_return_val_if_fail(sgraph_node != NULL, FALSE);
-  g_return_val_if_fail(other_sgraph_node != NULL, FALSE);
+  g_return_val_if_fail(node != NULL, FALSE);
+  g_return_val_if_fail(other_node != NULL, FALSE);
 
-  if (!g_ptr_array_remove(sgraph_node->neighbours, other_sgraph_node))
+  if (!g_ptr_array_remove(node->neighbours, other_node))
   {
     return;
   }
-  g_ptr_array_remove(other_sgraph_node->neighbours, sgraph_node);
+  g_ptr_array_remove(other_node->neighbours, node);
 }
 
 /**
  * g_sgraph_node_are_separate:
- * @sgraph_node: a node.
- * @other_sgraph_node: other node.
+ * @node: a node.
+ * @other_node: other node.
  *
- * This function checks if @sgraph_node lies in another graph than
- * @other_sgraph_node.
+ * This function checks if @node lies in another graph than @other_node.
  *
- * Returns: %TRUE if @sgraph_node and @other_sgraph_node are in separate graphs.
+ * Returns: %TRUE if @node and @other_node are in separate graphs.
  */
 gboolean
-g_sgraph_node_are_separate(GSGraphNode* sgraph_node,
-                           GSGraphNode* other_sgraph_node)
+g_sgraph_node_are_separate(GSGraphNode* node,
+                           GSGraphNode* other_node)
 {
   GHashTable* visited_nodes;
   gboolean not_connected;
 
   visited_nodes = g_hash_table_new(NULL, NULL);
-  not_connected = _g_sgraph_node_recurrent_connection_check(sgraph_node,
-                                                            other_sgraph_node,
+  not_connected = _g_sgraph_node_recurrent_connection_check(node, other_node,
                                                             visited_nodes);
   g_hash_table_unref(visited_nodes);
   return not_connected;
@@ -189,37 +191,36 @@ g_sgraph_node_are_separate(GSGraphNode* sgraph_node,
 
 /**
  * _g_sgraph_node_recurrent_connection_check:
- * @sgraph_node: starting node.
- * @other_sgraph_node: other node.
+ * @node: starting node.
+ * @other_node: other node.
  * @visited_nodes: #GHashTable holding information which nodes were already
  * visited.
  *
- * Checks if @sgraph_node == @other_sgraph_node. If not it checks @sgraph_node's
- * neighbours.
+ * Checks if @node == @other_node. If not it checks @node's neighbours.
  *
- * Returns: %TRUE if @sgraph_node != @other_sgraph_node, otherwise %FALSE.
+ * Returns: %TRUE if @node != @other_node, otherwise %FALSE.
  */
 static gboolean
-_g_sgraph_node_recurrent_connection_check(GSGraphNode* sgraph_node,
-                                          GSGraphNode* other_sgraph_node,
+_g_sgraph_node_recurrent_connection_check(GSGraphNode* node,
+                                          GSGraphNode* other_node,
                                           GHashTable* visited_nodes)
 {
   guint iter;
 
-  if (sgraph_node == other_sgraph_node)
+  if (node == other_node)
   {
     return FALSE;
   }
-  if (g_hash_table_lookup_extended(visited_nodes, sgraph_node, NULL, NULL))
+  if (g_hash_table_lookup_extended(visited_nodes, node, NULL, NULL))
   {
     return TRUE;
   }
-  g_hash_table_insert(visited_nodes, sgraph_node, NULL);
+  g_hash_table_insert(visited_nodes, node, NULL);
 
-  for (iter = 0; iter < sgraph_node->neighbours->len; iter++)
+  for (iter = 0; iter < node->neighbours->len; iter++)
   {
-    GSGraphNode* node = g_ptr_array_index(sgraph_node->neighbours, iter);
-    if (!_g_sgraph_node_recurrent_connection_check(node, other_sgraph_node,
+    GSGraphNode* temp_node = g_ptr_array_index(node->neighbours, iter);
+    if (!_g_sgraph_node_recurrent_connection_check(temp_node, other_node,
                                                    visited_nodes))
     {
       return FALSE;

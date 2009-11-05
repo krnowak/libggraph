@@ -47,11 +47,11 @@ GSGraphNode*
 g_sgraph_node_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 gpointer
-g_sgraph_node_free(GSGraphNode* sgraph_node);
+g_sgraph_node_free(GSGraphNode* node);
 
 void
-g_sgraph_node_connect(GSGraphNode* sgraph_node,
-                      GSGraphNode* other_sgraph_node);
+g_sgraph_node_connect(GSGraphNode* node,
+                      GSGraphNode* other_node);
 
 void
 g_sgraph_node_disconnect(GSGraphNode* sgraph_node,
