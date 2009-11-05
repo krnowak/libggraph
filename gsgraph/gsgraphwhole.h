@@ -26,6 +26,7 @@
 
 #include <glib.h>
 
+#include <gsgraph/gsgraphnode.h>
 #include <gsgraph/gsgraphenums.h>
 #include <gsgraph/gsgraphdatapair.h>
 

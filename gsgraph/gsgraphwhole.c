@@ -17,48 +17,41 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gsegraphwhole.h"
-
-#include "gsegraphedge.h"
-#include "gsegraphnode.h"
+#include "gsgraphwhole.h"
 
 /**
  * SECTION: gsgraphwhole
  * @title: Whole graph
- * @short_description: convenient structure holding nodes and edges in arrays.
- * @include: gsgraph/gsegraph.h
- * @see_also: #GSGraphNode, #GSGraphEdge, #GSGraphDataPair,
- * #GSGraphTraverseType
+ * @short_description: convenient structure holding nodes in array.
+ * @include: gsgraph/gsgraph.h
+ * @see_also: #GSGraphNode, #GSGraphDataPair, #GSGraphTraverseType
  *
- * Convenient structure holding all nodes and all edges in arrays for easy
- * processing them with simply iterating the arrays. This wrapper is sort of
- * semi-snapshot of a graph - that is, if after creation of #GSGraphWhole new
- * node or edge is added to graph, this snapshot is out of date, but changes
- * inside nodes already inside the wrapper are reflected in wrapper too.
+ * Convenient structure holding all nodes in array for easy processing them with
+ * simply iterating the array. This wrapper is sort of semi-snapshot of a graph
+ * - that is, if after creation of #GSGraphWhole new node is added to graph,
+ * this snapshot is out of date, but changes inside nodes already inside the
+ * wrapper are reflected in wrapper too.
  *
- * Wrapper can be created using two traversing algorithms to add nodes and edges
- * to arrays inside the wrapper or by specifing data triplets.
+ * Wrapper can be created using two traversing algorithms to add nodes to arrays
+ * inside the wrapper or by specifing data triplets.
  *
- * To create a structure, use g_sgraph_whole_new(),
- * g_sgraph_whole_new_from_node(), g_sgraph_whole_new_from_edge(),
- * g_sgraph_whole_new_only_nodes() or g_sgraph_whole_new_only_edges().
+ * To create a structure, use g_sgraph_whole_new() or
+ * g_sgraph_whole_new_from_node().
  *
  * To make a copy of graph, use g_sgraph_whole_copy() or
  * g_sgraph_whole_copy_deep().
  *
  * To free a wrapper or whole graph too, use g_sgraph_whole_free().
  *
- * To find a node or edge, use g_sgraph_whole_find_node_custom() or
- * g_sgraph_whole_find_edge_custom().
+ * To find a node, use g_sgraph_whole_find_node_custom().
  *
- * To process nodes or edges, use g_sgraph_whole_foreach_node() or
- * g_sgraph_whole_foreach_edge().
+ * To process nodes, use g_sgraph_whole_foreach_node().
  *
  * <note>
  *   <para>
  *     Remember to always take care about data graph holds. When freeing whole
- *     graph, not only wrapper, it is good to free data in nodes and edges to
- *     avoid memory leaks.
+ *     graph, not only wrapper, it is good to free data in nodes to avoid memory
+ *     leaks.
  *   </para>
  * </note>
  */
@@ -67,20 +60,20 @@
 
 /**
  * GSGraphConstructFlags:
- * @G_SEGRAPH_NONE: no nodes were created.
- * @G_SEGRAPH_FIRST: node containing first data was created.
- * @G_SEGRAPH_SECOND: node containing second data was created.
- * @G_SEGRAPH_BOTH: both nodes were created.
+ * @G_SGRAPH_NONE: no nodes were created.
+ * @G_SGRAPH_FIRST: node containing first data was created.
+ * @G_SGRAPH_SECOND: node containing second data was created.
+ * @G_SGRAPH_BOTH: both nodes were created.
  *
  * Internal enum for g_sgraph_whole_new() needs. Describes which nodes were
  * created.
  */
 typedef enum
 {
-  G_SEGRAPH_NONE = 0,
-  G_SEGRAPH_FIRST = 1 << 0,
-  G_SEGRAPH_SECOND = 1 << 1,
-  G_SEGRAPH_BOTH = G_SEGRAPH_FIRST | G_SEGRAPH_SECOND
+  G_SGRAPH_NONE = 0,
+  G_SGRAPH_FIRST = 1 << 0,
+  G_SGRAPH_SECOND = 1 << 1,
+  G_SGRAPH_BOTH = G_SGRAPH_FIRST | G_SGRAPH_SECOND
 } GSGraphConstructFlags;
 
 /* static function declarations. */
@@ -111,24 +104,23 @@ _g_sgraph_whole_new_blank(guint node_array_size);
 
 /**
  * g_sgraph_whole_new:
- * @data_pairs: array of data triplets.
+ * @data_pairs: array of data pairs.
  * @count: length of @data_pairs.
  *
- * Creates a graph from passed data triplets. Resulting construction can be
- * several separate graphs, so an array of #GSGraphWhole is returned. Also, if
- * both first and second #GSGraphDataPair member are %NULL, then this
- * triplet is omitted in creation. If @count is 0, it is assumed that
- * @data_pairs is %NULL terminated array. If one of first and second members
- * of #GSGraphDataPair is %NULL, then only one node with not %NULL data and
- * a half-edge holding whatever data was passed as a third member of triplet
- * will be created. For performance reasons it would be good if in second and
+ * Creates a graph from passed data pairs. Resulting construction can be several
+ * separate graphs, so an array of #GSGraphWhole is returned. Also, if either
+ * first or second #GSGraphDataPair member is %NULL, then this pair is omitted
+ * in creation. If @count is 0, it  is assumed that @data_pairs is %NULL
+ * terminated array.
+ *
+ * For performance reasons it would be good if in second and
  * later pairs one of node have data describing already created node.
  * Lets assume we want to create this graph:
  * <informalexample>
  *   <programlisting>
- *     cA--B-
- *      |
- *     -C--D
+ *     A--B
+ *     |
+ *     C--D
  *   </programlisting>
  * </informalexample>
  * So best order of pairs is:
@@ -140,22 +132,7 @@ _g_sgraph_whole_new_blank(guint node_array_size);
  *   </listitem>
  *   <listitem>
  *     <para>
- *       A, A
- *     </para>
- *   </listitem>
- *   <listitem>
- *     <para>
- *       B, %NULL
- *     </para>
- *   </listitem>
- *   <listitem>
- *     <para>
  *       A, C
- *     </para>
- *   </listitem>
- *   <listitem>
- *     <para>
- *       C, %NULL
  *     </para>
  *   </listitem>
  *   <listitem>
@@ -167,9 +144,9 @@ _g_sgraph_whole_new_blank(guint node_array_size);
  * This way we never create a separate graph, because in given pair one of the
  * members is already created, so newly created one will be its neighbour and a
  * part of larger graph.
- * Swaping fourth and sixth pair will cause creation of a separate graph while
- * processing fourth pair and checking if two graphs are one when processing
- * sixth pair.
+ * Swaping third and fourth pair will cause creation of a separate graph while
+ * processing third pair and checking if two graphs are one when processing
+ * fourth pair.
  *
  * Returns: array of newly created separate graphs or %NULL if no nodes were
  * created.
@@ -212,13 +189,13 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
       GSGraphNode* second_node;
       GSGraphConstructFlags created;
 
-      created = G_SEGRAPH_NONE;
+      created = G_SGRAPH_NONE;
       if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->first, NULL,
                                         &first_node))
       {
         first_node = g_sgraph_node_new(data_pair->first);
         g_hash_table_insert(data_to_nodes, data_pair->first, first_node);
-        created |= G_SEGRAPH_FIRST;
+        created |= G_SGRAPH_FIRST;
       }
 
       if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->second, NULL,
@@ -226,13 +203,13 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
       {
         second_node = g_sgraph_node_new(data_pair->second);
         g_hash_table_insert(data_to_nodes, data_pair->second, second_node);
-        created |= G_SEGRAPH_SECOND;
+        created |= G_SGRAPH_SECOND;
       }
 
       g_sgraph_node_connect(first_node, second_node);
       switch (created)
       {
-        case G_SEGRAPH_NONE:
+        case G_SGRAPH_NONE:
         {
           /* no nodes were created, so they can join two separate graphs. */
           #define JOIN_COUNT 2
@@ -296,9 +273,9 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
           #undef JOIN_COUNT
           break;
         }
-        case G_SEGRAPH_FIRST:
+        case G_SGRAPH_FIRST:
         {
-          /* first node was created, so maybe it will belong to existing graph. */
+          /* first node was created, so it belongs to existing graph. */
           GSGraphWhole* temp_graph;
 
           temp_graph = g_hash_table_lookup(nodes_to_wholes, second_node);
@@ -306,9 +283,9 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
           g_hash_table_insert(nodes_to_wholes, first_node, temp_graph);
           break;
         }
-        case G_SEGRAPH_SECOND:
+        case G_SGRAPH_SECOND:
         {
-          /* second node was created, so maybe it will belong to existing graph. */
+          /* second node was created, so it belongs to existing graph. */
           GSGraphWhole* temp_graph;
 
           temp_graph = g_hash_table_lookup(nodes_to_wholes, first_node);
@@ -316,7 +293,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
           g_hash_table_insert(nodes_to_wholes, second_node, temp_graph);
           break;
         }
-        case G_SEGRAPH_BOTH:
+        case G_SGRAPH_BOTH:
         {
           /* if both nodes were created then they create separate graph. */
           GSGraphWhole* temp_graph;
@@ -347,8 +324,8 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
  * @node: a node in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSGraphWhole with arrays holding nodes and edges of a graph
- * containing @node in order specified by @traverse_type.
+ * Creates new #GSGraphWhole with array holding nodes of a graph containing
+ * @node in order specified by @traverse_type.
  *
  * Returns: new #GSGraphWhole.
  */
@@ -384,12 +361,9 @@ g_sgraph_whole_copy(GSGraphWhole* graph)
  * @graph: a graph to be copied.
  * @node_data_copy_func: function copying data in nodes.
  * @node_user_data: data passed to node data copying function.
- * @edge_data_copy_func: function copying data in edges.
- * @edge_user_data: data passed to edge data copying function.
  *
- * Does a deep copy of @graph. Each node data in @graph copy and each edge data
- * are duplicated using passed functions. @graph's members,
- * @node_data_copy_func and @edge_data_copy_func must not be %NULL.
+ * Does a deep copy of @graph. Each node data in @graph copy is duplicated using
+ * passed function. @node_data_copy_func must not be %NULL.
  *
  * Returns: A copy of @graph.
  */
@@ -487,10 +461,10 @@ g_sgraph_whole_get_size(GSGraphWhole* graph)
 /**
  * g_sgraph_whole_foreach_node:
  * @graph: a graph.
- * @func: the function to call with each element's data.
+ * @func: the function to call with each @graph's node.
  * @user_data: data passed to @func.
  *
- * Calls @func for each node's data in @graph.
+ * Calls @func for each node in @graph.
  */
 void
 g_sgraph_whole_foreach_node(GSGraphWhole* graph,
@@ -693,8 +667,8 @@ _g_sgraph_whole_new_from_node_general(GSGraphNode* node,
  */
 static GSGraphWhole*
 _g_sgraph_whole_copy_general(GSGraphWhole* graph,
-                              GCopyFunc node_data_copy_func,
-                              gpointer node_user_data)
+                             GCopyFunc node_data_copy_func,
+                             gpointer node_user_data)
 {
   GHashTable* nodes_to_dups;
   GSGraphWhole* dup_graph;

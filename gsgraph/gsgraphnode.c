@@ -21,33 +21,27 @@
 
 /**
  * SECTION: gsgraphnode
- * @title: Simple graphs
- * @short_description: simple graphs for simple purposes.
+ * @title: Simple graph nodes
+ * @short_description: simple graph nodes.
  * @include: gsgraph/gsgraph.h
  *
  * Single node of simple graph. It contains data and an array of pointers to all
- * it's neighbours. If you want one way edges, data on edges - use #GGraph.
+ * it's neighbours. If you want to have multiple edges, loops, data on edges,
+ * half-edges - use #GSEGraphNode.
  *
- * To create a single node, use g_sgraph_node_new(). If you have a set of data you
- * can use g_sgraph_node_construct() to build graphs.
+ * To create a single node, use g_sgraph_node_new().
  *
- * To connect two nodes use g_sgraph_node_connect().
+ * To connect two nodes, use g_sgraph_node_connect().
  *
- * To remove a node from graph and delete it, use g_sgraph_node_remove(). If you
- * don't want to delete the node itself, use g_sgraph_node_break_connection() on all
- * its neighbours.
+ * To disconnect two nodes, use g_sgraph_node_disconnect().
  *
- * To get neighbours, use its public field.
+ * To free a node, use g_sgraph_node_free().
  *
- * To get count of a graph, use g_sgraph_node_count().
- *
- * To free whole graph, use g_sgraph_node_free().
+ * To check if two nodes are in separate graphs, use g_sgraph_are_separate().
  *
  * <note>
  *   <para>
- *     Remember to always take care about data graph holds. Especially when
- *     freeing nodes. So, for example, when freeing whole graph, it is
- *     good to use g_sgraph_node_foreach() to free data before.
+ *     Remember to always take care about data node holds.
  *   </para>
  * </note>
  */
@@ -75,9 +69,9 @@ _g_sgraph_node_recurrent_connection_check(GSGraphNode* sgraph_node,
  * g_sgraph_node_new:
  * @data: data.
  *
- * Creates new separate graph consisting of only one node containing @data.
+ * Creates new node holding @data.
  *
- * Returns: newly created #GSGraphNode.
+ * Returns: newly created node.
  */
 GSGraphNode*
 g_sgraph_node_new(gpointer data)
@@ -90,7 +84,7 @@ g_sgraph_node_new(gpointer data)
 
 /**
  * g_sgraph_node_free:
- * @sgraph_node: a graph.
+ * @sgraph_node: a node.
  *
  * Frees memory allocated to @sgraph_node. It is recommended to call
  * g_sgraph_node_disconnect() and g_sgraph_node_are_separate() for all
@@ -118,8 +112,8 @@ g_sgraph_node_free(GSGraphNode* sgraph_node)
  * @sgraph_node: a graph.
  * @other_sgraph_node: a soon to be neighbour of @sgraph_node.
  *
- * Creates a connection between @sgraph_node and @other_sgraph_node. If connection already
- * existed, it does nothing.
+ * Creates a connection between @sgraph_node and @other_sgraph_node. If
+ * connection already existed, it does nothing.
  */
 void
 g_sgraph_node_connect(GSGraphNode* sgraph_node,
@@ -148,14 +142,9 @@ g_sgraph_node_connect(GSGraphNode* sgraph_node,
  * @sgraph_node: a node.
  * @other_sgraph_node: other node which is @sgraph_node's neighbour.
  *
- * Breaks both connections from one node to another, so in effect they stop
- * being neighbours. If such breakage causes to create two separate graphs,
- * notify about it by returning %TRUE. This function return %FALSE also when
- * @sgraph_node and @other_sgraph_node aren't neighbours, so there was no connection to
- * break.
- *
- * Returns: %TRUE if @sgraph_node and @other_sgraph_node are now in separate graphs,
- * otherwise %FALSE.
+ * Removes connection from one node to another, so in effect they stop
+ * being neighbours. If @sgraph_node and @other_sgraph_node are not neighbours
+ * then nothing happens.
  */
 void
 g_sgraph_node_disconnect(GSGraphNode* sgraph_node,
@@ -173,12 +162,11 @@ g_sgraph_node_disconnect(GSGraphNode* sgraph_node,
 
 /**
  * g_sgraph_node_are_separate:
- * @sgraph_node: starting node.
- * @other_sgraph_node: node for which we want to check if it has series of
- * connections to @sgraph_node.
+ * @sgraph_node: a node.
+ * @other_sgraph_node: other node.
  *
- * This function checks if there is no series of connections between
- * @sgraph_node and @other_sgraph_node.
+ * This function checks if @sgraph_node lies in another graph than
+ * @other_sgraph_node.
  *
  * Returns: %TRUE if @sgraph_node and @other_sgraph_node are in separate graphs.
  */
@@ -206,7 +194,8 @@ g_sgraph_node_are_separate(GSGraphNode* sgraph_node,
  * @visited_nodes: #GHashTable holding information which nodes were already
  * visited.
  *
- * Checks if @sgraph_node == @other_sgraph_node. If not it checks @sgraph_node's neighbours.
+ * Checks if @sgraph_node == @other_sgraph_node. If not it checks @sgraph_node's
+ * neighbours.
  *
  * Returns: %TRUE if @sgraph_node != @other_sgraph_node, otherwise %FALSE.
  */

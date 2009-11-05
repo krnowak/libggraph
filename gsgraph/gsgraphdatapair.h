@@ -30,9 +30,10 @@ G_BEGIN_DECLS
 
 /**
  * GSGraphDataPair:
+ * @first: data for first node.
+ * @second: data for second node.
  *
- * Convenience struct holding two #gpointer variables. Used mainly for
- * g_sgraph_node_construct().
+ * Convenience struct holding two #gpointer variables.
  */
 typedef struct _GSGraphDataPair GSGraphDataPair;
 

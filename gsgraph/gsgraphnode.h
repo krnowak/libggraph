@@ -33,10 +33,7 @@ G_BEGIN_DECLS
  * @data: #gpointer containing user defined data.
  * @neighbours: #GPtrArray containing pointers to neighbours.
  *
- * Single node of connected graph. It contains data and an array of pointers to
- * all it's neighbours.
- * If you want to have multiple edges, loops, data on edges, half-edges - use
- * #GSEGraphNode.
+ * Single node of connected graph.
  */
 typedef struct _GSGraphNode GSGraphNode;
 
