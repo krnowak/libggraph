@@ -20,7 +20,8 @@
     <title>GSGraph overview</title>
     <xi:include href="xml/gsgraphnode.xml"/>
     <xi:include href="xml/gsgraphdatapair.xml"/>
-    <xi:include href="xml/gsgraphnodearray.xml"/>
+    <xi:include href="xml/gsgraphenums.xml"/>
+    <xi:include href="xml/gsgraphwhole.xml"/>
   </chapter>
 
   <chapter>
