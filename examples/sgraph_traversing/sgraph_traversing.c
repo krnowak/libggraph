@@ -9,7 +9,7 @@ create_graph(void)
 #define NODE(desc) node_##desc
 
 #define NODE_DECL(desc) \
-GSGraphNode* NODE(desc);
+GSGraphNode* NODE(desc)
   NODE_DECL(A);
   NODE_DECL(B);
   NODE_DECL(C);
@@ -26,7 +26,7 @@ GSGraphNode* NODE(desc);
 #undef NODE_DECL
 
 #define NODE_DEF(desc) \
-NODE(desc) = g_sgraph_node_new(g_strdup(#desc));
+NODE(desc) = g_sgraph_node_new(g_strdup(#desc))
   NODE_DEF(A);
   NODE_DEF(B);
   NODE_DEF(C);
@@ -43,7 +43,7 @@ NODE(desc) = g_sgraph_node_new(g_strdup(#desc));
 #undef NODE_DEF
 
 #define NODES_CON(desc1, desc2) \
-g_sgraph_node_connect(NODE(desc1), NODE(desc2));
+g_sgraph_node_connect(NODE(desc1), NODE(desc2))
   NODES_CON(A, B);
   NODES_CON(A, C);
   NODES_CON(B, C);

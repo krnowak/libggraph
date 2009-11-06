@@ -1,2 +1,4 @@
-example_codedir = $(datadir)/$(libggraph_libname)/examples/$(example_name)
+include $(top_srcdir)/examples/example-path.am
+
+example_codedir = $(example_path)/$(example_name)
 example_code_DATA = $(example_src)

@@ -16,11 +16,17 @@ create_graph(void)
 {
   GSGraphWhole* graph;
   GPtrArray* graph_array;
-  gchar* node_A_data = g_strdup("A");
-  gchar* node_B_data = g_strdup("B");
-  gchar* node_C_data = g_strdup("C");
-  gchar* node_D_data = g_strdup("D");
-  GSGraphDataPair** data_pairs = g_malloc(5 * sizeof(GSGraphDataPair*));
+  gchar* node_A_data;
+  gchar* node_B_data;
+  gchar* node_C_data;
+  gchar* node_D_data;
+  GSGraphDataPair** data_pairs;
+
+  node_A_data = g_strdup("A");
+  node_B_data = g_strdup("B");
+  node_C_data = g_strdup("C");
+  node_D_data = g_strdup("D");
+  data_pairs = g_malloc(5 * sizeof(GSGraphDataPair*));
 
   data_pairs[0] = g_sgraph_data_pair_new(node_A_data, node_B_data);
   data_pairs[1] = g_sgraph_data_pair_new(node_A_data, node_C_data);
@@ -44,7 +50,9 @@ create_graph(void)
               " Returning first one only - rest is freed.\n", graph_array->len);
     for (iter = 1; iter < graph_array->len; iter++)
     {
-      GSGraphWhole* separate_graph = g_ptr_array_index(graph_array, iter);
+      GSGraphWhole* separate_graph;
+
+      separate_graph = g_ptr_array_index(graph_array, iter);
       g_sgraph_whole_foreach_node(separate_graph, (GFunc)free_node_data, NULL);
       g_sgraph_whole_free(separate_graph, TRUE);
     }
@@ -63,7 +71,9 @@ void list_neighbours(GSGraphNode* node,
   g_print("neighbours of node %s are:", (gchar*)node->data);
   for (iter = 0; iter < node->neighbours->len; iter++)
   {
-    GSGraphNode* neighbour = g_ptr_array_index(node->neighbours, iter);
+    GSGraphNode* neighbour;
+
+    neighbour = g_ptr_array_index(node->neighbours, iter);
     if (iter)
     {
       g_print(",");

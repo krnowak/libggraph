@@ -1,0 +1,2 @@
+example_path = $(datadir)/$(libggraph_libname)/examples/
+

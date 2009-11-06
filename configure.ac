@@ -92,6 +92,7 @@ AC_CONFIG_FILES([Makefile
                  docs/reference/libggraph-docs.sgml
 
                  examples/Makefile
-                 examples/simple_graph/Makefile
-                 examples/simple_graph_construct/Makefile])
+                 examples/sgraph_traversing/Makefile
+                 examples/sgraph_subgraphs/Makefile
+                 examples/sgraph_construct/Makefile])
 AC_OUTPUT

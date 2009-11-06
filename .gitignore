@@ -31,3 +31,4 @@ stamp-*
 ## examples
 /examples/sgraph_traversing/sgraph_traversing
 /examples/sgraph_construct/sgraph_construct
+/examples/sgraph_subgraphs/sgraph_subgraphs

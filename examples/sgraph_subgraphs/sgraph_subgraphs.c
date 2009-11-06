@@ -9,7 +9,7 @@ create_graph(void)
 #define NODE(desc) node_##desc
 
 #define NODE_DECL(desc) \
-GSGraphNode* NODE(desc);
+GSGraphNode* NODE(desc)
   NODE_DECL(A);
   NODE_DECL(B);
   NODE_DECL(C);
@@ -26,7 +26,7 @@ GSGraphNode* NODE(desc);
 #undef NODE_DECL
 
 #define NODE_DEF(desc) \
-NODE(desc) = g_sgraph_node_new(g_strdup(#desc));
+NODE(desc) = g_sgraph_node_new(g_strdup(#desc))
   NODE_DEF(A);
   NODE_DEF(B);
   NODE_DEF(C);
@@ -43,7 +43,7 @@ NODE(desc) = g_sgraph_node_new(g_strdup(#desc));
 #undef NODE_DEF
 
 #define NODES_CON(desc1, desc2) \
-g_sgraph_node_connect(NODE(desc1), NODE(desc2));
+g_sgraph_node_connect(NODE(desc1), NODE(desc2))
   NODES_CON(A, B);
   NODES_CON(A, C);
   NODES_CON(B, C);
@@ -88,30 +88,31 @@ main(void)
 
   node = create_graph();
   separate_nodes = g_ptr_array_new();
-  for (iter = 0; iter < node->neighbours->len; iter++)
+  while (node->neighbours->len)
   {
     GSGraphNode* neighbour;
 
-    neighbour = g_ptr_array_index(node->neighbours, iter);
+    neighbour = g_ptr_array_index(node->neighbours, 0);
     g_sgraph_node_disconnect(node, neighbour);
     if (g_sgraph_node_are_separate(node, neighbour))
     {
       g_ptr_array_add(separate_nodes, neighbour);
     }
   }
-  free_node_desc(g_sgraph_node_free(node));
+  g_free(g_sgraph_node_free(node));
 
   for (iter = 0; iter < separate_nodes->len; iter++)
   {
     GSGraphWhole* subgraph;
     GSGraphNode* subnode;
 
-    node = g_ptr_array_index(separate_nodes, iter);
+    subnode = g_ptr_array_index(separate_nodes, iter);
     subgraph = g_sgraph_whole_new_from_node(subnode, G_SGRAPH_TRAVERSE_DFS);
     g_sgraph_whole_foreach_node(subgraph, (GFunc)print_node_desc, NULL);
+    g_print("\n");
     g_sgraph_whole_foreach_node(subgraph, (GFunc)free_node_desc, NULL);
     g_sgraph_whole_free(subgraph, TRUE);
   }
-  g_ptr_array_free(separate_graphs, TRUE);
+  g_ptr_array_free(separate_nodes, TRUE);
   return 0;
 }
