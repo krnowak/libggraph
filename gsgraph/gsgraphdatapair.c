@@ -24,10 +24,10 @@
  * @title: Data pairs
  * @short_description: data pairs for constructing simple graphs
  * @include: gsgraph/gsgraph.h
- * @see_also: #GSGraphWhole, g_sgraph_whole_construct()
+ * @see_also: #GSGraphSnapshot, g_sgraph_snapshot_new()
  *
  * Data pairs are used primarly for constructing simple graphs by
- * g_sgraph_whole_construct(). They contain all necessary data to create a pair
+ * g_sgraph_snapshot_new(). They contain all necessary data to create a pair
  * of nodes - nodes data.
  *
  * To create new data pair, use g_sgraph_data_pair_new().

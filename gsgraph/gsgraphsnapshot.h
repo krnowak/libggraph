@@ -21,8 +21,8 @@
 #error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
-#ifndef _G_SGRAPH_WHOLE_H_
-#define _G_SGRAPH_WHOLE_H_
+#ifndef _G_SGRAPH_SNAPSHOT_H_
+#define _G_SGRAPH_SNAPSHOT_H_
 
 #include <glib.h>
 
@@ -33,54 +33,54 @@
 G_BEGIN_DECLS
 
 /**
- * GSGraphWhole:
+ * GSGraphSnapshot:
  * @node_array: array of all nodes in graph.
  *
  * Convenient structure holding whole graph in one array.
  */
-typedef struct _GSGraphWhole GSGraphWhole;
+typedef struct _GSGraphSnapshot GSGraphSnapshot;
 
-struct _GSGraphWhole
+struct _GSGraphSnapshot
 {
   GPtrArray* node_array;
 };
 
 GPtrArray*
-g_sgraph_whole_new(GSGraphDataPair** data_pair,
-                   guint count);
+g_sgraph_snapshot_new(GSGraphDataPair** data_pair,
+                      guint count);
 
-GSGraphWhole*
-g_sgraph_whole_new_from_node(GSGraphNode* node,
-                             GSGraphTraverseType traverse_type);
+GSGraphSnapshot*
+g_sgraph_snapshot_new_from_node(GSGraphNode* node,
+                                GSGraphTraverseType traverse_type);
 
-GSGraphWhole*
-g_sgraph_whole_copy(GSGraphWhole* graph);
+GSGraphSnapshot*
+g_sgraph_snapshot_copy(GSGraphSnapshot* graph);
 
-GSGraphWhole*
-g_sgraph_whole_copy_deep(GSGraphWhole* graph,
-                         GCopyFunc node_data_copy_func,
-                         gpointer node_user_data);
-
-void
-g_sgraph_whole_free(GSGraphWhole* graph,
-                    gboolean deep_free);
-
-guint
-g_sgraph_whole_get_order(GSGraphWhole* graph);
-
-guint
-g_sgraph_whole_get_size(GSGraphWhole* graph);
+GSGraphSnapshot*
+g_sgraph_snapshot_copy_deep(GSGraphSnapshot* graph,
+                            GCopyFunc node_data_copy_func,
+                            gpointer node_user_data);
 
 void
-g_sgraph_whole_foreach_node(GSGraphWhole* graph,
-                            GFunc func,
-                            gpointer user_data);
+g_sgraph_snapshot_free(GSGraphSnapshot* graph,
+                       gboolean deep_free);
+
+guint
+g_sgraph_snapshot_get_order(GSGraphSnapshot* graph);
+
+guint
+g_sgraph_snapshot_get_size(GSGraphSnapshot* graph);
+
+void
+g_sgraph_snapshot_foreach_node(GSGraphSnapshot* graph,
+                               GFunc func,
+                               gpointer user_data);
 
 GSGraphNode*
-g_sgraph_whole_find_node_custom(GSGraphWhole* graph,
-                                gpointer user_data,
-                                GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_snapshot_find_node_custom(GSGraphSnapshot* graph,
+                                   gpointer user_data,
+                                   GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 
-#endif /* _G_SGRAPH_WHOLE_H_ */
+#endif /* _G_SGRAPH_SNAPSHOT_H_ */

@@ -17,35 +17,35 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gsgraphwhole.h"
+#include "gsgraphsnapshot.h"
 
 /**
- * SECTION: gsgraphwhole
- * @title: Whole graph
+ * SECTION: gsgraphsnapshot
+ * @title: Graph snapshot
  * @short_description: convenient structure holding nodes in array.
  * @include: gsgraph/gsgraph.h
  * @see_also: #GSGraphNode, #GSGraphDataPair, #GSGraphTraverseType
  *
  * Convenient structure holding all nodes in array for easy processing them with
  * simply iterating the array. This wrapper is sort of semi-snapshot of a graph
- * - that is, if after creation of #GSGraphWhole new node is added to graph,
+ * - that is, if after creation of #GSGraphSnapshot new node is added to graph,
  * this snapshot is out of date, but changes inside nodes already inside the
  * wrapper are reflected in wrapper too.
  *
  * Wrapper can be created using two traversing algorithms to add nodes to arrays
  * inside the wrapper or by specifing data triplets.
  *
- * To create a structure, use g_sgraph_whole_new() or
- * g_sgraph_whole_new_from_node().
+ * To create a structure, use g_sgraph_snapshot_new() or
+ * g_sgraph_snapshot_new_from_node().
  *
- * To make a copy of graph, use g_sgraph_whole_copy() or
- * g_sgraph_whole_copy_deep().
+ * To make a copy of graph, use g_sgraph_snapshot_copy() or
+ * g_sgraph_snapshot_copy_deep().
  *
- * To free a wrapper or whole graph too, use g_sgraph_whole_free().
+ * To free a wrapper or whole graph too, use g_sgraph_snapshot_free().
  *
- * To find a node, use g_sgraph_whole_find_node_custom().
+ * To find a node, use g_sgraph_snapshot_find_node_custom().
  *
- * To process nodes, use g_sgraph_whole_foreach_node().
+ * To process nodes, use g_sgraph_snapshot_foreach_node().
  *
  * <note>
  *   <para>
@@ -65,7 +65,7 @@
  * @G_SGRAPH_SECOND: node containing second data was created.
  * @G_SGRAPH_BOTH: both nodes were created.
  *
- * Internal enum for g_sgraph_whole_new() needs. Describes which nodes were
+ * Internal enum for g_sgraph_snapshot_new() needs. Describes which nodes were
  * created.
  */
 typedef enum
@@ -79,38 +79,38 @@ typedef enum
 /* static function declarations. */
 
 static void
-_g_sgraph_whole_append_DFS(GSGraphNode* node,
-                           GPtrArray* node_array,
-                           GHashTable* visited_nodes);
+_g_sgraph_snapshot_append_DFS(GSGraphNode* node,
+                              GPtrArray* node_array,
+                              GHashTable* visited_nodes);
 
 static void
-_g_sgraph_whole_append_BFS(GSGraphNode* node,
-                           GPtrArray* node_array,
-                           GHashTable* visited_nodes);
+_g_sgraph_snapshot_append_BFS(GSGraphNode* node,
+                              GPtrArray* node_array,
+                              GHashTable* visited_nodes);
 
-static GSGraphWhole*
-_g_sgraph_whole_new_from_node_general(GSGraphNode* node,
-                                      GSGraphTraverseType traverse_type);
+static GSGraphSnapshot*
+_g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
+                                         GSGraphTraverseType traverse_type);
 
-static GSGraphWhole*
-_g_sgraph_whole_copy_general(GSGraphWhole* graph,
-                             GCopyFunc node_data_copy_func,
-                             gpointer node_user_data);
+static GSGraphSnapshot*
+_g_sgraph_snapshot_copy_general(GSGraphSnapshot* graph,
+                                GCopyFunc node_data_copy_func,
+                                gpointer node_user_data);
 
-static GSGraphWhole*
-_g_sgraph_whole_new_blank(guint node_array_size);
+static GSGraphSnapshot*
+_g_sgraph_snapshot_new_blank(guint node_array_size);
 
 /* public function definitions. */
 
 /**
- * g_sgraph_whole_new:
+ * g_sgraph_snapshot_new:
  * @data_pairs: array of data pairs.
  * @count: length of @data_pairs.
  *
  * Creates a graph from passed data pairs. Resulting construction can be several
- * separate graphs, so an array of #GSGraphWhole is returned. Also, if either
- * first or second #GSGraphDataPair member is %NULL, then this pair is omitted
- * in creation. If @count is 0, it  is assumed that @data_pairs is %NULL
+ * separate graphs, so an array of #GSGraphSnapshot<!-- -->s is returned. Also,
+ * if either first or second #GSGraphDataPair member is %NULL, then this pair is
+ * omitted in creation. If @count is 0, it  is assumed that @data_pairs is %NULL
  * terminated array.
  *
  * For performance reasons it would be good if in second and
@@ -152,8 +152,8 @@ _g_sgraph_whole_new_blank(guint node_array_size);
  * created.
  */
 GPtrArray*
-g_sgraph_whole_new(GSGraphDataPair** data_pairs,
-                   guint count)
+g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
+                      guint count)
 {
   GPtrArray* separate_graphs;
   GHashTable* data_to_nodes;
@@ -214,7 +214,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
           /* no nodes were created, so they can join two separate graphs. */
           #define JOIN_COUNT 2
           guint which;
-          GSGraphWhole* joined_graphs[JOIN_COUNT];
+          GSGraphSnapshot* joined_graphs[JOIN_COUNT];
           GSGraphNode* check_nodes[JOIN_COUNT];
 
           check_nodes[0] = first_node;
@@ -225,7 +225,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
 
             for (iter2 = 0; iter2 < separate_graphs->len; iter2++)
             {
-              GSGraphWhole* graph;
+              GSGraphSnapshot* graph;
               guint iter3;
               gboolean hit;
 
@@ -268,7 +268,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
               }
             }
             g_ptr_array_remove_fast(separate_graphs, joined_graphs[1]);
-            g_sgraph_whole_free(joined_graphs[1], FALSE);
+            g_sgraph_snapshot_free(joined_graphs[1], FALSE);
           }
           #undef JOIN_COUNT
           break;
@@ -276,7 +276,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
         case G_SGRAPH_FIRST:
         {
           /* first node was created, so it belongs to existing graph. */
-          GSGraphWhole* temp_graph;
+          GSGraphSnapshot* temp_graph;
 
           temp_graph = g_hash_table_lookup(nodes_to_wholes, second_node);
           g_ptr_array_add(temp_graph->node_array, first_node);
@@ -286,7 +286,7 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
         case G_SGRAPH_SECOND:
         {
           /* second node was created, so it belongs to existing graph. */
-          GSGraphWhole* temp_graph;
+          GSGraphSnapshot* temp_graph;
 
           temp_graph = g_hash_table_lookup(nodes_to_wholes, first_node);
           g_ptr_array_add(temp_graph->node_array, second_node);
@@ -296,9 +296,9 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
         case G_SGRAPH_BOTH:
         {
           /* if both nodes were created then they create separate graph. */
-          GSGraphWhole* temp_graph;
+          GSGraphSnapshot* temp_graph;
 
-          temp_graph = _g_sgraph_whole_new_blank(2);
+          temp_graph = _g_sgraph_snapshot_new_blank(2);
           g_ptr_array_add(temp_graph->node_array, first_node);
           g_ptr_array_add(temp_graph->node_array, second_node);
           g_ptr_array_add(separate_graphs, temp_graph);
@@ -320,26 +320,26 @@ g_sgraph_whole_new(GSGraphDataPair** data_pairs,
 }
 
 /**
- * g_sgraph_whole_new_from_node:
+ * g_sgraph_snapshot_new_from_node:
  * @node: a node in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSGraphWhole with array holding nodes of a graph containing
+ * Creates new #GSGraphSnapshot with array holding nodes of a graph containing
  * @node in order specified by @traverse_type.
  *
- * Returns: new #GSGraphWhole.
+ * Returns: new #GSGraphSnapshot.
  */
-GSGraphWhole*
-g_sgraph_whole_new_from_node(GSGraphNode* node,
-                             GSGraphTraverseType traverse_type)
+GSGraphSnapshot*
+g_sgraph_snapshot_new_from_node(GSGraphNode* node,
+                                GSGraphTraverseType traverse_type)
 {
   g_return_val_if_fail(node != NULL, NULL);
 
-  return _g_sgraph_whole_new_from_node_general(node, traverse_type);
+  return _g_sgraph_snapshot_new_from_node_general(node, traverse_type);
 }
 
 /**
- * g_sgraph_whole_copy:
+ * g_sgraph_snapshot_copy:
  * @graph: a graph to be copied.
  *
  * Does a shallow copy of @graph. This means that original graph and its copy
@@ -348,16 +348,16 @@ g_sgraph_whole_new_from_node(GSGraphNode* node,
  *
  * Returns: A copy of @graph.
  */
-GSGraphWhole*
-g_sgraph_whole_copy(GSGraphWhole* graph)
+GSGraphSnapshot*
+g_sgraph_snapshot_copy(GSGraphSnapshot* graph)
 {
   g_return_val_if_fail(graph != NULL, NULL);
 
-  return _g_sgraph_whole_copy_general(graph, NULL, NULL);
+  return _g_sgraph_snapshot_copy_general(graph, NULL, NULL);
 }
 
 /**
- * g_sgraph_whole_copy_deep:
+ * g_sgraph_snapshot_copy_deep:
  * @graph: a graph to be copied.
  * @node_data_copy_func: function copying data in nodes.
  * @node_user_data: data passed to node data copying function.
@@ -367,29 +367,29 @@ g_sgraph_whole_copy(GSGraphWhole* graph)
  *
  * Returns: A copy of @graph.
  */
-GSGraphWhole*
-g_sgraph_whole_copy_deep(GSGraphWhole* graph,
-                         GCopyFunc node_data_copy_func,
-                         gpointer node_user_data)
+GSGraphSnapshot*
+g_sgraph_snapshot_copy_deep(GSGraphSnapshot* graph,
+                            GCopyFunc node_data_copy_func,
+                            gpointer node_user_data)
 {
   g_return_val_if_fail(graph != NULL, NULL);
   g_return_val_if_fail(node_data_copy_func != NULL, NULL);
 
-  return _g_sgraph_whole_copy_general(graph, node_data_copy_func,
-                                      node_user_data);
+  return _g_sgraph_snapshot_copy_general(graph, node_data_copy_func,
+                                         node_user_data);
 }
 
 /**
- * g_sgraph_whole_free:
- * @graph: #GSGraphWhole to free.
+ * g_sgraph_snapshot_free:
+ * @graph: #GSGraphSnapshot to free.
  * @deep_free: whether to do a deep free.
  *
  * Frees memory allocated to @graph. If @deep_free is %TRUE then all nodes are
  * also freed.
  */
 void
-g_sgraph_whole_free(GSGraphWhole* graph,
-                    gboolean deep_free)
+g_sgraph_snapshot_free(GSGraphSnapshot* graph,
+                       gboolean deep_free)
 {
   g_return_if_fail(graph != NULL);
 
@@ -407,11 +407,11 @@ g_sgraph_whole_free(GSGraphWhole* graph,
   }
 
   g_ptr_array_free(graph->node_array, TRUE);
-  g_slice_free(GSGraphWhole, graph);
+  g_slice_free(GSGraphSnapshot, graph);
 }
 
 /**
- * g_sgraph_whole_get_order:
+ * g_sgraph_snapshot_get_order:
  * @graph: a graph.
  *
  * Gets @graph's order, that is - number of nodes in graph.
@@ -419,7 +419,7 @@ g_sgraph_whole_free(GSGraphWhole* graph,
  * Returns: number of nodes in graph.
  */
 guint
-g_sgraph_whole_get_order(GSGraphWhole* graph)
+g_sgraph_snapshot_get_order(GSGraphSnapshot* graph)
 {
   g_return_val_if_fail(graph != NULL, 0);
   g_return_val_if_fail(graph->node_array != NULL, 0);
@@ -428,7 +428,7 @@ g_sgraph_whole_get_order(GSGraphWhole* graph)
 }
 
 /**
- * g_sgraph_whole_get_size:
+ * g_sgraph_snapshot_get_size:
  * @graph: a graph.
  *
  * Gets @graph's size, that is - number of edges in graph. Since there are no
@@ -437,7 +437,7 @@ g_sgraph_whole_get_order(GSGraphWhole* graph)
  * Returns: number of edges in graph.
  */
 guint
-g_sgraph_whole_get_size(GSGraphWhole* graph)
+g_sgraph_snapshot_get_size(GSGraphSnapshot* graph)
 {
   guint iter;
   guint size;
@@ -459,7 +459,7 @@ g_sgraph_whole_get_size(GSGraphWhole* graph)
 }
 
 /**
- * g_sgraph_whole_foreach_node:
+ * g_sgraph_snapshot_foreach_node:
  * @graph: a graph.
  * @func: the function to call with each @graph's node.
  * @user_data: data passed to @func.
@@ -467,9 +467,9 @@ g_sgraph_whole_get_size(GSGraphWhole* graph)
  * Calls @func for each node in @graph.
  */
 void
-g_sgraph_whole_foreach_node(GSGraphWhole* graph,
-                            GFunc func,
-                            gpointer user_data)
+g_sgraph_snapshot_foreach_node(GSGraphSnapshot* graph,
+                               GFunc func,
+                               gpointer user_data)
 {
   guint iter;
 
@@ -485,7 +485,7 @@ g_sgraph_whole_foreach_node(GSGraphWhole* graph,
 }
 
 /**
- * g_sgraph_whole_find_node_custom:
+ * g_sgraph_snapshot_find_node_custom:
  * @graph: a graph.
  * @user_data: user data passed to @func.
  * @func: the function to call for each node.
@@ -499,9 +499,9 @@ g_sgraph_whole_foreach_node(GSGraphWhole* graph,
  * Returns: found #GSGraphNode or %NULL if there was no such node.
  */
 GSGraphNode*
-g_sgraph_whole_find_node_custom(GSGraphWhole* graph,
-                                gpointer user_data,
-                                GEqualFunc func)
+g_sgraph_snapshot_find_node_custom(GSGraphSnapshot* graph,
+                                   gpointer user_data,
+                                   GEqualFunc func)
 {
   guint iter;
 
@@ -523,7 +523,7 @@ g_sgraph_whole_find_node_custom(GSGraphWhole* graph,
 /* static function definitions. */
 
 /**
- * _g_sgraph_whole_append_DFS:
+ * _g_sgraph_snapshot_append_DFS:
  * @node: a node, which will be put into arrays with its edges.
  * @node_array: array of all nodes in graph.
  * @visited_nodes: a map of already visited nodes.
@@ -531,9 +531,9 @@ g_sgraph_whole_find_node_custom(GSGraphWhole* graph,
  * Checks all nodes and put them into array using depth first search algorithm.
  */
 static void
-_g_sgraph_whole_append_DFS(GSGraphNode* node,
-                           GPtrArray* node_array,
-                           GHashTable* visited_nodes)
+_g_sgraph_snapshot_append_DFS(GSGraphNode* node,
+                              GPtrArray* node_array,
+                              GHashTable* visited_nodes)
 {
   guint iter;
 
@@ -549,12 +549,12 @@ _g_sgraph_whole_append_DFS(GSGraphNode* node,
     GSGraphNode* other_node;
 
     other_node = g_ptr_array_index(node->neighbours, iter);
-    _g_sgraph_whole_append_DFS(other_node, node_array, visited_nodes);
+    _g_sgraph_snapshot_append_DFS(other_node, node_array, visited_nodes);
   }
 }
 
 /**
- * _g_sgraph_whole_append_DFS:
+ * _g_sgraph_snapshot_append_DFS:
  * @node: a node, which will be put into arrays with its edges.
  * @node_array: array of all nodes in graph.
  * @visited_nodes: a map of already visited nodes.
@@ -563,9 +563,9 @@ _g_sgraph_whole_append_DFS(GSGraphNode* node,
  * algorithm.
  */
 static void
-_g_sgraph_whole_append_BFS(GSGraphNode* node,
-                           GPtrArray* node_array,
-                           GHashTable* visited_nodes)
+_g_sgraph_snapshot_append_BFS(GSGraphNode* node,
+                              GPtrArray* node_array,
+                              GHashTable* visited_nodes)
 {
   GQueue* queue;
 
@@ -603,24 +603,24 @@ _g_sgraph_whole_append_BFS(GSGraphNode* node,
 }
 
 /**
- * _g_sgraph_whole_new_from_node_general:
+ * _g_sgraph_snapshot_new_from_node_general:
  * @node: a node being a part of a graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSGraphWhole from given @node using traversing
+ * General function creating a #GSGraphSnapshot from given @node using traversing
  * algorithm denoted by @traverse_type.
  *
- * Returns: new #GSGraphWhole.
+ * Returns: new #GSGraphSnapshot.
  */
-static GSGraphWhole*
-_g_sgraph_whole_new_from_node_general(GSGraphNode* node,
-                                      GSGraphTraverseType traverse_type)
+static GSGraphSnapshot*
+_g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
+                                         GSGraphTraverseType traverse_type)
 {
   typedef void (*GraphSearchFunc)(GSGraphNode* node,
                                   GPtrArray* node_array,
                                   GHashTable* visited_nodes);
 
-  GSGraphWhole* graph;
+  GSGraphSnapshot* graph;
   GHashTable* visited_nodes;
   GraphSearchFunc gsfunc;
 
@@ -628,12 +628,12 @@ _g_sgraph_whole_new_from_node_general(GSGraphNode* node,
   {
     case G_SGRAPH_TRAVERSE_BFS:
     {
-      gsfunc = _g_sgraph_whole_append_BFS;
+      gsfunc = _g_sgraph_snapshot_append_BFS;
       break;
     }
     case G_SGRAPH_TRAVERSE_DFS:
     {
-      gsfunc = _g_sgraph_whole_append_DFS;
+      gsfunc = _g_sgraph_snapshot_append_DFS;
       break;
     }
     default:
@@ -642,7 +642,7 @@ _g_sgraph_whole_new_from_node_general(GSGraphNode* node,
     }
   }
 
-  graph = _g_sgraph_whole_new_blank(0);
+  graph = _g_sgraph_snapshot_new_blank(0);
 
   visited_nodes = g_hash_table_new(NULL, NULL);
 
@@ -654,7 +654,7 @@ _g_sgraph_whole_new_from_node_general(GSGraphNode* node,
 }
 
 /**
- * _g_sgraph_whole_copy_general:
+ * _g_sgraph_snapshot_copy_general:
  * @graph: a graph to be copied.
  * @node_data_copy_func: function copying data in nodes.
  * @node_user_data: data passed to node data copying function.
@@ -665,17 +665,17 @@ _g_sgraph_whole_new_from_node_general(GSGraphNode* node,
  *
  * Returns: A copy of @graph.
  */
-static GSGraphWhole*
-_g_sgraph_whole_copy_general(GSGraphWhole* graph,
-                             GCopyFunc node_data_copy_func,
-                             gpointer node_user_data)
+static GSGraphSnapshot*
+_g_sgraph_snapshot_copy_general(GSGraphSnapshot* graph,
+                                GCopyFunc node_data_copy_func,
+                                gpointer node_user_data)
 {
   GHashTable* nodes_to_dups;
-  GSGraphWhole* dup_graph;
+  GSGraphSnapshot* dup_graph;
   guint iter;
 
   nodes_to_dups = g_hash_table_new(NULL, NULL);
-  dup_graph = _g_sgraph_whole_new_blank(graph->node_array->len);
+  dup_graph = _g_sgraph_snapshot_new_blank(graph->node_array->len);
 
   for (iter = 0; iter < graph->node_array->len; iter++)
   {
@@ -726,19 +726,19 @@ _g_sgraph_whole_copy_general(GSGraphWhole* graph,
 }
 
 /**
- * _g_sgraph_whole_new_blank:
+ * _g_sgraph_snapshot_new_blank:
  * @node_array_size: size of node array.
  *
- * Constructs #GSGraphWhole with an array with given size.
+ * Constructs #GSGraphSnapshot with an array with given size.
  *
- * Returns: new #GSGraphWhole.
+ * Returns: new #GSGraphSnapshot.
  */
-static GSGraphWhole*
-_g_sgraph_whole_new_blank(guint node_array_size)
+static GSGraphSnapshot*
+_g_sgraph_snapshot_new_blank(guint node_array_size)
 {
-  GSGraphWhole* graph;
+  GSGraphSnapshot* graph;
 
-  graph = g_slice_new(GSGraphWhole);
+  graph = g_slice_new(GSGraphSnapshot);
 
   graph->node_array = g_ptr_array_sized_new(node_array_size);
 

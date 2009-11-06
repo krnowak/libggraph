@@ -103,15 +103,15 @@ main(void)
 
   for (iter = 0; iter < separate_nodes->len; iter++)
   {
-    GSGraphWhole* subgraph;
+    GSGraphSnapshot* subgraph;
     GSGraphNode* subnode;
 
     subnode = g_ptr_array_index(separate_nodes, iter);
-    subgraph = g_sgraph_whole_new_from_node(subnode, G_SGRAPH_TRAVERSE_DFS);
-    g_sgraph_whole_foreach_node(subgraph, (GFunc)print_node_desc, NULL);
+    subgraph = g_sgraph_snapshot_new_from_node(subnode, G_SGRAPH_TRAVERSE_DFS);
+    g_sgraph_snapshot_foreach_node(subgraph, (GFunc)print_node_desc, NULL);
     g_print("\n");
-    g_sgraph_whole_foreach_node(subgraph, (GFunc)free_node_desc, NULL);
-    g_sgraph_whole_free(subgraph, TRUE);
+    g_sgraph_snapshot_foreach_node(subgraph, (GFunc)free_node_desc, NULL);
+    g_sgraph_snapshot_free(subgraph, TRUE);
   }
   g_ptr_array_free(separate_nodes, TRUE);
   return 0;

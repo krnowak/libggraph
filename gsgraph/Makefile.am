@@ -1,6 +1,6 @@
 gsgraph_c = 			\
 	gsgraphnode.c		\
-	gsgraphwhole.c		\
+	gsgraphsnapshot.c	\
 	gsgraphdatapair.c
 
 gsgraph_h = 			\
@@ -11,7 +11,7 @@ gsgraph_h = 			\
 gsegraph_c = 			\
 	gsegraphnode.c		\
 	gsegraphedge.c		\
-	gsegraphwhole.c		\
+	gsegraphsnapshot.c	\
 	gsegraphdatatriplet.c
 
 gsegraph_h = 			\

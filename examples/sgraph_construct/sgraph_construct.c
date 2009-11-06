@@ -11,10 +11,10 @@ void free_node_data(GSGraphNode* node,
 /* This function should rather read something from file, manual creation of
  * every pair is here just to show, how it works.
  */
-GSGraphWhole*
+GSGraphSnapshot*
 create_graph(void)
 {
-  GSGraphWhole* graph;
+  GSGraphSnapshot* graph;
   GPtrArray* graph_array;
   gchar* node_A_data;
   gchar* node_B_data;
@@ -33,7 +33,7 @@ create_graph(void)
   data_pairs[2] = g_sgraph_data_pair_new(node_A_data, node_D_data);
   data_pairs[3] = g_sgraph_data_pair_new(node_B_data, node_C_data);
   data_pairs[4] = g_sgraph_data_pair_new(node_C_data, node_D_data);
-  graph_array = g_sgraph_whole_new(data_pairs, 5);
+  graph_array = g_sgraph_snapshot_new(data_pairs, 5);
   g_sgraph_data_pair_free_v(data_pairs, 5, TRUE);
   /* Check if only one graph was created. If no - free all but first. And warn
    * about it - this should not happen in this example. */
@@ -50,11 +50,12 @@ create_graph(void)
               " Returning first one only - rest is freed.\n", graph_array->len);
     for (iter = 1; iter < graph_array->len; iter++)
     {
-      GSGraphWhole* separate_graph;
+      GSGraphSnapshot* separate_graph;
 
       separate_graph = g_ptr_array_index(graph_array, iter);
-      g_sgraph_whole_foreach_node(separate_graph, (GFunc)free_node_data, NULL);
-      g_sgraph_whole_free(separate_graph, TRUE);
+      g_sgraph_snapshot_foreach_node(separate_graph, (GFunc)free_node_data,
+                                     NULL);
+      g_sgraph_snapshot_free(separate_graph, TRUE);
     }
   }
   graph = g_ptr_array_index(graph_array, 0);
@@ -85,20 +86,20 @@ void list_neighbours(GSGraphNode* node,
 
 int main(void)
 {
-  GSGraphWhole* graph;
+  GSGraphSnapshot* graph;
 
   graph = create_graph();
 
   g_return_val_if_fail(graph != NULL, 1);
 
   g_print("There are %u nodes and %u edges in graph.\n",
-          g_sgraph_whole_get_order(graph),
-          g_sgraph_whole_get_size(graph));
+          g_sgraph_snapshot_get_order(graph),
+          g_sgraph_snapshot_get_size(graph));
   /* This prints all neighbours of each node. */
-  g_sgraph_whole_foreach_node(graph, (GFunc)list_neighbours, NULL);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)list_neighbours, NULL);
   /* Freeing data in nodes and nodes themselves. */
-  g_sgraph_whole_foreach_node(graph, (GFunc)free_node_data, NULL);
-  g_sgraph_whole_free(graph, TRUE);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)free_node_data, NULL);
+  g_sgraph_snapshot_free(graph, TRUE);
   /* We are done. */
   return 0;
 }

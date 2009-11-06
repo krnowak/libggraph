@@ -27,7 +27,7 @@
 #include <gsgraph/gsegraphnode.h>
 #include <gsgraph/gsegraphedge.h>
 #include <gsgraph/gsegraphdatatriplet.h>
-#include <gsgraph/gsegraphwhole.h>
+#include <gsgraph/gsegraphsnapshot.h>
 #include <gsgraph/gsegraphenums.h>
 
 #undef _G_SEGRAPH_H_INSIDE_

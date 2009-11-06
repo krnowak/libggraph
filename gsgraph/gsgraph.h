@@ -24,7 +24,7 @@
 
 #include <gsgraph/gsgraphnode.h>
 #include <gsgraph/gsgraphenums.h>
-#include <gsgraph/gsgraphwhole.h>
+#include <gsgraph/gsgraphsnapshot.h>
 #include <gsgraph/gsgraphdatapair.h>
 
 #undef _G_SGRAPH_H_INSIDE_

@@ -17,14 +17,14 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gsegraphwhole.h"
+#include "gsegraphsnapshot.h"
 
 #include "gsegraphedge.h"
 #include "gsegraphnode.h"
 
 /**
- * SECTION: gsegraphwhole
- * @title: Whole graph
+ * SECTION: gsegraphsnapshot
+ * @title: Graph snapshot
  * @short_description: convenient structure holding nodes and edges in arrays.
  * @include: gsgraph/gsegraph.h
  * @see_also: #GSEGraphNode, #GSEGraphEdge, #GSEGraphDataTriplet,
@@ -32,27 +32,27 @@
  *
  * Convenient structure holding all nodes and all edges in arrays for easy
  * processing them with simply iterating the arrays. This wrapper is sort of
- * semi-snapshot of a graph - that is, if after creation of #GSEGraphWhole new
- * node or edge is added to graph, this snapshot is out of date, but changes
+ * semi-snapshot of a graph - that is, if after creation of #GSEGraphSnapshot
+ * new node or edge is added to graph, this snapshot is out of date, but changes
  * inside nodes already inside the wrapper are reflected in wrapper too.
  *
  * Wrapper can be created using two traversing algorithms to add nodes and edges
  * to arrays inside the wrapper or by specifing data triplets.
  *
- * To create a structure, use g_segraph_whole_new(),
- * g_segraph_whole_new_from_node(), g_segraph_whole_new_from_edge(),
- * g_segraph_whole_new_only_nodes() or g_segraph_whole_new_only_edges().
+ * To create a structure, use g_segraph_snapshot_new(),
+ * g_segraph_snapshot_new_from_node(), g_segraph_snapshot_new_from_edge(),
+ * g_segraph_snapshot_new_only_nodes() or g_segraph_snapshot_new_only_edges().
  *
- * To make a copy of graph, use g_segraph_whole_copy() or
- * g_segraph_whole_copy_deep().
+ * To make a copy of graph, use g_segraph_snapshot_copy() or
+ * g_segraph_snapshot_copy_deep().
  *
- * To free a wrapper or whole graph too, use g_segraph_whole_free().
+ * To free a wrapper or whole graph too, use g_segraph_snapshot_free().
  *
- * To find a node or edge, use g_segraph_whole_find_node_custom() or
- * g_segraph_whole_find_edge_custom().
+ * To find a node or edge, use g_segraph_snapshot_find_node_custom() or
+ * g_segraph_snapshot_find_edge_custom().
  *
- * To process nodes or edges, use g_segraph_whole_foreach_node() or
- * g_segraph_whole_foreach_edge().
+ * To process nodes or edges, use g_segraph_snapshot_foreach_node() or
+ * g_segraph_snapshot_foreach_edge().
  *
  * <note>
  *   <para>
@@ -72,7 +72,7 @@
  * @G_SEGRAPH_SECOND: node containing second data was created.
  * @G_SEGRAPH_BOTH: both nodes were created.
  *
- * Internal enum for g_segraph_whole_new() needs. Describes which nodes were
+ * Internal enum for g_segraph_snapshot_new() needs. Describes which nodes were
  * created.
  */
 typedef enum
@@ -86,53 +86,53 @@ typedef enum
 /* static function declarations. */
 
 static void
-_g_segraph_whole_append_DFS(GSEGraphNode* node,
-                            GPtrArray* node_array,
-                            GHashTable* visited_nodes,
-                            GPtrArray* edge_array,
-                            GHashTable* visited_edges);
+_g_segraph_snapshot_append_DFS(GSEGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes,
+                               GPtrArray* edge_array,
+                               GHashTable* visited_edges);
 
 static void
-_g_segraph_whole_append_BFS(GSEGraphNode* node,
-                            GPtrArray* node_array,
-                            GHashTable* visited_nodes,
-                            GPtrArray* edge_array,
-                            GHashTable* visited_edges);
+_g_segraph_snapshot_append_BFS(GSEGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes,
+                               GPtrArray* edge_array,
+                               GHashTable* visited_edges);
 
-static GSEGraphWhole*
-_g_segraph_whole_new_from_node_general(GSEGraphNode* node,
-                                       gboolean put_nodes,
-                                       gboolean put_edges,
-                                       GSEGraphTraverseType traverse_type);
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_from_node_general(GSEGraphNode* node,
+                                          gboolean put_nodes,
+                                          gboolean put_edges,
+                                          GSEGraphTraverseType traverse_type);
 
-static GSEGraphWhole*
-_g_segraph_whole_new_from_edge_general(GSEGraphEdge* edge,
-                                       gboolean put_nodes,
-                                       gboolean put_edges,
-                                       GSEGraphTraverseType traverse_type);
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_from_edge_general(GSEGraphEdge* edge,
+                                          gboolean put_nodes,
+                                          gboolean put_edges,
+                                          GSEGraphTraverseType traverse_type);
 
-static GSEGraphWhole*
-_g_segraph_whole_copy_general(GSEGraphWhole* graph,
-                              GCopyFunc node_data_copy_func,
-                              gpointer node_user_data,
-                              GCopyFunc edge_data_copy_func,
-                              gpointer edge_user_data);
+static GSEGraphSnapshot*
+_g_segraph_snapshot_copy_general(GSEGraphSnapshot* graph,
+                                 GCopyFunc node_data_copy_func,
+                                 gpointer node_user_data,
+                                 GCopyFunc edge_data_copy_func,
+                                 gpointer edge_user_data);
 
-static GSEGraphWhole*
-_g_segraph_whole_new_blank(guint node_array_size,
-                           guint edge_array_size,
-                           gboolean create_node_array,
-                           gboolean create_edge_array);
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_blank(guint node_array_size,
+                              guint edge_array_size,
+                              gboolean create_node_array,
+                              gboolean create_edge_array);
 
 /* public function definitions. */
 
 /**
- * g_segraph_whole_new:
+ * g_segraph_snapshot_new:
  * @data_triplets: array of data triplets.
  * @count: length of @data_pairs.
  *
  * Creates a graph from passed data triplets. Resulting construction can be
- * several separate graphs, so an array of #GSEGraphWhole is returned. Also, if
+ * several separate graphs, so an array of #GSEGraphSnapshot is returned. Also, if
  * both first and second #GSEGraphDataTriplet member are %NULL, then this
  * triplet is omitted in creation. If @count is 0, it is assumed that
  * @data_triplets is %NULL terminated array. If one of first and second members
@@ -192,8 +192,8 @@ _g_segraph_whole_new_blank(guint node_array_size,
  * created.
  */
 GPtrArray*
-g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
-                    guint count)
+g_segraph_snapshot_new(GSEGraphDataTriplet** data_triplets,
+                       guint count)
 {
   GPtrArray* separate_graphs;
   GHashTable* data_to_nodes;
@@ -233,8 +233,8 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
       created = G_SEGRAPH_NONE;
       if (data_triplet->first)
       {
-        if (!g_hash_table_lookup_extended(data_to_nodes, data_triplet->first, NULL,
-                                          (gpointer*)&first_node))
+        if (!g_hash_table_lookup_extended(data_to_nodes, data_triplet->first,
+                                          NULL, (gpointer*)&first_node))
         {
           first_node = g_segraph_node_new(data_triplet->first);
           g_hash_table_insert(data_to_nodes, data_triplet->first, first_node);
@@ -248,8 +248,8 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
 
       if (data_triplet->second)
       {
-        if (!g_hash_table_lookup_extended(data_to_nodes, data_triplet->second, NULL,
-                                          (gpointer*)&second_node))
+        if (!g_hash_table_lookup_extended(data_to_nodes, data_triplet->second,
+                                          NULL, (gpointer*)&second_node))
         {
           second_node = g_segraph_node_new(data_triplet->second);
           g_hash_table_insert(data_to_nodes, data_triplet->second, second_node);
@@ -270,7 +270,7 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
           /* no nodes were created, so they can join two separate graphs. */
           #define JOIN_COUNT 2
           guint which;
-          GSEGraphWhole* joined_graphs[JOIN_COUNT];
+          GSEGraphSnapshot* joined_graphs[JOIN_COUNT];
           GSEGraphNode* check_nodes[JOIN_COUNT];
 
           /* if loop was created, then no graph join occurs. */
@@ -288,7 +288,7 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
 
             for (iter2 = 0; iter2 < separate_graphs->len; iter2++)
             {
-              GSEGraphWhole* graph;
+              GSEGraphSnapshot* graph;
               guint iter3;
               gboolean hit;
 
@@ -340,7 +340,7 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
               g_ptr_array_add(joined_graphs[0]->edge_array, temp_edge);
             }
             g_ptr_array_remove_fast(separate_graphs, joined_graphs[1]);
-            g_segraph_whole_free(joined_graphs[1], FALSE);
+            g_segraph_snapshot_free(joined_graphs[1], FALSE);
           }
           g_ptr_array_add(joined_graphs[0]->edge_array, edge);
           #undef JOIN_COUNT
@@ -349,13 +349,13 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
         case G_SEGRAPH_FIRST:
         {
           /* first node was created, so maybe it will belong to existing graph. */
-          GSEGraphWhole* temp_graph;
+          GSEGraphSnapshot* temp_graph;
 
           /* creating self-connected node means it creates separate graph. */
           /* creating half-edged node means it creates separate graph. */
           if ((first_node == second_node) || !second_node)
           {
-            temp_graph = _g_segraph_whole_new_blank(1, 1, TRUE, TRUE);
+            temp_graph = _g_segraph_snapshot_new_blank(1, 1, TRUE, TRUE);
             g_ptr_array_add(separate_graphs, temp_graph);
           }
           else
@@ -370,13 +370,13 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
         case G_SEGRAPH_SECOND:
         {
           /* second node was created, so maybe it will belong to existing graph. */
-          GSEGraphWhole* temp_graph;
+          GSEGraphSnapshot* temp_graph;
 
           /* creating self-connected node means it creates separate graph. */
           /* creating half-edged node means it creates separate graph. */
           if ((first_node == second_node) || !first_node)
           {
-            temp_graph = _g_segraph_whole_new_blank(1, 1, TRUE, TRUE);
+            temp_graph = _g_segraph_snapshot_new_blank(1, 1, TRUE, TRUE);
             g_ptr_array_add(separate_graphs, temp_graph);
           }
           else
@@ -391,9 +391,9 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
         case G_SEGRAPH_BOTH:
         {
           /* if both nodes were created then they create separate graph. */
-          GSEGraphWhole* temp_graph;
+          GSEGraphSnapshot* temp_graph;
 
-          temp_graph = _g_segraph_whole_new_blank(2, 1, TRUE, TRUE);
+          temp_graph = _g_segraph_snapshot_new_blank(2, 1, TRUE, TRUE);
           g_ptr_array_add(temp_graph->node_array, first_node);
           g_ptr_array_add(temp_graph->node_array, second_node);
           g_ptr_array_add(temp_graph->edge_array, edge);
@@ -416,87 +416,87 @@ g_segraph_whole_new(GSEGraphDataTriplet** data_triplets,
 }
 
 /**
- * g_segraph_whole_new_from_node:
+ * g_segraph_snapshot_new_from_node:
  * @node: a node in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSEGraphWhole with arrays holding nodes and edges of a graph
+ * Creates new #GSEGraphSnapshot with arrays holding nodes and edges of a graph
  * containing @node in order specified by @traverse_type.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-GSEGraphWhole*
-g_segraph_whole_new_from_node(GSEGraphNode* node,
-                              GSEGraphTraverseType traverse_type)
+GSEGraphSnapshot*
+g_segraph_snapshot_new_from_node(GSEGraphNode* node,
+                                 GSEGraphTraverseType traverse_type)
 {
   g_return_val_if_fail(node != NULL, NULL);
 
-  return _g_segraph_whole_new_from_node_general(node, TRUE, TRUE,
-                                                traverse_type);
+  return _g_segraph_snapshot_new_from_node_general(node, TRUE, TRUE,
+                                                   traverse_type);
 }
 
 /**
- * g_segraph_whole_new_from_edge:
+ * g_segraph_snapshot_new_from_edge:
  * @edge: an edge in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSEGraphWhole with arrays holding nodes and edges of a graph
+ * Creates new #GSEGraphSnapshot with arrays holding nodes and edges of a graph
  * containing @edge in order specified by @traverse_type.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-GSEGraphWhole*
-g_segraph_whole_new_from_edge(GSEGraphEdge* edge,
-                              GSEGraphTraverseType traverse_type)
+GSEGraphSnapshot*
+g_segraph_snapshot_new_from_edge(GSEGraphEdge* edge,
+                                 GSEGraphTraverseType traverse_type)
 {
   g_return_val_if_fail(edge != NULL, NULL);
 
-  return _g_segraph_whole_new_from_edge_general(edge, TRUE, TRUE,
-                                                traverse_type);
+  return _g_segraph_snapshot_new_from_edge_general(edge, TRUE, TRUE,
+                                                   traverse_type);
 }
 
 /**
- * g_segraph_whole_new_only_nodes:
+ * g_segraph_snapshot_new_only_nodes:
  * @node: a node in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSEGraphWhole with array holding nodes of a graph containing
+ * Creates new #GSEGraphSnapshot with array holding nodes of a graph containing
  * @node in order specified by @traverse_type. Array holding edges is %NULL.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-GSEGraphWhole*
-g_segraph_whole_new_only_nodes(GSEGraphNode* node,
-                               GSEGraphTraverseType traverse_type)
+GSEGraphSnapshot*
+g_segraph_snapshot_new_only_nodes(GSEGraphNode* node,
+                                  GSEGraphTraverseType traverse_type)
 {
   g_return_val_if_fail(node != NULL, NULL);
 
-  return _g_segraph_whole_new_from_node_general(node, TRUE, FALSE,
-                                                traverse_type);
+  return _g_segraph_snapshot_new_from_node_general(node, TRUE, FALSE,
+                                                   traverse_type);
 }
 
 /**
- * g_segraph_whole_new_only_edges:
+ * g_segraph_snapshot_new_only_edges:
  * @edge: an edge in graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * Creates new #GSEGraphWhole with array holding edges of a graph containing
+ * Creates new #GSEGraphSnapshot with array holding edges of a graph containing
  * @edge in order specified by @traverse_type. Array holding nodes is %NULL.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-GSEGraphWhole*
-g_segraph_whole_new_only_edges(GSEGraphEdge* edge,
-                               GSEGraphTraverseType traverse_type)
+GSEGraphSnapshot*
+g_segraph_snapshot_new_only_edges(GSEGraphEdge* edge,
+                                  GSEGraphTraverseType traverse_type)
 {
   g_return_val_if_fail(edge != NULL, NULL);
 
-  return _g_segraph_whole_new_from_edge_general(edge, FALSE, TRUE,
-                                                traverse_type);
+  return _g_segraph_snapshot_new_from_edge_general(edge, FALSE, TRUE,
+                                                   traverse_type);
 }
 
 /**
- * g_segraph_whole_copy:
+ * g_segraph_snapshot_copy:
  * @graph: a graph to be copied.
  *
  * Does a shallow copy of @graph. This means that original graph and its copy
@@ -505,17 +505,18 @@ g_segraph_whole_new_only_edges(GSEGraphEdge* edge,
  *
  * Returns: A copy of @graph.
  */
-GSEGraphWhole*
-g_segraph_whole_copy(GSEGraphWhole* graph)
+GSEGraphSnapshot*
+g_segraph_snapshot_copy(GSEGraphSnapshot* graph)
 {
   g_return_val_if_fail(graph != NULL, NULL);
-  g_return_val_if_fail((graph->node_array != NULL) && (graph->edge_array != NULL), NULL);
+  g_return_val_if_fail(graph->node_array != NULL, NULL);
+  g_return_val_if_fail(graph->edge_array != NULL, NULL);
 
-  return _g_segraph_whole_copy_general(graph, NULL, NULL, NULL, NULL);
+  return _g_segraph_snapshot_copy_general(graph, NULL, NULL, NULL, NULL);
 }
 
 /**
- * g_segraph_whole_copy_deep:
+ * g_segraph_snapshot_copy_deep:
  * @graph: a graph to be copied.
  * @node_data_copy_func: function copying data in nodes.
  * @node_user_data: data passed to node data copying function.
@@ -528,39 +529,42 @@ g_segraph_whole_copy(GSEGraphWhole* graph)
  *
  * Returns: A copy of @graph.
  */
-GSEGraphWhole*
-g_segraph_whole_copy_deep(GSEGraphWhole* graph,
-                          GCopyFunc node_data_copy_func,
-                          gpointer node_user_data,
-                          GCopyFunc edge_data_copy_func,
-                          gpointer edge_user_data)
+GSEGraphSnapshot*
+g_segraph_snapshot_copy_deep(GSEGraphSnapshot* graph,
+                             GCopyFunc node_data_copy_func,
+                             gpointer node_user_data,
+                             GCopyFunc edge_data_copy_func,
+                             gpointer edge_user_data)
 {
   g_return_val_if_fail(graph != NULL, NULL);
-  g_return_val_if_fail((graph->node_array != NULL) && (graph->edge_array != NULL), NULL);
-  g_return_val_if_fail((node_data_copy_func != NULL) || (edge_data_copy_func != NULL), NULL);
+  g_return_val_if_fail(graph->node_array != NULL, NULL);
+  g_return_val_if_fail(graph->edge_array != NULL, NULL);
+  g_return_val_if_fail(node_data_copy_func != NULL, NULL);
+  g_return_val_if_fail(edge_data_copy_func != NULL, NULL);
 
-  return _g_segraph_whole_copy_general(graph, node_data_copy_func,
-                                       node_user_data, edge_data_copy_func,
-                                       edge_user_data);
+  return _g_segraph_snapshot_copy_general(graph, node_data_copy_func,
+                                          node_user_data, edge_data_copy_func,
+                                          edge_user_data);
 }
 
 /**
- * g_segraph_whole_free:
- * @graph: #GSEGraphWhole to free.
+ * g_segraph_snapshot_free:
+ * @graph: #GSEGraphSnapshot to free.
  * @deep_free: whether to do a deep free.
  *
  * Frees memory allocated to @graph. If @deep_free is %TRUE then all nodes and
  * edges are also freed. If @deep_free is %TRUE then node and edge arrays in
  * @graph cannot be %NULL - this means that %TRUE can be passed to this function
- * only when @graph was created with g_segraph_whole_new_from_node(),
- * g_segraph_whole_new_from_edge() or g_segraph_whole_new().
+ * only when @graph was created with g_segraph_snapshot_new_from_node(),
+ * g_segraph_snapshot_new_from_edge() or g_segraph_snapshot_new().
  */
 void
-g_segraph_whole_free(GSEGraphWhole* graph,
-                     gboolean deep_free)
+g_segraph_snapshot_free(GSEGraphSnapshot* graph,
+                        gboolean deep_free)
 {
   g_return_if_fail(graph != NULL);
-  g_return_if_fail(deep_free == FALSE || (graph->node_array != NULL && graph->edge_array != NULL));
+  g_return_if_fail(deep_free == FALSE || graph->node_array != NULL);
+  g_return_if_fail(deep_free == FALSE || graph->edge_array != NULL);
 
   if (deep_free)
   {
@@ -597,11 +601,11 @@ g_segraph_whole_free(GSEGraphWhole* graph,
     }
   }
 
-  g_slice_free(GSEGraphWhole, graph);
+  g_slice_free(GSEGraphSnapshot, graph);
 }
 
 /**
- * g_segraph_whole_get_order:
+ * g_segraph_snapshot_get_order:
  * @graph: a graph.
  *
  * Gets @graph's order, that is - number of nodes in graph.
@@ -609,7 +613,7 @@ g_segraph_whole_free(GSEGraphWhole* graph,
  * Returns: number of nodes in graph.
  */
 guint
-g_segraph_whole_get_order(GSEGraphWhole* graph)
+g_segraph_snapshot_get_order(GSEGraphSnapshot* graph)
 {
   g_return_val_if_fail(graph != NULL, 0);
   g_return_val_if_fail(graph->node_array != NULL, 0);
@@ -618,7 +622,7 @@ g_segraph_whole_get_order(GSEGraphWhole* graph)
 }
 
 /**
- * g_segraph_whole_get_size:
+ * g_segraph_snapshot_get_size:
  * @graph: a graph.
  *
  * Gets @graph's size, that is - number of edges in graph.
@@ -626,7 +630,7 @@ g_segraph_whole_get_order(GSEGraphWhole* graph)
  * Returns: number of edges in graph.
  */
 guint
-g_segraph_whole_get_size(GSEGraphWhole* graph)
+g_segraph_snapshot_get_size(GSEGraphSnapshot* graph)
 {
   g_return_val_if_fail(graph != NULL, 0);
   g_return_val_if_fail(graph->edge_array != NULL, 0);
@@ -635,7 +639,7 @@ g_segraph_whole_get_size(GSEGraphWhole* graph)
 }
 
 /**
- * g_segraph_whole_foreach_node:
+ * g_segraph_snapshot_foreach_node:
  * @graph: a graph.
  * @func: the function to call with each element's data.
  * @user_data: data passed to @func.
@@ -643,9 +647,9 @@ g_segraph_whole_get_size(GSEGraphWhole* graph)
  * Calls @func for each node's data in @graph.
  */
 void
-g_segraph_whole_foreach_node(GSEGraphWhole* graph,
-                             GFunc func,
-                             gpointer user_data)
+g_segraph_snapshot_foreach_node(GSEGraphSnapshot* graph,
+                                GFunc func,
+                                gpointer user_data)
 {
   guint iter;
 
@@ -661,7 +665,7 @@ g_segraph_whole_foreach_node(GSEGraphWhole* graph,
 }
 
 /**
- * g_segraph_whole_find_node_custom:
+ * g_segraph_snapshot_find_node_custom:
  * @graph: a graph.
  * @user_data: user data passed to @func.
  * @func: the function to call for each node.
@@ -675,9 +679,9 @@ g_segraph_whole_foreach_node(GSEGraphWhole* graph,
  * Returns: found #GSEGraphNode or %NULL if there was no such node.
  */
 GSEGraphNode*
-g_segraph_whole_find_node_custom(GSEGraphWhole* graph,
-                                 gpointer user_data,
-                                 GEqualFunc func)
+g_segraph_snapshot_find_node_custom(GSEGraphSnapshot* graph,
+                                    gpointer user_data,
+                                    GEqualFunc func)
 {
   guint iter;
 
@@ -697,7 +701,7 @@ g_segraph_whole_find_node_custom(GSEGraphWhole* graph,
 }
 
 /**
- * g_segraph_whole_foreach_edge:
+ * g_segraph_snapshot_foreach_edge:
  * @graph: a graph.
  * @func: the function to call with each element's data.
  * @user_data: data passed to @func.
@@ -705,9 +709,9 @@ g_segraph_whole_find_node_custom(GSEGraphWhole* graph,
  * Calls @func for each edge's data in @graph.
  */
 void
-g_segraph_whole_foreach_edge(GSEGraphWhole* graph,
-                             GFunc func,
-                             gpointer user_data)
+g_segraph_snapshot_foreach_edge(GSEGraphSnapshot* graph,
+                                GFunc func,
+                                gpointer user_data)
 {
   guint iter;
 
@@ -723,7 +727,7 @@ g_segraph_whole_foreach_edge(GSEGraphWhole* graph,
 }
 
 /**
- * g_segraph_whole_find_edge_custom:
+ * g_segraph_snapshot_find_edge_custom:
  * @graph: a graph.
  * @user_data: user data passed to @func.
  * @func: the function to call for each node.
@@ -737,9 +741,9 @@ g_segraph_whole_foreach_edge(GSEGraphWhole* graph,
  * Returns: found #GSEGraphEdge or %NULL if there was no such edge.
  */
 GSEGraphEdge*
-g_segraph_whole_find_edge_custom(GSEGraphWhole* graph,
-                                 gpointer user_data,
-                                 GEqualFunc func)
+g_segraph_snapshot_find_edge_custom(GSEGraphSnapshot* graph,
+                                    gpointer user_data,
+                                    GEqualFunc func)
 {
   guint iter;
 
@@ -761,7 +765,7 @@ g_segraph_whole_find_edge_custom(GSEGraphWhole* graph,
 /* static function definitions. */
 
 /**
- * _g_segraph_whole_append_DFS:
+ * _g_segraph_snapshot_append_DFS:
  * @node: a node, which will be put into arrays with its edges.
  * @node_array: array of all nodes in graph.
  * @visited_nodes: a map of already visited nodes.
@@ -772,11 +776,11 @@ g_segraph_whole_find_edge_custom(GSEGraphWhole* graph,
  * algorithm.
  */
 static void
-_g_segraph_whole_append_DFS(GSEGraphNode* node,
-                            GPtrArray* node_array,
-                            GHashTable* visited_nodes,
-                            GPtrArray* edge_array,
-                            GHashTable* visited_edges)
+_g_segraph_snapshot_append_DFS(GSEGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes,
+                               GPtrArray* edge_array,
+                               GHashTable* visited_edges)
 {
   guint iter;
   GPtrArray* n_e;
@@ -812,13 +816,13 @@ _g_segraph_whole_append_DFS(GSEGraphNode* node,
     {
       continue;
     }
-    _g_segraph_whole_append_DFS(other_node, node_array, visited_nodes,
-                                edge_array, visited_edges);
+    _g_segraph_snapshot_append_DFS(other_node, node_array, visited_nodes,
+                                   edge_array, visited_edges);
   }
 }
 
 /**
- * _g_segraph_whole_append_DFS:
+ * _g_segraph_snapshot_append_DFS:
  * @node: a node, which will be put into arrays with its edges.
  * @node_array: array of all nodes in graph.
  * @visited_nodes: a map of already visited nodes.
@@ -829,11 +833,11 @@ _g_segraph_whole_append_DFS(GSEGraphNode* node,
  * search algorithm.
  */
 static void
-_g_segraph_whole_append_BFS(GSEGraphNode* node,
-                            GPtrArray* node_array,
-                            GHashTable* visited_nodes,
-                            GPtrArray* edge_array,
-                            GHashTable* visited_edges)
+_g_segraph_snapshot_append_BFS(GSEGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes,
+                               GPtrArray* edge_array,
+                               GHashTable* visited_edges)
 {
   GQueue* queue;
 
@@ -893,22 +897,22 @@ _g_segraph_whole_append_BFS(GSEGraphNode* node,
 }
 
 /**
- * _g_segraph_whole_new_from_node_general:
+ * _g_segraph_snapshot_new_from_node_general:
  * @node: a node being a part of a graph.
  * @put_nodes: whether to put nodes in array.
  * @put_edges: whether to put edges in array.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSEGraphWhole from given @node using traversing
+ * General function creating a #GSEGraphSnapshot from given @node using traversing
  * algorithm denoted by @traverse_type.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-static GSEGraphWhole*
-_g_segraph_whole_new_from_node_general(GSEGraphNode* node,
-                                       gboolean put_nodes,
-                                       gboolean put_edges,
-                                       GSEGraphTraverseType traverse_type)
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_from_node_general(GSEGraphNode* node,
+                                          gboolean put_nodes,
+                                          gboolean put_edges,
+                                          GSEGraphTraverseType traverse_type)
 {
   typedef void (*GraphSearchFunc)(GSEGraphNode* node,
                                   GPtrArray* node_array,
@@ -916,7 +920,7 @@ _g_segraph_whole_new_from_node_general(GSEGraphNode* node,
                                   GPtrArray* edge_array,
                                   GHashTable* visited_edges);
 
-  GSEGraphWhole* graph;
+  GSEGraphSnapshot* graph;
   GHashTable* visited_nodes;
   GHashTable* visited_edges;
   GraphSearchFunc gsfunc;
@@ -925,12 +929,12 @@ _g_segraph_whole_new_from_node_general(GSEGraphNode* node,
   {
     case G_SEGRAPH_TRAVERSE_BFS:
     {
-      gsfunc = _g_segraph_whole_append_BFS;
+      gsfunc = _g_segraph_snapshot_append_BFS;
       break;
     }
     case G_SEGRAPH_TRAVERSE_DFS:
     {
-      gsfunc = _g_segraph_whole_append_DFS;
+      gsfunc = _g_segraph_snapshot_append_DFS;
       break;
     }
     default:
@@ -939,7 +943,7 @@ _g_segraph_whole_new_from_node_general(GSEGraphNode* node,
     }
   }
 
-  graph = _g_segraph_whole_new_blank(0, 0, put_nodes, put_edges);
+  graph = _g_segraph_snapshot_new_blank(0, 0, put_nodes, put_edges);
 
   visited_nodes = g_hash_table_new(NULL, NULL);
   visited_edges = g_hash_table_new(NULL, NULL);
@@ -954,38 +958,38 @@ _g_segraph_whole_new_from_node_general(GSEGraphNode* node,
 }
 
 /**
- * _g_segraph_whole_new_from_edge_general:
+ * _g_segraph_snapshot_new_from_edge_general:
  * @edge: a edge being a part of a graph.
  * @put_nodes: whether to put nodes in array.
  * @put_edges: whether to put edges in array.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSEGraphWhole from given @edge using traversing
+ * General function creating a #GSEGraphSnapshot from given @edge using traversing
  * algorithm denoted by @traverse_type.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-static GSEGraphWhole*
-_g_segraph_whole_new_from_edge_general(GSEGraphEdge* edge,
-                                       gboolean put_nodes,
-                                       gboolean put_edges,
-                                       GSEGraphTraverseType traverse_type)
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_from_edge_general(GSEGraphEdge* edge,
+                                          gboolean put_nodes,
+                                          gboolean put_edges,
+                                          GSEGraphTraverseType traverse_type)
 {
   if (edge->first)
   {
-    return _g_segraph_whole_new_from_node_general(edge->first, put_nodes,
-                                                  put_edges, traverse_type);
+    return _g_segraph_snapshot_new_from_node_general(edge->first, put_nodes,
+                                                     put_edges, traverse_type);
   }
   else if (edge->second)
   {
-    return _g_segraph_whole_new_from_node_general(edge->second, put_nodes,
-                                                  put_edges, traverse_type);
+    return _g_segraph_snapshot_new_from_node_general(edge->second, put_nodes,
+                                                     put_edges, traverse_type);
   }
   else
   {
-    GSEGraphWhole* graph;
+    GSEGraphSnapshot* graph;
 
-    graph = _g_segraph_whole_new_blank(0, 1, put_nodes, put_edges);
+    graph = _g_segraph_snapshot_new_blank(0, 1, put_nodes, put_edges);
 
     if (put_edges)
     {
@@ -997,7 +1001,7 @@ _g_segraph_whole_new_from_edge_general(GSEGraphEdge* edge,
 }
 
 /**
- * _g_segraph_whole_copy_general:
+ * _g_segraph_snapshot_copy_general:
  * @graph: a graph to be copied.
  * @node_data_copy_func: function copying data in nodes.
  * @node_user_data: data passed to node data copying function.
@@ -1010,22 +1014,22 @@ _g_segraph_whole_new_from_edge_general(GSEGraphEdge* edge,
  *
  * Returns: A copy of @graph.
  */
-static GSEGraphWhole*
-_g_segraph_whole_copy_general(GSEGraphWhole* graph,
-                              GCopyFunc node_data_copy_func,
-                              gpointer node_user_data,
-                              GCopyFunc edge_data_copy_func,
-                              gpointer edge_user_data)
+static GSEGraphSnapshot*
+_g_segraph_snapshot_copy_general(GSEGraphSnapshot* graph,
+                                 GCopyFunc node_data_copy_func,
+                                 gpointer node_user_data,
+                                 GCopyFunc edge_data_copy_func,
+                                 gpointer edge_user_data)
 {
   GHashTable* nodes_to_dups;
   GHashTable* edges_to_dups;
-  GSEGraphWhole* dup_graph;
+  GSEGraphSnapshot* dup_graph;
   guint iter;
 
   nodes_to_dups = g_hash_table_new(NULL, NULL);
   edges_to_dups = g_hash_table_new(NULL, NULL);
-  dup_graph = _g_segraph_whole_new_blank(graph->node_array->len,
-                                         graph->edge_array->len, TRUE, TRUE);
+  dup_graph = _g_segraph_snapshot_new_blank(graph->node_array->len,
+                                            graph->edge_array->len, TRUE, TRUE);
 
   for (iter = 0; iter < graph->node_array->len; iter++)
   {
@@ -1097,25 +1101,25 @@ _g_segraph_whole_copy_general(GSEGraphWhole* graph,
 }
 
 /**
- * _g_segraph_whole_new_blank:
+ * _g_segraph_snapshot_new_blank:
  * @node_array_size: size of node array.
  * @edge_array_size: size of edge array.
  * @create_node_array: whether to create node array or make it %NULL.
  * @create_edge_array: whether to create edge array or make it %NULL.
  *
- * Constructs #GSEGraphWhole with two empty or %NULL arrays with given sizes.
+ * Constructs #GSEGraphSnapshot with two empty or %NULL arrays with given sizes.
  *
- * Returns: new #GSEGraphWhole.
+ * Returns: new #GSEGraphSnapshot.
  */
-static GSEGraphWhole*
-_g_segraph_whole_new_blank(guint node_array_size,
-                           guint edge_array_size,
-                           gboolean create_node_array,
-                           gboolean create_edge_array)
+static GSEGraphSnapshot*
+_g_segraph_snapshot_new_blank(guint node_array_size,
+                              guint edge_array_size,
+                              gboolean create_node_array,
+                              gboolean create_edge_array)
 {
-  GSEGraphWhole* graph;
+  GSEGraphSnapshot* graph;
 
-  graph = g_slice_new(GSEGraphWhole);
+  graph = g_slice_new(GSEGraphSnapshot);
 
   if (create_node_array)
   {

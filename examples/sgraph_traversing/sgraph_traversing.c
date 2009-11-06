@@ -93,28 +93,28 @@ free_node_desc(GSGraphNode* node,
 int
 main(void)
 {
-  GSGraphWhole* graph;
+  GSGraphSnapshot* graph;
   GSGraphNode* node;
 
   node = create_graph();
-  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
+  graph = g_sgraph_snapshot_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
   g_print("BFS from `A':");
-  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
-  g_sgraph_whole_free(graph, FALSE);
-  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  g_sgraph_snapshot_free(graph, FALSE);
+  graph = g_sgraph_snapshot_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
   g_print("\nDFS from `A':");
-  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
-  node = g_sgraph_whole_find_node_custom(graph, "I", (GEqualFunc)find_node);
-  g_sgraph_whole_free(graph, FALSE);
-  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  node = g_sgraph_snapshot_find_node_custom(graph, "I", (GEqualFunc)find_node);
+  g_sgraph_snapshot_free(graph, FALSE);
+  graph = g_sgraph_snapshot_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
   g_print("\nBFS from `I':");
-  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
-  g_sgraph_whole_free(graph, FALSE);
-  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  g_sgraph_snapshot_free(graph, FALSE);
+  graph = g_sgraph_snapshot_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
   g_print("\nDFS from `I':");
-  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)print_node_desc, NULL);
   g_print("\n");
-  g_sgraph_whole_foreach_node(graph, (GFunc)free_node_desc, NULL);
-  g_sgraph_whole_free(graph, TRUE);
+  g_sgraph_snapshot_foreach_node(graph, (GFunc)free_node_desc, NULL);
+  g_sgraph_snapshot_free(graph, TRUE);
   return 0;
 }

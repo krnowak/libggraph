@@ -21,7 +21,7 @@
     <xi:include href="xml/gsgraphnode.xml"/>
     <xi:include href="xml/gsgraphdatapair.xml"/>
     <xi:include href="xml/gsgraphenums.xml"/>
-    <xi:include href="xml/gsgraphwhole.xml"/>
+    <xi:include href="xml/gsgraphsnapshot.xml"/>
   </chapter>
 
   <chapter>
@@ -30,7 +30,7 @@
     <xi:include href="xml/gsegraphedge.xml"/>
     <xi:include href="xml/gsegraphdatatriplet.xml"/>
     <xi:include href="xml/gsegraphenums.xml"/>
-    <xi:include href="xml/gsegraphwhole.xml"/>
+    <xi:include href="xml/gsegraphsnapshot.xml"/>
   </chapter>
   <!--
   <chapter id="object-tree">

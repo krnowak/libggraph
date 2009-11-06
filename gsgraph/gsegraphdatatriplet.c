@@ -24,10 +24,10 @@
  * @title: Data triplets
  * @short_description: data triplets for constructing graphs.
  * @include: gsgraph/gsegraph.h
- * @see_also: #GSEGraphWhole, g_segraph_whole_construct()
+ * @see_also: #GSEGraphSnapshot, g_segraph_snapshot_new()
  *
  * Data triplets are used primarly for constructing graphs by
- * g_segraph_whole_construct(). They contain all necessary data to create a pair
+ * g_segraph_snapshot_new(). They contain all necessary data to create a pair
  * of nodes - nodes data and edge data.
  *
  * To create new data triplet, use g_segraph_data_triplet_new().
@@ -42,7 +42,7 @@
  * <note>
  *   <para>
  *     If data in triplet was allocated dynamically then upon freeing triplet
- *     that was used in g_segraph_whole_construct() do not free its data - they
+ *     that was used in g_segraph_snapshot_new() do not free its data - they
  *     are holded by created nodes and edges.
  *   </para>
  * </note>
