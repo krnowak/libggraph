@@ -95,7 +95,7 @@ main(void)
 {
   GSGraphWhole* graph;
   GSGraphNode* node;
-  
+
   node = create_graph();
   graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
   g_print("BFS from `A':");

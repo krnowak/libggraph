@@ -85,13 +85,13 @@ main(void)
   GSGraphNode* node;
   GPtrArray* separate_nodes;
   guint iter;
-  
+
   node = create_graph();
   separate_nodes = g_ptr_array_new();
   for (iter = 0; iter < node->neighbours->len; iter++)
   {
     GSGraphNode* neighbour;
-    
+
     neighbour = g_ptr_array_index(node->neighbours, iter);
     g_sgraph_node_disconnect(node, neighbour);
     if (g_sgraph_node_are_separate(node, neighbour))
@@ -100,12 +100,12 @@ main(void)
     }
   }
   free_node_desc(g_sgraph_node_free(node));
-  
+
   for (iter = 0; iter < separate_nodes->len; iter++)
   {
     GSGraphWhole* subgraph;
     GSGraphNode* subnode;
-    
+
     node = g_ptr_array_index(separate_nodes, iter);
     subgraph = g_sgraph_whole_new_from_node(subnode, G_SGRAPH_TRAVERSE_DFS);
     g_sgraph_whole_foreach_node(subgraph, (GFunc)print_node_desc, NULL);

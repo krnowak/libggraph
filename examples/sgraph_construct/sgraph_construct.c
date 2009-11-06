@@ -16,12 +16,12 @@ create_graph(void)
 {
   GSGraphWhole* graph;
   GPtrArray* graph_array;
-  gchar* node_A_data = g_strdup("A"); 
+  gchar* node_A_data = g_strdup("A");
   gchar* node_B_data = g_strdup("B");
   gchar* node_C_data = g_strdup("C");
   gchar* node_D_data = g_strdup("D");
   GSGraphDataPair** data_pairs = g_malloc(5 * sizeof(GSGraphDataPair*));
-  
+
   data_pairs[0] = g_sgraph_data_pair_new(node_A_data, node_B_data);
   data_pairs[1] = g_sgraph_data_pair_new(node_A_data, node_C_data);
   data_pairs[2] = g_sgraph_data_pair_new(node_A_data, node_D_data);
@@ -39,7 +39,7 @@ create_graph(void)
   if (graph_array->len > 1)
   {
     guint iter;
-    
+
     g_warning("More than one graph was created: %d graphs."
               " Returning first one only - rest is freed.\n", graph_array->len);
     for (iter = 1; iter < graph_array->len; iter++)
@@ -59,7 +59,7 @@ void list_neighbours(GSGraphNode* node,
                      gpointer user_data G_GNUC_UNUSED)
 {
   guint iter;
-  
+
   g_print("neighbours of node %s are:", (gchar*)node->data);
   for (iter = 0; iter < node->neighbours->len; iter++)
   {
@@ -76,11 +76,11 @@ void list_neighbours(GSGraphNode* node,
 int main(void)
 {
   GSGraphWhole* graph;
-  
+
   graph = create_graph();
-  
+
   g_return_val_if_fail(graph != NULL, 1);
-  
+
   g_print("There are %u nodes and %u edges in graph.\n",
           g_sgraph_whole_get_order(graph),
           g_sgraph_whole_get_size(graph));
