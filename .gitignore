@@ -29,5 +29,5 @@ stamp-*
 !docs/reference/Makefile.am
 
 ## examples
-/examples/simple_graph/simple_graph
-/examples/simple_graph_construct/simple_graph_construct
+/examples/sgraph_traversing/sgraph_traversing
+/examples/sgraph_construct/sgraph_construct

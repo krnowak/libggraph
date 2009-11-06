@@ -1,1 +1,1 @@
-SUBDIRS = simple_graph simple_graph_construct
+SUBDIRS = sgraph_traversing sgraph_construct

@@ -1,0 +1,2 @@
+example_codedir = $(datadir)/$(libggraph_libname)/examples/$(example_name)
+example_code_DATA = $(example_src)
