@@ -171,6 +171,15 @@ g_sgraph_node_disconnect(GSGraphNode* node,
  *
  * This function checks if @node lies in another graph than @other_node.
  *
+ * <note>
+ *   <para>
+ *     Performance hint: if you suspect two nodes being in two separate graphs
+ *     and you are able to say which of graphs will have lower order, call this
+ *     function with @node being in larger graph and @other_node being in
+ *     smaller one.
+ *   </para>
+ * </note>
+ *
  * Returns: %TRUE if @node and @other_node are in separate graphs.
  */
 gboolean
@@ -211,16 +220,16 @@ _g_sgraph_node_recurrent_connection_check(GSGraphNode* node,
   {
     return FALSE;
   }
-  if (g_hash_table_lookup_extended(visited_nodes, node, NULL, NULL))
+  if (g_hash_table_lookup_extended(visited_nodes, other_node, NULL, NULL))
   {
     return TRUE;
   }
-  g_hash_table_insert(visited_nodes, node, NULL);
+  g_hash_table_insert(visited_nodes, other_node, NULL);
 
-  for (iter = 0; iter < node->neighbours->len; iter++)
+  for (iter = 0; iter < other_node->neighbours->len; iter++)
   {
-    GSGraphNode* temp_node = g_ptr_array_index(node->neighbours, iter);
-    if (!_g_sgraph_node_recurrent_connection_check(temp_node, other_node,
+    GSGraphNode* temp_node = g_ptr_array_index(other_node->neighbours, iter);
+    if (!_g_sgraph_node_recurrent_connection_check(node, temp_node,
                                                    visited_nodes))
     {
       return FALSE;
