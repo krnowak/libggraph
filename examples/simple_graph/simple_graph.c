@@ -2,145 +2,119 @@
 
 /* See topology.png. */
 
+/* This function is ugly. */
 GSGraphNode*
 create_graph(void)
 {
-  GSGraphNode* node_A;
-  GSGraphNode* node_B;
-  GSGraphNode* node_C;
-  GSGraphNode* node_D;
-  GSGraphNode* node_E;
-  GSGraphNode* node_F;
-  GSGraphNode* node_G;
-  GSGraphNode* node_H;
-  GSGraphNode* node_I;
-  GSGraphNode* node_J;
-  GSGraphNode* node_K;
-  GSGraphNode* node_L;
-  GSGraphNode* node_M;
-  
-  node_A = g_sgraph_node_new(g_strdup("A"));
-  node_B = g_sgraph_node_new(g_strdup("B"));
-  g_sgraph_node_connect(node_A, node_B);
-  node_C = g_sgraph_node_new(g_strdup("C"));
-  g_sgraph_node_connect(node_A, node_C);
-  g_sgraph_node_connect(node_B, node_C);
-  node_D = g_sgraph_node_new(g_strdup("D"));
-  g_sgraph_node_connect(node_A, node_D);
-  g_sgraph_node_connect(node_C, node_D);
-  node_E = g_sgraph_node_new(g_strdup("E"));
-  g_sgraph_node_connect(node_A, node_E);
-  node_F = g_sgraph_node_new(g_strdup("F"));
-  g_sgraph_node_connect(node_A, node_F);
-  node_G = g_sgraph_node_new(g_strdup("G"));
-  g_sgraph_node_connect(node_A, node_G);
-  node_H = g_sgraph_node_new(g_strdup("H"));
-  g_sgraph_node_connect(node_A, node_H);
-  node_I = g_sgraph_node_new(g_strdup("I"));
-  g_sgraph_node_connect(node_H, node_I);
-  node_J = g_sgraph_node_new(g_strdup("J"));
-  g_sgraph_node_connect(node_F, node_J);
-  node_K = g_sgraph_node_new(g_strdup("K"));
-  g_sgraph_node_connect(node_F, node_K);
-  g_sgraph_node_connect(node_K, node_J);
-  node_L = g_sgraph_node_new(g_strdup("L"));
-  g_sgraph_node_connect(node_E, node_L);
-  g_sgraph_node_connect(node_G, node_L);
-  node_M = g_sgraph_node_new(g_strdup("M"));
-  g_sgraph_node_connect(node_A, node_M);
-  return node_A;
+#define NODE(desc) node_##desc
+
+#define NODE_DECL(desc) \
+GSGraphNode* NODE(desc);
+  NODE_DECL(A);
+  NODE_DECL(B);
+  NODE_DECL(C);
+  NODE_DECL(D);
+  NODE_DECL(E);
+  NODE_DECL(F);
+  NODE_DECL(G);
+  NODE_DECL(H);
+  NODE_DECL(I);
+  NODE_DECL(J);
+  NODE_DECL(K);
+  NODE_DECL(L);
+  NODE_DECL(M);
+#undef NODE_DECL
+
+#define NODE_DEF(desc) \
+NODE(desc) = g_sgraph_node_new(g_strdup(#desc));
+  NODE_DEF(A);
+  NODE_DEF(B);
+  NODE_DEF(C);
+  NODE_DEF(D);
+  NODE_DEF(E);
+  NODE_DEF(F);
+  NODE_DEF(G);
+  NODE_DEF(H);
+  NODE_DEF(I);
+  NODE_DEF(J);
+  NODE_DEF(K);
+  NODE_DEF(L);
+  NODE_DEF(M);
+#undef NODE_DEF
+
+#define NODES_CON(desc1, desc2) \
+g_sgraph_node_connect(NODE(desc1), NODE(desc2));
+  NODES_CON(A, B);
+  NODES_CON(A, C);
+  NODES_CON(B, C);
+  NODES_CON(A, D);
+  NODES_CON(C, D);
+  NODES_CON(A, E);
+  NODES_CON(A, F);
+  NODES_CON(A, G);
+  NODES_CON(A, H);
+  NODES_CON(H, I);
+  NODES_CON(F, J);
+  NODES_CON(F, K);
+  NODES_CON(K, J);
+  NODES_CON(E, L);
+  NODES_CON(G, L);
+  NODES_CON(A, M);
+#undef NODES_CON
+  return NODE(A);
+#undef NODE
+}
+
+gboolean
+find_node(GSGraphNode* node,
+          const gchar* desc)
+{
+  if (g_strcmp0(node->data, desc))
+  {
+    return FALSE;
+  }
+  return TRUE;
 }
 
 void
-print_node_data(gpointer data,
+print_node_desc(GSGraphNode* node,
                 gpointer user_data G_GNUC_UNUSED)
 {
-  g_print(" `%s'", (gchar*)data);
+  g_print(" `%s'", (gchar*)(node->data));
 }
 
 void
-free_node_data(gpointer data,
+free_node_desc(GSGraphNode* node,
                gpointer user_data G_GNUC_UNUSED)
 {
-  g_free(data);
+  g_free(node->data);
 }
 
 int
 main(void)
 {
-  GSGraphNode* graph;
-  GSGraphNodeArray* array_I;
-  guint i_nodes_iter;
-  GSGraphNodeArray* node_A_neighbours;
-  guint A_iter;
-  GSGraphNodeArray* separate_graphs;
-  guint s_g_iter;
+  GSGraphWhole* graph;
+  GSGraphNode* node;
   
-  graph = create_graph();
-  g_print("There are %u nodes in graph.\n", g_sgraph_node_count(graph));
-  /* Here we search for "I" nodes and break connections to all its neighbours.
-   * In this topology there is only one such node and has only one neighbour.
-   */
-  array_I = g_sgraph_node_find_custom(graph, "I", g_str_equal);
-  g_print("\"I\" nodes found: %u\n", array_I->len);
-  /* For every node that has "I"... */
-  for (i_nodes_iter = 0; i_nodes_iter < array_I->len; i_nodes_iter++)
-  {
-    GSGraphNode* node_I;
-    GSGraphNodeArray* node_I_neighbours;
-    guint neighbours_iter;
-    
-    node_I = g_sgraph_node_array_index(array_I, i_nodes_iter);
-    /* ...get its neighbours,... */
-    node_I_neighbours = node_I->neighbours;
-    g_print("%u \"I\" node's neighbours count: %u\n", i_nodes_iter,
-            node_I_neighbours->len);
-    
-    for (neighbours_iter = 0; neighbours_iter < node_I_neighbours->len;
-         neighbours_iter++)
-    {
-      GSGraphNode* node_I_neighbour = g_sgraph_node_array_index(node_I_neighbours,
-                                                       neighbours_iter);
-      /* ...if after breaking connection both nodes are in separate graphs,
-       * print info about it...
-       */
-      if (g_sgraph_node_break_connection(node_I, node_I_neighbour))
-      {
-        g_print("%u \"I\" node and its neighbour nr %u (\"%s\" node) are now in "
-                "separate graphs.\n", i_nodes_iter, neighbours_iter,
-                (gchar*)(node_I_neighbour->data));
-      }
-    }
-    /* ...and remove the "I" node. */
-    g_free(node_I->data);
-    g_sgraph_node_free(node_I);
-    g_print("\"I\" node nr %u deleted.\n", i_nodes_iter);
-  }
-  g_sgraph_node_array_free(array_I, TRUE);
-  node_A_neighbours = graph->neighbours;
-  g_print("\"A\" node neighbours:");
-  for (A_iter = 0; A_iter < node_A_neighbours->len; A_iter++)
-  {
-    GSGraphNode* node = g_sgraph_node_array_index(node_A_neighbours, A_iter);
-    g_print(" `%s'", (gchar*)(node->data));
-  }
+  node = create_graph();
+  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
+  g_print("BFS from `A':");
+  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  g_sgraph_whole_free(graph, FALSE);
+  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
+  g_print("\nDFS from `A':");
+  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  node = g_sgraph_whole_find_node_custom(graph, "I", (GEqualFunc)find_node);
+  g_sgraph_whole_free(graph, FALSE);
+  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_BFS);
+  g_print("\nBFS from `I':");
+  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
+  g_sgraph_whole_free(graph, FALSE);
+  graph = g_sgraph_whole_new_from_node(node, G_SGRAPH_TRAVERSE_DFS);
+  g_print("\nDFS from `I':");
+  g_sgraph_whole_foreach_node(graph, (GFunc)print_node_desc, NULL);
   g_print("\n");
-  /* Now lets remove the "A" node. */
-  g_free(graph->data);
-  separate_graphs = g_sgraph_node_remove(graph);
-  /* Print names of all nodes in all separate graphs and delete the subgraph. */
-  g_print("There are now %u separate graphs.\n", separate_graphs->len);
-  for (s_g_iter = 0; s_g_iter < separate_graphs->len; s_g_iter++)
-  {
-    GSGraphNode* node;
-    
-    g_print("Subgraph %u:", s_g_iter);
-    node = g_sgraph_node_array_index(separate_graphs, s_g_iter);
-    g_sgraph_node_foreach(node, print_node_data, NULL);
-    g_print("\n");
-    g_sgraph_node_foreach(node, free_node_data, NULL);
-    g_sgraph_node_free(node);
-  }
-  g_sgraph_node_array_free(separate_graphs, TRUE);
+  g_sgraph_whole_foreach_node(graph, (GFunc)free_node_desc, NULL);
+  g_sgraph_whole_free(graph, TRUE);
   return 0;
 }

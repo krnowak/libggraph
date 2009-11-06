@@ -2,18 +2,21 @@
 
 /* See topology.png. */
 
-void free_node_data(gpointer data,
+void free_node_data(GSGraphNode* node,
                     gpointer user_data G_GNUC_UNUSED)
 {
-  g_free(data);
+  g_free(node->data);
 }
 
-GSGraphNode*
+/* This function should rather read something from file, manual creation of
+ * every pair is here just to show, how it works.
+ */
+GSGraphWhole*
 create_graph(void)
 {
-  GSGraphNodeArray* graph_array;
-  GSGraphNode* graph;
-  gchar* node_A_data = g_strdup("A");
+  GSGraphWhole* graph;
+  GPtrArray* graph_array;
+  gchar* node_A_data = g_strdup("A"); 
   gchar* node_B_data = g_strdup("B");
   gchar* node_C_data = g_strdup("C");
   gchar* node_D_data = g_strdup("D");
@@ -24,8 +27,8 @@ create_graph(void)
   data_pairs[2] = g_sgraph_data_pair_new(node_A_data, node_D_data);
   data_pairs[3] = g_sgraph_data_pair_new(node_B_data, node_C_data);
   data_pairs[4] = g_sgraph_data_pair_new(node_C_data, node_D_data);
-  graph_array = g_sgraph_node_construct(data_pairs, 5);
-  g_sgraph_data_pair_free_v(data_pairs, 5);
+  graph_array = g_sgraph_whole_new(data_pairs, 5);
+  g_sgraph_data_pair_free_v(data_pairs, 5, TRUE);
   /* Check if only one graph was created. If no - free all but first. And warn
    * about it - this should not happen in this example. */
   if (!graph_array)
@@ -41,13 +44,13 @@ create_graph(void)
               " Returning first one only - rest is freed.\n", graph_array->len);
     for (iter = 1; iter < graph_array->len; iter++)
     {
-      GSGraphNode* separate_graph = g_sgraph_node_array_index(graph_array, iter);
-      g_sgraph_node_foreach(separate_graph, free_node_data, NULL);
-      g_sgraph_node_free(separate_graph);
+      GSGraphWhole* separate_graph = g_ptr_array_index(graph_array, iter);
+      g_sgraph_whole_foreach_node(separate_graph, (GFunc)free_node_data, NULL);
+      g_sgraph_whole_free(separate_graph, TRUE);
     }
   }
-  graph = g_sgraph_node_array_index(graph_array, 0);
-  g_sgraph_node_array_free(graph_array, TRUE);
+  graph = g_ptr_array_index(graph_array, 0);
+  g_ptr_array_free(graph_array, TRUE);
   return graph;
 }
 
@@ -60,7 +63,7 @@ void list_neighbours(GSGraphNode* node,
   g_print("neighbours of node %s are:", (gchar*)node->data);
   for (iter = 0; iter < node->neighbours->len; iter++)
   {
-    GSGraphNode* neighbour = g_sgraph_node_array_index(node->neighbours, iter);
+    GSGraphNode* neighbour = g_ptr_array_index(node->neighbours, iter);
     if (iter)
     {
       g_print(",");
@@ -72,16 +75,20 @@ void list_neighbours(GSGraphNode* node,
 
 int main(void)
 {
-  GSGraphNode* graph = create_graph();
+  GSGraphWhole* graph;
+  
+  graph = create_graph();
   
   g_return_val_if_fail(graph != NULL, 1);
   
-  g_print("There are %u nodes in graph.\n", g_sgraph_node_count(graph));
+  g_print("There are %u nodes and %u edges in graph.\n",
+          g_sgraph_whole_get_order(graph),
+          g_sgraph_whole_get_size(graph));
   /* This prints all neighbours of each node. */
-  g_sgraph_node_foreach_node(graph, list_neighbours, NULL);
+  g_sgraph_whole_foreach_node(graph, (GFunc)list_neighbours, NULL);
   /* Freeing data in nodes and nodes themselves. */
-  g_sgraph_node_foreach(graph, free_node_data, NULL);
-  g_sgraph_node_free(graph);
+  g_sgraph_whole_foreach_node(graph, (GFunc)free_node_data, NULL);
+  g_sgraph_whole_free(graph, TRUE);
   /* We are done. */
   return 0;
 }
