@@ -92,7 +92,7 @@ main(void)
   {
     GSGraphNode* neighbour;
 
-    neighbour = g_ptr_array_index(node->neighbours, 0);
+    neighbour = g_ptr_array_index(node->neighbours, node->neighbours->len - 1);
     g_sgraph_node_disconnect(node, neighbour);
     if (g_sgraph_node_are_separate(node, neighbour))
     {
