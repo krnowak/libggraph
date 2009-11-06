@@ -106,6 +106,15 @@ g_segraph_node_free(GSEGraphNode* node)
  *
  * Checks if @node and @other_node are separate.
  *
+ * <note>
+ *   <para>
+ *     Performance hint: if you suspect two nodes being in two separate graphs
+ *     and you are able to say which of graphs will have lower order, call this
+ *     function with @node being in larger graph and @other_node being in
+ *     smaller one.
+ *   </para>
+ * </note>
+ *
  * Returns: %TRUE if there is no path between @node and @other_node.
  */
 gboolean
