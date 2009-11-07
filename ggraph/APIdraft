@@ -1,0 +1,87 @@
+types:
+g - graph
+e - edge
+n - node
+f(T; ...) - func returning T type and taking ... parameters
+u - user data
+E - error
+b - bool
+o - other stuff
+i - int
+u - uint
+v - value
+a(T) - array of T types
+l(T) - list of T types
+t - gtype
+x - void
+
+
+modifiers:
+c - const
+r - reference
+g
+{
+  priv:
+  l(n) all_nodes
+  l(n) all_edges
+  
+  // flags
+  u options
+  // enum
+  i type
+  t edge_data_type
+  t node_data_type
+}
+
+n
+{
+  priv:
+  v data;
+  l(e) edges;
+}
+
+e
+{
+  priv:
+  v data;
+  n tail;
+  n head;
+}
+
+// Graph methods
+g ggraph_new(u, i, t, t)
+g ggraph_copy(c g)
+c n ggraph_create_new_node(g)
+c e ggraph_connect_two_nodes(g, n, n, E)
+c n ggraph_construct(g, o, E)
+x ggraph_foreach_node(g, f(x; c n, u), u, E)
+x ggraph_foreach_connected_node(g, n, f(x; c n, u), u, E)
+x ggraph_foreach_edge(g, f(x; c e, u), u, E)
+x ggraph_foreach_connected_edge(g, e, f(x; c e, u), u, E)
+u ggraph_order(c g)
+u ggraph_size(c g)
+v ggraph_remove_edge(g, e, E) [x ggraph_remove_edge(g, e, E)]
+a(v) ggraph_remove_node(g, n, E) [x ggraph_remove_node(g, n, E)]
+a(c n) ggraph_find_nodes(c g, f(b; c n, u), u)
+a(c e) ggraph_find_edges(c g, f(b; c e, u), u)
+n ggraph_first_node(c g)
+n ggraph_last_node(c g)
+e ggraph_first_edge(c g)
+e ggraph_last_edge(c g)
+u ggraph_multiplicity(c g)
+u ggraph_edge_multiplicity(c g, c e)
+
+// Node methods
+r v node_value(c n)
+u node_degree(c n)
+a(c e) node_tailed_edges(c n)
+a(c e) node_headed_edges(c n)
+a(c e) node_all_edges(c n)
+
+// Edge methods
+r v edge_value(c e)
+b edge_loop(c e)
+b edge_link(c e)
+c n edge_tail(c e)
+c n edge_head(c e)
+

@@ -1,0 +1,10 @@
+object---------------------------------------.
+|                                            |
+data------------------------------------.?---?graph_entity
+|                                       |    | | |
+edge---------------.                    node ? ? ?
+|                  |                   
+directed_multiedge undirected_multiedge
+|                  |
+directed_edge      undirected_edge
+
