@@ -15,5 +15,5 @@ Build from git dependencies:
 
 - same as above
 - recent autotools
-- perl and git for ChangeLog generation
+- sed and git for ChangeLog generation
 - gtk-doc >= 1.9 for documentation
