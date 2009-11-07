@@ -607,8 +607,8 @@ _g_sgraph_snapshot_append_BFS(GSGraphNode* node,
  * @node: a node being a part of a graph.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSGraphSnapshot from given @node using traversing
- * algorithm denoted by @traverse_type.
+ * General function creating a #GSGraphSnapshot from given @node using
+ * traversing algorithm denoted by @traverse_type.
  *
  * Returns: new #GSGraphSnapshot.
  */

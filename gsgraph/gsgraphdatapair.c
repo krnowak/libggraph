@@ -151,5 +151,6 @@ g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair)
 {
   g_return_val_if_fail(data_pair != NULL, FALSE);
 
-  return (data_pair->first && data_pair->second && data_pair->first != data_pair->second);
+  return (data_pair->first && data_pair->second &&
+          data_pair->first != data_pair->second);
 }

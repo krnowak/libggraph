@@ -33,11 +33,12 @@
  * Convenient structure holding all nodes and all edges in arrays for easy
  * processing them with simply iterating the arrays. This wrapper is sort of
  * semi-snapshot of a graph - that is, if after creation of #GSEGraphSnapshot
- * new node or edge is added to graph, this snapshot is out of date, but changes
- * inside nodes already inside the wrapper are reflected in wrapper too.
+ * new node or edge is added to or removed from graph, this snapshot is out of
+ * date, but changes inside nodes or edges already inside the wrapper are
+ * reflected in wrapper too.
  *
- * Wrapper can be created using two traversing algorithms to add nodes and edges
- * to arrays inside the wrapper or by specifing data triplets.
+ * Wrapper can be created by using two traversing algorithms to add nodes and
+ * edges to arrays inside the wrapper or by specifing data triplets.
  *
  * To create a structure, use g_segraph_snapshot_new(),
  * g_segraph_snapshot_new_from_node(), g_segraph_snapshot_new_from_edge(),
@@ -132,8 +133,8 @@ _g_segraph_snapshot_new_blank(guint node_array_size,
  * @count: length of @data_pairs.
  *
  * Creates a graph from passed data triplets. Resulting construction can be
- * several separate graphs, so an array of #GSEGraphSnapshot is returned. Also, if
- * both first and second #GSEGraphDataTriplet member are %NULL, then this
+ * several separate graphs, so an array of #GSEGraphSnapshot is returned. Also,
+ * if both first and second #GSEGraphDataTriplet member are %NULL, then this
  * triplet is omitted in creation. If @count is 0, it is assumed that
  * @data_triplets is %NULL terminated array. If one of first and second members
  * of #GSEGraphDataTriplet is %NULL, then only one node with not %NULL data and
@@ -348,7 +349,8 @@ g_segraph_snapshot_new(GSEGraphDataTriplet** data_triplets,
         }
         case G_SEGRAPH_FIRST:
         {
-          /* first node was created, so maybe it will belong to existing graph. */
+          /* first node was created, so maybe it will belong to existing graph.
+           */
           GSEGraphSnapshot* temp_graph;
 
           /* creating self-connected node means it creates separate graph. */
@@ -369,7 +371,8 @@ g_segraph_snapshot_new(GSEGraphDataTriplet** data_triplets,
         }
         case G_SEGRAPH_SECOND:
         {
-          /* second node was created, so maybe it will belong to existing graph. */
+          /* second node was created, so maybe it will belong to existing graph.
+           */
           GSEGraphSnapshot* temp_graph;
 
           /* creating self-connected node means it creates separate graph. */
@@ -903,8 +906,8 @@ _g_segraph_snapshot_append_BFS(GSEGraphNode* node,
  * @put_edges: whether to put edges in array.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSEGraphSnapshot from given @node using traversing
- * algorithm denoted by @traverse_type.
+ * General function creating a #GSEGraphSnapshot from given @node using
+ * traversing algorithm denoted by @traverse_type.
  *
  * Returns: new #GSEGraphSnapshot.
  */
@@ -964,8 +967,8 @@ _g_segraph_snapshot_new_from_node_general(GSEGraphNode* node,
  * @put_edges: whether to put edges in array.
  * @traverse_type: which traversing algorithm to use.
  *
- * General function creating a #GSEGraphSnapshot from given @edge using traversing
- * algorithm denoted by @traverse_type.
+ * General function creating a #GSEGraphSnapshot from given @edge using
+ * traversing algorithm denoted by @traverse_type.
  *
  * Returns: new #GSEGraphSnapshot.
  */

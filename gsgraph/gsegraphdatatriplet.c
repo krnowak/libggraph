@@ -27,8 +27,8 @@
  * @see_also: #GSEGraphSnapshot, g_segraph_snapshot_new()
  *
  * Data triplets are used primarly for constructing graphs by
- * g_segraph_snapshot_new(). They contain all necessary data to create a pair
- * of nodes - nodes data and edge data.
+ * g_segraph_snapshot_new(). They contain all necessary data to create connected
+ * pair of nodes - nodes data and edge data.
  *
  * To create new data triplet, use g_segraph_data_triplet_new().
  *
@@ -89,7 +89,8 @@ g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
 {
   g_return_val_if_fail(data_triplet != NULL, NULL);
 
-  return g_segraph_data_triplet_new(data_triplet->first, data_triplet->second, data_triplet->edge);
+  return g_segraph_data_triplet_new(data_triplet->first, data_triplet->second,
+                                    data_triplet->edge);
 }
 
 /**

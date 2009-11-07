@@ -75,10 +75,10 @@ _g_segraph_edge_general_member_check(GSEGraphEdge* edge,
                                      gboolean check_for_first);
 
 static gboolean
-_g_segraph_edge_recurrent_bridge_check(GSEGraphNode* first,
-                                       GSEGraphNode* second,
-                                       GHashTable* visited_nodes,
-                                       GHashTable* visited_edges);
+_g_segraph_edge_bridge_check(GSEGraphNode* first,
+                             GSEGraphNode* second,
+                             GHashTable* visited_nodes,
+                             GHashTable* visited_edges);
 
 static void
 _g_segraph_edge_disjoin(GSEGraphEdge* edge);
@@ -689,7 +689,8 @@ g_segraph_edge_is_bridge(GSEGraphEdge* edge)
 
   g_hash_table_insert(visited_edges, edge, NULL);
 
-  result = _g_segraph_edge_recurrent_bridge_check(edge->first, edge->second, visited_nodes, visited_edges);
+  result = _g_segraph_edge_bridge_check(edge->first, edge->second,
+                                        visited_nodes, visited_edges);
 
   g_hash_table_unref(visited_nodes);
   g_hash_table_unref(visited_edges);
@@ -768,7 +769,7 @@ _g_segraph_edge_general_member_check(GSEGraphEdge* edge,
 }
 
 /**
- * _g_segraph_edge_recurrent_bridge_check:
+ * _g_segraph_edge_bridge_check:
  * @first: first node.
  * @second: second node.
  * @visited_nodes: hash table holding already visited nodes.
@@ -780,10 +781,10 @@ _g_segraph_edge_general_member_check(GSEGraphEdge* edge,
  * Returns: %TRUE if edge is a bridge, otherwise %FALSE.
  */
 static gboolean
-_g_segraph_edge_recurrent_bridge_check(GSEGraphNode* first,
-                                       GSEGraphNode* second,
-                                       GHashTable* visited_nodes,
-                                       GHashTable* visited_edges)
+_g_segraph_edge_bridge_check(GSEGraphNode* first,
+                             GSEGraphNode* second,
+                             GHashTable* visited_nodes,
+                             GHashTable* visited_edges)
 {
   guint iter;
 
@@ -814,7 +815,8 @@ _g_segraph_edge_recurrent_bridge_check(GSEGraphNode* first,
       continue;
     }
 
-    if (!_g_segraph_edge_recurrent_bridge_check(first, node, visited_nodes, visited_edges))
+    if (!_g_segraph_edge_bridge_check(first, node, visited_nodes,
+                                      visited_edges))
     {
       return FALSE;
     }

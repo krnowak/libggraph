@@ -49,10 +49,10 @@
 /* static function declarations. */
 
 static gboolean
-_g_segraph_node_separation_recurrent_check(GSEGraphNode* node,
-                                           GSEGraphNode* other_node,
-                                           GHashTable* visited_nodes,
-                                           GHashTable* visited_edges);
+_g_segraph_node_separation_check(GSEGraphNode* node,
+                                 GSEGraphNode* other_node,
+                                 GHashTable* visited_nodes,
+                                 GHashTable* visited_edges);
 
 /* public function definitions */
 
@@ -131,9 +131,8 @@ g_segraph_node_are_separate(GSEGraphNode* node,
   visited_nodes = g_hash_table_new(NULL, NULL);
   visited_edges = g_hash_table_new(NULL, NULL);
 
-  are_separate = _g_segraph_node_separation_recurrent_check(node, other_node,
-                                                            visited_nodes,
-                                                            visited_edges);
+  are_separate = _g_segraph_node_separation_check(node, other_node,
+                                                  visited_nodes, visited_edges);
 
   g_hash_table_unref(visited_nodes);
   g_hash_table_unref(visited_edges);
@@ -144,7 +143,7 @@ g_segraph_node_are_separate(GSEGraphNode* node,
 /* static function definitions. */
 
 /**
- * _g_segraph_node_separation_recurrent_check:
+ * _g_segraph_node_separation_check:
  * @node: a node.
  * @other_node: other node.
  * @visited_nodes: map of already visited nodes.
@@ -157,10 +156,10 @@ g_segraph_node_are_separate(GSEGraphNode* node,
  * Returns: %TRUE if @node and other_node are not the same, otherwise @FALSE.
  */
 static gboolean
-_g_segraph_node_separation_recurrent_check(GSEGraphNode* node,
-                                           GSEGraphNode* other_node,
-                                           GHashTable* visited_nodes,
-                                           GHashTable* visited_edges)
+_g_segraph_node_separation_check(GSEGraphNode* node,
+                                 GSEGraphNode* other_node,
+                                 GHashTable* visited_nodes,
+                                 GHashTable* visited_edges)
 {
   guint iter;
 
@@ -194,9 +193,8 @@ _g_segraph_node_separation_recurrent_check(GSEGraphNode* node,
       continue;
     }
 
-    if (!_g_segraph_node_separation_recurrent_check(node, temp_node,
-                                                    visited_nodes,
-                                                    visited_edges))
+    if (!_g_segraph_node_separation_check(node, temp_node, visited_nodes,
+                                          visited_edges))
     {
       return FALSE;
     }

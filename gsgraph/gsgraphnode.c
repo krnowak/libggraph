@@ -59,9 +59,9 @@ typedef enum
 /* static declarations */
 
 static gboolean
-_g_sgraph_node_recurrent_connection_check(GSGraphNode* sgraph_node,
-                                          GSGraphNode* other_sgraph_node,
-                                          GHashTable* visited_nodes);
+_g_sgraph_node_connection_check(GSGraphNode* sgraph_node,
+                                GSGraphNode* other_sgraph_node,
+                                GHashTable* visited_nodes);
 
 /* function definitions */
 
@@ -190,8 +190,8 @@ g_sgraph_node_are_separate(GSGraphNode* node,
   gboolean not_connected;
 
   visited_nodes = g_hash_table_new(NULL, NULL);
-  not_connected = _g_sgraph_node_recurrent_connection_check(node, other_node,
-                                                            visited_nodes);
+  not_connected = _g_sgraph_node_connection_check(node, other_node,
+                                                  visited_nodes);
   g_hash_table_unref(visited_nodes);
   return not_connected;
 }
@@ -199,7 +199,7 @@ g_sgraph_node_are_separate(GSGraphNode* node,
 /* static function definitions */
 
 /**
- * _g_sgraph_node_recurrent_connection_check:
+ * _g_sgraph_node_connection_check:
  * @node: starting node.
  * @other_node: other node.
  * @visited_nodes: #GHashTable holding information which nodes were already
@@ -210,9 +210,9 @@ g_sgraph_node_are_separate(GSGraphNode* node,
  * Returns: %TRUE if @node != @other_node, otherwise %FALSE.
  */
 static gboolean
-_g_sgraph_node_recurrent_connection_check(GSGraphNode* node,
-                                          GSGraphNode* other_node,
-                                          GHashTable* visited_nodes)
+_g_sgraph_node_connection_check(GSGraphNode* node,
+                                GSGraphNode* other_node,
+                                GHashTable* visited_nodes)
 {
   guint iter;
 
@@ -229,8 +229,7 @@ _g_sgraph_node_recurrent_connection_check(GSGraphNode* node,
   for (iter = 0; iter < other_node->neighbours->len; iter++)
   {
     GSGraphNode* temp_node = g_ptr_array_index(other_node->neighbours, iter);
-    if (!_g_sgraph_node_recurrent_connection_check(node, temp_node,
-                                                   visited_nodes))
+    if (!_g_sgraph_node_connection_check(node, temp_node, visited_nodes))
     {
       return FALSE;
     }
