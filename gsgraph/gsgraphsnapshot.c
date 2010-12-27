@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -21,7 +21,7 @@
 
 /**
  * SECTION: gsgraphsnapshot
- * @title: Graph snapshot
+ * @title: Simple graph snapshot
  * @short_description: convenient structure holding nodes in array.
  * @include: gsgraph/gsgraph.h
  * @see_also: #GSGraphNode, #GSGraphDataPair, #GSGraphTraverseType
@@ -79,26 +79,26 @@ typedef enum
 /* static function declarations. */
 
 static void
-_g_sgraph_snapshot_append_DFS(GSGraphNode* node,
-                              GPtrArray* node_array,
-                              GHashTable* visited_nodes);
+_g_sgraph_snapshot_append_DFS (GSGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes);
 
 static void
-_g_sgraph_snapshot_append_BFS(GSGraphNode* node,
-                              GPtrArray* node_array,
-                              GHashTable* visited_nodes);
+_g_sgraph_snapshot_append_BFS (GSGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes);
 
 static GSGraphSnapshot*
-_g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
-                                         GSGraphTraverseType traverse_type);
+_g_sgraph_snapshot_new_from_node_general (GSGraphNode* node,
+                                          GSGraphTraverseType traverse_type);
 
 static GSGraphSnapshot*
-_g_sgraph_snapshot_copy_general(GSGraphSnapshot* graph,
-                                GCopyFunc node_data_copy_func,
-                                gpointer node_user_data);
+_g_sgraph_snapshot_copy_general (GSGraphSnapshot* graph,
+                                 GCopyFunc node_data_copy_func,
+                                 gpointer node_user_data);
 
 static GSGraphSnapshot*
-_g_sgraph_snapshot_new_blank(guint node_array_size);
+_g_sgraph_snapshot_new_blank (guint node_array_size);
 
 /* public function definitions. */
 
@@ -152,21 +152,21 @@ _g_sgraph_snapshot_new_blank(guint node_array_size);
  * created.
  */
 GPtrArray*
-g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
-                      guint count)
+g_sgraph_snapshot_new (GSGraphDataPair** data_pairs,
+                       guint count)
 {
   GPtrArray* separate_graphs;
   GHashTable* data_to_nodes;
   GHashTable* nodes_to_wholes;
   guint iter;
 
-  g_return_val_if_fail(data_pairs != NULL, NULL);
+  g_return_val_if_fail (data_pairs != NULL, NULL);
 
   if (!count)
   {
     while (data_pairs[count])
     {
-      count++;
+      ++count;
     }
   }
 
@@ -175,38 +175,42 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
     return NULL;
   }
 
-  separate_graphs = g_ptr_array_new();
-  data_to_nodes = g_hash_table_new(NULL, NULL);
-  nodes_to_wholes = g_hash_table_new(NULL, NULL);
-  for (iter = 0; iter < count; iter++)
+  separate_graphs = g_ptr_array_new ();
+  data_to_nodes = g_hash_table_new (NULL, NULL);
+  nodes_to_wholes = g_hash_table_new (NULL, NULL);
+  for (iter = 0; iter < count; ++iter)
   {
     GSGraphDataPair* data_pair;
 
     data_pair = data_pairs[iter];
-    if (g_sgraph_data_pair_is_valid(data_pair))
+    if (g_sgraph_data_pair_is_valid (data_pair))
     {
       GSGraphNode* first_node;
       GSGraphNode* second_node;
       GSGraphConstructFlags created;
 
       created = G_SGRAPH_NONE;
-      if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->first, NULL,
-                                        (gpointer*)&first_node))
+      if (!g_hash_table_lookup_extended (data_to_nodes,
+                                         data_pair->first,
+                                         NULL,
+                                         (gpointer*)&first_node))
       {
-        first_node = g_sgraph_node_new(data_pair->first);
-        g_hash_table_insert(data_to_nodes, data_pair->first, first_node);
+        first_node = g_sgraph_node_new (data_pair->first);
+        g_hash_table_insert (data_to_nodes, data_pair->first, first_node);
         created |= G_SGRAPH_FIRST;
       }
 
-      if (!g_hash_table_lookup_extended(data_to_nodes, data_pair->second, NULL,
-                                        (gpointer*)&second_node))
+      if (!g_hash_table_lookup_extended (data_to_nodes,
+                                         data_pair->second,
+                                         NULL,
+                                         (gpointer*)&second_node))
       {
-        second_node = g_sgraph_node_new(data_pair->second);
-        g_hash_table_insert(data_to_nodes, data_pair->second, second_node);
+        second_node = g_sgraph_node_new (data_pair->second);
+        g_hash_table_insert (data_to_nodes, data_pair->second, second_node);
         created |= G_SGRAPH_SECOND;
       }
 
-      g_sgraph_node_connect(first_node, second_node);
+      g_sgraph_node_connect (first_node, second_node);
       switch (created)
       {
         case G_SGRAPH_NONE:
@@ -219,23 +223,23 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
 
           check_nodes[0] = first_node;
           check_nodes[1] = second_node;
-          for (which = 0; which < JOIN_COUNT; which++)
+          for (which = 0; which < JOIN_COUNT; ++which)
           {
             guint iter2;
 
-            for (iter2 = 0; iter2 < separate_graphs->len; iter2++)
+            for (iter2 = 0; iter2 < separate_graphs->len; ++iter2)
             {
               GSGraphSnapshot* graph;
               guint iter3;
               gboolean hit;
 
-              graph = g_ptr_array_index(separate_graphs, iter2);
+              graph = g_ptr_array_index (separate_graphs, iter2);
               hit = FALSE;
-              for (iter3 = 0; iter3 < graph->node_array->len; iter3++)
+              for (iter3 = 0; iter3 < graph->node_array->len; ++iter3)
               {
                 GSGraphNode* temp_node;
 
-                temp_node = g_ptr_array_index(graph->node_array, iter3);
+                temp_node = g_ptr_array_index (graph->node_array, iter3);
                 if (temp_node == check_nodes[which])
                 {
                   joined_graphs[which] = graph;
@@ -254,21 +258,22 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
           {
             guint iter2;
 
-            for (iter2 = 0; iter2 < joined_graphs[1]->node_array->len; iter2++)
+            for (iter2 = 0; iter2 < joined_graphs[1]->node_array->len; ++iter2)
             {
               GSGraphNode* temp_node;
 
-              temp_node = g_ptr_array_index(joined_graphs[1]->node_array,
-                                                     iter2);
+              temp_node = g_ptr_array_index (joined_graphs[1]->node_array,
+                                             iter2);
               if (temp_node != check_nodes[1])
               {
-                g_ptr_array_add(joined_graphs[0]->node_array, temp_node);
-                g_hash_table_insert(nodes_to_wholes, temp_node,
-                                    joined_graphs[0]);
+                g_ptr_array_add (joined_graphs[0]->node_array, temp_node);
+                g_hash_table_insert (nodes_to_wholes,
+                                     temp_node,
+                                     joined_graphs[0]);
               }
             }
-            g_ptr_array_remove_fast(separate_graphs, joined_graphs[1]);
-            g_sgraph_snapshot_free(joined_graphs[1], FALSE);
+            g_ptr_array_remove_fast (separate_graphs, joined_graphs[1]);
+            g_sgraph_snapshot_free (joined_graphs[1], FALSE);
           }
           #undef JOIN_COUNT
           break;
@@ -278,9 +283,9 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
           /* first node was created, so it belongs to existing graph. */
           GSGraphSnapshot* temp_graph;
 
-          temp_graph = g_hash_table_lookup(nodes_to_wholes, second_node);
-          g_ptr_array_add(temp_graph->node_array, first_node);
-          g_hash_table_insert(nodes_to_wholes, first_node, temp_graph);
+          temp_graph = g_hash_table_lookup (nodes_to_wholes, second_node);
+          g_ptr_array_add (temp_graph->node_array, first_node);
+          g_hash_table_insert (nodes_to_wholes, first_node, temp_graph);
           break;
         }
         case G_SGRAPH_SECOND:
@@ -288,9 +293,9 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
           /* second node was created, so it belongs to existing graph. */
           GSGraphSnapshot* temp_graph;
 
-          temp_graph = g_hash_table_lookup(nodes_to_wholes, first_node);
-          g_ptr_array_add(temp_graph->node_array, second_node);
-          g_hash_table_insert(nodes_to_wholes, second_node, temp_graph);
+          temp_graph = g_hash_table_lookup (nodes_to_wholes, first_node);
+          g_ptr_array_add (temp_graph->node_array, second_node);
+          g_hash_table_insert (nodes_to_wholes, second_node, temp_graph);
           break;
         }
         case G_SGRAPH_BOTH:
@@ -298,22 +303,22 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
           /* if both nodes were created then they create separate graph. */
           GSGraphSnapshot* temp_graph;
 
-          temp_graph = _g_sgraph_snapshot_new_blank(2);
-          g_ptr_array_add(temp_graph->node_array, first_node);
-          g_ptr_array_add(temp_graph->node_array, second_node);
-          g_ptr_array_add(separate_graphs, temp_graph);
-          g_hash_table_insert(nodes_to_wholes, first_node, temp_graph);
-          g_hash_table_insert(nodes_to_wholes, second_node, temp_graph);
+          temp_graph = _g_sgraph_snapshot_new_blank (2);
+          g_ptr_array_add (temp_graph->node_array, first_node);
+          g_ptr_array_add (temp_graph->node_array, second_node);
+          g_ptr_array_add (separate_graphs, temp_graph);
+          g_hash_table_insert (nodes_to_wholes, first_node, temp_graph);
+          g_hash_table_insert (nodes_to_wholes, second_node, temp_graph);
           break;
         }
       }
     }
   }
-  g_hash_table_unref(data_to_nodes);
-  g_hash_table_unref(nodes_to_wholes);
+  g_hash_table_unref (data_to_nodes);
+  g_hash_table_unref (nodes_to_wholes);
   if (!separate_graphs->len)
   {
-    g_ptr_array_free(separate_graphs, TRUE);
+    g_ptr_array_free (separate_graphs, TRUE);
     separate_graphs = NULL;
   }
   return separate_graphs;
@@ -330,12 +335,12 @@ g_sgraph_snapshot_new(GSGraphDataPair** data_pairs,
  * Returns: new #GSGraphSnapshot.
  */
 GSGraphSnapshot*
-g_sgraph_snapshot_new_from_node(GSGraphNode* node,
-                                GSGraphTraverseType traverse_type)
+g_sgraph_snapshot_new_from_node (GSGraphNode* node,
+                                 GSGraphTraverseType traverse_type)
 {
-  g_return_val_if_fail(node != NULL, NULL);
+  g_return_val_if_fail (node != NULL, NULL);
 
-  return _g_sgraph_snapshot_new_from_node_general(node, traverse_type);
+  return _g_sgraph_snapshot_new_from_node_general (node, traverse_type);
 }
 
 /**
@@ -349,11 +354,11 @@ g_sgraph_snapshot_new_from_node(GSGraphNode* node,
  * Returns: A copy of @graph.
  */
 GSGraphSnapshot*
-g_sgraph_snapshot_copy(GSGraphSnapshot* graph)
+g_sgraph_snapshot_copy (GSGraphSnapshot* graph)
 {
-  g_return_val_if_fail(graph != NULL, NULL);
+  g_return_val_if_fail (graph != NULL, NULL);
 
-  return _g_sgraph_snapshot_copy_general(graph, NULL, NULL);
+  return _g_sgraph_snapshot_copy_general (graph, NULL, NULL);
 }
 
 /**
@@ -368,15 +373,16 @@ g_sgraph_snapshot_copy(GSGraphSnapshot* graph)
  * Returns: A copy of @graph.
  */
 GSGraphSnapshot*
-g_sgraph_snapshot_copy_deep(GSGraphSnapshot* graph,
-                            GCopyFunc node_data_copy_func,
-                            gpointer node_user_data)
+g_sgraph_snapshot_copy_deep (GSGraphSnapshot* graph,
+                             GCopyFunc node_data_copy_func,
+                             gpointer node_user_data)
 {
-  g_return_val_if_fail(graph != NULL, NULL);
-  g_return_val_if_fail(node_data_copy_func != NULL, NULL);
+  g_return_val_if_fail (graph != NULL, NULL);
+  g_return_val_if_fail (node_data_copy_func != NULL, NULL);
 
-  return _g_sgraph_snapshot_copy_general(graph, node_data_copy_func,
-                                         node_user_data);
+  return _g_sgraph_snapshot_copy_general (graph,
+                                          node_data_copy_func,
+                                          node_user_data);
 }
 
 /**
@@ -388,26 +394,26 @@ g_sgraph_snapshot_copy_deep(GSGraphSnapshot* graph,
  * also freed.
  */
 void
-g_sgraph_snapshot_free(GSGraphSnapshot* graph,
-                       gboolean deep_free)
+g_sgraph_snapshot_free (GSGraphSnapshot* graph,
+                        gboolean deep_free)
 {
-  g_return_if_fail(graph != NULL);
+  g_return_if_fail (graph != NULL);
 
   if (deep_free)
   {
     guint iter;
 
-    for (iter = 0; iter < graph->node_array->len; iter++)
+    for (iter = 0; iter < graph->node_array->len; ++iter)
     {
       GSGraphNode* node;
 
-      node = g_ptr_array_index(graph->node_array, iter);
-      g_sgraph_node_free(node);
+      node = g_ptr_array_index (graph->node_array, iter);
+      g_sgraph_node_free (node);
     }
   }
 
-  g_ptr_array_free(graph->node_array, TRUE);
-  g_slice_free(GSGraphSnapshot, graph);
+  g_ptr_array_free (graph->node_array, TRUE);
+  g_slice_free (GSGraphSnapshot, graph);
 }
 
 /**
@@ -419,10 +425,10 @@ g_sgraph_snapshot_free(GSGraphSnapshot* graph,
  * Returns: number of nodes in graph.
  */
 guint
-g_sgraph_snapshot_get_order(GSGraphSnapshot* graph)
+g_sgraph_snapshot_get_order (GSGraphSnapshot* graph)
 {
-  g_return_val_if_fail(graph != NULL, 0);
-  g_return_val_if_fail(graph->node_array != NULL, 0);
+  g_return_val_if_fail (graph != NULL, 0);
+  g_return_val_if_fail (graph->node_array != NULL, 0);
 
   return graph->node_array->len;
 }
@@ -437,25 +443,24 @@ g_sgraph_snapshot_get_order(GSGraphSnapshot* graph)
  * Returns: number of edges in graph.
  */
 guint
-g_sgraph_snapshot_get_size(GSGraphSnapshot* graph)
+g_sgraph_snapshot_get_size (GSGraphSnapshot* graph)
 {
   guint iter;
   guint size;
 
-  g_return_val_if_fail(graph != NULL, 0);
-  g_return_val_if_fail(graph->node_array != NULL, 0);
+  g_return_val_if_fail (graph != NULL, 0);
+  g_return_val_if_fail (graph->node_array != NULL, 0);
 
   size = 0;
-  for (iter = 0; iter < graph->node_array->len; iter++)
+  for (iter = 0; iter < graph->node_array->len; ++iter)
   {
     GSGraphNode* node;
 
-    node = g_ptr_array_index(graph->node_array, iter);
+    node = g_ptr_array_index (graph->node_array, iter);
     size += node->neighbours->len;
   }
 
-  /* bitshifting is faster. :) */
-  return (size >> 1);
+  return (size / 2);
 }
 
 /**
@@ -467,20 +472,20 @@ g_sgraph_snapshot_get_size(GSGraphSnapshot* graph)
  * Calls @func for each node in @graph.
  */
 void
-g_sgraph_snapshot_foreach_node(GSGraphSnapshot* graph,
-                               GFunc func,
-                               gpointer user_data)
+g_sgraph_snapshot_foreach_node (GSGraphSnapshot* graph,
+                                GFunc func,
+                                gpointer user_data)
 {
   guint iter;
 
-  g_return_if_fail(graph != NULL);
-  g_return_if_fail(graph->node_array != NULL);
-  g_return_if_fail(func != NULL);
+  g_return_if_fail (graph != NULL);
+  g_return_if_fail (graph->node_array != NULL);
+  g_return_if_fail (func != NULL);
 
-  for (iter = 0; iter < graph->node_array->len; iter++)
+  for (iter = 0; iter < graph->node_array->len; ++iter)
   {
-    GSGraphNode* node = g_ptr_array_index(graph->node_array, iter);
-    (*func)(node, user_data);
+    GSGraphNode* node = g_ptr_array_index (graph->node_array, iter);
+    (*func) (node, user_data);
   }
 }
 
@@ -499,20 +504,20 @@ g_sgraph_snapshot_foreach_node(GSGraphSnapshot* graph,
  * Returns: found #GSGraphNode or %NULL if there was no such node.
  */
 GSGraphNode*
-g_sgraph_snapshot_find_node_custom(GSGraphSnapshot* graph,
-                                   gpointer user_data,
-                                   GEqualFunc func)
+g_sgraph_snapshot_find_node_custom (GSGraphSnapshot* graph,
+                                    gpointer user_data,
+                                    GEqualFunc func)
 {
   guint iter;
 
-  g_return_val_if_fail(graph != NULL, NULL);
-  g_return_val_if_fail(graph->node_array != NULL, NULL);
-  g_return_val_if_fail(func != NULL, NULL);
+  g_return_val_if_fail (graph != NULL, NULL);
+  g_return_val_if_fail (graph->node_array != NULL, NULL);
+  g_return_val_if_fail (func != NULL, NULL);
 
-  for (iter = 0; iter < graph->node_array->len; iter++)
+  for (iter = 0; iter < graph->node_array->len; ++iter)
   {
-    GSGraphNode* node = g_ptr_array_index(graph->node_array, iter);
-    if ((*func)(node, user_data))
+    GSGraphNode* node = g_ptr_array_index (graph->node_array, iter);
+    if ((*func) (node, user_data))
     {
       return node;
     }
@@ -531,30 +536,30 @@ g_sgraph_snapshot_find_node_custom(GSGraphSnapshot* graph,
  * Checks all nodes and put them into array using depth first search algorithm.
  */
 static void
-_g_sgraph_snapshot_append_DFS(GSGraphNode* node,
-                              GPtrArray* node_array,
-                              GHashTable* visited_nodes)
+_g_sgraph_snapshot_append_DFS (GSGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes)
 {
   guint iter;
 
-  if (g_hash_table_lookup_extended(visited_nodes, node, NULL, NULL))
+  if (g_hash_table_lookup_extended (visited_nodes, node, NULL, NULL))
   {
     return;
   }
 
-  g_hash_table_insert(visited_nodes, node, NULL);
-  g_ptr_array_add(node_array, node);
-  for (iter = 0; iter < node->neighbours->len; iter++)
+  g_hash_table_insert (visited_nodes, node, NULL);
+  g_ptr_array_add (node_array, node);
+  for (iter = 0; iter < node->neighbours->len; ++iter)
   {
     GSGraphNode* other_node;
 
-    other_node = g_ptr_array_index(node->neighbours, iter);
-    _g_sgraph_snapshot_append_DFS(other_node, node_array, visited_nodes);
+    other_node = g_ptr_array_index (node->neighbours, iter);
+    _g_sgraph_snapshot_append_DFS (other_node, node_array, visited_nodes);
   }
 }
 
 /**
- * _g_sgraph_snapshot_append_DFS:
+ * _g_sgraph_snapshot_append_BFS:
  * @node: a node, which will be put into arrays with its edges.
  * @node_array: array of all nodes in graph.
  * @visited_nodes: a map of already visited nodes.
@@ -563,43 +568,43 @@ _g_sgraph_snapshot_append_DFS(GSGraphNode* node,
  * algorithm.
  */
 static void
-_g_sgraph_snapshot_append_BFS(GSGraphNode* node,
-                              GPtrArray* node_array,
-                              GHashTable* visited_nodes)
+_g_sgraph_snapshot_append_BFS (GSGraphNode* node,
+                               GPtrArray* node_array,
+                               GHashTable* visited_nodes)
 {
   GQueue* queue;
 
-  queue = g_queue_new();
+  queue = g_queue_new ();
 
-  g_hash_table_insert(visited_nodes, node, NULL);
-  g_queue_push_tail(queue, node);
-  g_ptr_array_add(node_array, node);
+  g_hash_table_insert (visited_nodes, node, NULL);
+  g_queue_push_tail (queue, node);
+  g_ptr_array_add (node_array, node);
 
-  while (!g_queue_is_empty(queue))
+  while (!g_queue_is_empty (queue))
   {
     GSGraphNode* temp_node;
     guint iter;
 
-    temp_node = g_queue_pop_head(queue);
+    temp_node = g_queue_pop_head (queue);
 
-    for (iter = 0; iter < temp_node->neighbours->len; iter++)
+    for (iter = 0; iter < temp_node->neighbours->len; ++iter)
     {
       GSGraphNode* other_node;
 
-      other_node = g_ptr_array_index(temp_node->neighbours, iter);
+      other_node = g_ptr_array_index (temp_node->neighbours, iter);
 
-      if (g_hash_table_lookup_extended(visited_nodes, other_node, NULL, NULL))
+      if (g_hash_table_lookup_extended (visited_nodes, other_node, NULL, NULL))
       {
         continue;
       }
 
-      g_hash_table_insert(visited_nodes, other_node, NULL);
-      g_queue_push_tail(queue, other_node);
-      g_ptr_array_add(node_array, other_node);
+      g_hash_table_insert (visited_nodes, other_node, NULL);
+      g_queue_push_tail (queue, other_node);
+      g_ptr_array_add (node_array, other_node);
     }
   }
 
-  g_queue_free(queue);
+  g_queue_free (queue);
 }
 
 /**
@@ -613,12 +618,12 @@ _g_sgraph_snapshot_append_BFS(GSGraphNode* node,
  * Returns: new #GSGraphSnapshot.
  */
 static GSGraphSnapshot*
-_g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
-                                         GSGraphTraverseType traverse_type)
+_g_sgraph_snapshot_new_from_node_general (GSGraphNode* node,
+                                          GSGraphTraverseType traverse_type)
 {
-  typedef void (*GraphSearchFunc)(GSGraphNode* node,
-                                  GPtrArray* node_array,
-                                  GHashTable* visited_nodes);
+  typedef void (*GraphSearchFunc) (GSGraphNode* node,
+                                   GPtrArray* node_array,
+                                   GHashTable* visited_nodes);
 
   GSGraphSnapshot* graph;
   GHashTable* visited_nodes;
@@ -638,17 +643,17 @@ _g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
     }
     default:
     {
-      g_return_val_if_reached(NULL);
+      g_return_val_if_reached (NULL);
     }
   }
 
-  graph = _g_sgraph_snapshot_new_blank(0);
+  graph = _g_sgraph_snapshot_new_blank (0);
 
-  visited_nodes = g_hash_table_new(NULL, NULL);
+  visited_nodes = g_hash_table_new (NULL, NULL);
 
-  (*gsfunc)(node, graph->node_array, visited_nodes);
+  (*gsfunc) (node, graph->node_array, visited_nodes);
 
-  g_hash_table_unref(visited_nodes);
+  g_hash_table_unref (visited_nodes);
 
   return graph;
 }
@@ -666,62 +671,62 @@ _g_sgraph_snapshot_new_from_node_general(GSGraphNode* node,
  * Returns: A copy of @graph.
  */
 static GSGraphSnapshot*
-_g_sgraph_snapshot_copy_general(GSGraphSnapshot* graph,
-                                GCopyFunc node_data_copy_func,
-                                gpointer node_user_data)
+_g_sgraph_snapshot_copy_general (GSGraphSnapshot* graph,
+                                 GCopyFunc node_data_copy_func,
+                                 gpointer node_user_data)
 {
   GHashTable* nodes_to_dups;
   GSGraphSnapshot* dup_graph;
   guint iter;
 
-  nodes_to_dups = g_hash_table_new(NULL, NULL);
-  dup_graph = _g_sgraph_snapshot_new_blank(graph->node_array->len);
+  nodes_to_dups = g_hash_table_new (NULL, NULL);
+  dup_graph = _g_sgraph_snapshot_new_blank (graph->node_array->len);
 
-  for (iter = 0; iter < graph->node_array->len; iter++)
+  for (iter = 0; iter < graph->node_array->len; ++iter)
   {
     GSGraphNode* node;
     GSGraphNode* dup_node;
 
-    node = g_ptr_array_index(graph->node_array, iter);
-    dup_node = g_slice_new(GSGraphNode);
+    node = g_ptr_array_index (graph->node_array, iter);
+    dup_node = g_slice_new (GSGraphNode);
 
     if (node_data_copy_func)
     {
-      dup_node->data = (*node_data_copy_func)(node->data, node_user_data);
+      dup_node->data = (*node_data_copy_func) (node->data, node_user_data);
     }
     else
     {
       dup_node->data = node->data;
     }
 
-    g_hash_table_insert(nodes_to_dups, node, dup_node);
-    g_ptr_array_add(dup_graph->node_array, dup_node);
+    g_hash_table_insert (nodes_to_dups, node, dup_node);
+    g_ptr_array_add (dup_graph->node_array, dup_node);
   }
 
-  for (iter = 0; iter < graph->node_array->len; iter++)
+  for (iter = 0; iter < graph->node_array->len; ++iter)
   {
     GSGraphNode* node;
     GSGraphNode* dup_node;
     GPtrArray* dup_edges;
     guint iter2;
 
-    node = g_ptr_array_index(graph->node_array, iter);
-    dup_node = g_ptr_array_index(dup_graph->node_array, iter);
-    dup_edges = g_ptr_array_sized_new(node->neighbours->len);
+    node = g_ptr_array_index (graph->node_array, iter);
+    dup_node = g_ptr_array_index (dup_graph->node_array, iter);
+    dup_edges = g_ptr_array_sized_new (node->neighbours->len);
 
-    for (iter2 = 0; iter2 < node->neighbours->len; iter2++)
+    for (iter2 = 0; iter2 < node->neighbours->len; ++iter2)
     {
       GSGraphNode* neighbour;
       GSGraphNode* dup_neighbour;
 
-      neighbour = g_ptr_array_index(node->neighbours, iter2);
-      dup_neighbour = g_hash_table_lookup(nodes_to_dups, neighbour);
-      g_ptr_array_add(dup_edges, dup_neighbour);
+      neighbour = g_ptr_array_index (node->neighbours, iter2);
+      dup_neighbour = g_hash_table_lookup (nodes_to_dups, neighbour);
+      g_ptr_array_add (dup_edges, dup_neighbour);
     }
     dup_node->neighbours = dup_edges;
   }
 
-  g_hash_table_unref(nodes_to_dups);
+  g_hash_table_unref (nodes_to_dups);
   return dup_graph;
 }
 
@@ -734,13 +739,13 @@ _g_sgraph_snapshot_copy_general(GSGraphSnapshot* graph,
  * Returns: new #GSGraphSnapshot.
  */
 static GSGraphSnapshot*
-_g_sgraph_snapshot_new_blank(guint node_array_size)
+_g_sgraph_snapshot_new_blank (guint node_array_size)
 {
   GSGraphSnapshot* graph;
 
-  graph = g_slice_new(GSGraphSnapshot);
+  graph = g_slice_new (GSGraphSnapshot);
 
-  graph->node_array = g_ptr_array_sized_new(node_array_size);
+  graph->node_array = g_ptr_array_sized_new (node_array_size);
 
   return graph;
 }

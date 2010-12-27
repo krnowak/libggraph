@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 
 /**
  * SECTION: gsgraphenums
- * @title: Enums and flags
+ * @title: Simple graph enums and flags
  * @short_description: GSGraph enumerations.
  * @include: gsgraph/gsgraph.h
  *

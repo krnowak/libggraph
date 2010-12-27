@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsegraph.h> can be included directly."
 #endif
 
@@ -34,10 +34,9 @@ G_BEGIN_DECLS
  * GSEGraphEdge:
  * @first: first end of this edge.
  * @second: second end of this edge.
- * @connected: flag describing interconnection between @first and @second.
  * @data: data contained by this edge.
  *
- * An edge from the node containing it to the @graph.
+ * An edge connecting @first with @second.
  */
 struct _GSEGraphEdge
 {
@@ -47,96 +46,96 @@ struct _GSEGraphEdge
 };
 
 GSEGraphEdge*
-g_segraph_edge_new(gpointer data);
+g_segraph_edge_new (gpointer data);
 
 void
-g_segraph_edge_connect_nodes(GSEGraphEdge* edge,
-                             GSEGraphNode* first,
-                             GSEGraphNode* second);
+g_segraph_edge_connect_nodes (GSEGraphEdge* edge,
+                              GSEGraphNode* first,
+                              GSEGraphNode* second);
 
 gpointer
-g_segraph_edge_free(GSEGraphEdge* edge);
+g_segraph_edge_free (GSEGraphEdge* edge);
 
 GSEGraphNode*
-g_segraph_edge_get_node(GSEGraphEdge* edge,
-                        GSEGraphNode* node);
-
-gboolean
-g_segraph_edge_get_node_extended(GSEGraphEdge* edge,
-                                 GSEGraphNode* node,
-                                 GSEGraphNode** neighbour);
-
-gboolean
-g_segraph_edge_is_first(GSEGraphEdge* edge,
-                        GSEGraphNode* node);
-
-gboolean
-g_segraph_edge_is_second(GSEGraphEdge* edge,
+g_segraph_edge_get_node (GSEGraphEdge* edge,
                          GSEGraphNode* node);
 
 gboolean
-g_segraph_edge_is_first_extended(GSEGraphEdge* edge,
-                                 GSEGraphNode* node,
-                                 gboolean* is_first);
-
-gboolean
-g_segraph_edge_is_second_extended(GSEGraphEdge* edge,
+g_segraph_edge_get_node_extended (GSEGraphEdge* edge,
                                   GSEGraphNode* node,
-                                  gboolean* is_second);
-
-void
-g_segraph_edge_clean(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_disconnect(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_clean_disconnect(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_clean_first(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_disconnect_first(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_clean_disconnect_first(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_clean_second(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_disconnect_second(GSEGraphEdge* edge);
-
-void
-g_segraph_edge_clean_disconnect_second(GSEGraphEdge* edge);
+                                  GSEGraphNode** neighbour);
 
 gboolean
-g_segraph_edge_clean_node(GSEGraphEdge* edge,
+g_segraph_edge_is_first (GSEGraphEdge* edge,
+                         GSEGraphNode* node);
+
+gboolean
+g_segraph_edge_is_second (GSEGraphEdge* edge,
                           GSEGraphNode* node);
 
 gboolean
-g_segraph_edge_disconnect_node(GSEGraphEdge* edge,
-                               GSEGraphNode* node);
+g_segraph_edge_is_first_extended (GSEGraphEdge* edge,
+                                  GSEGraphNode* node,
+                                  gboolean* is_first);
 
 gboolean
-g_segraph_edge_clean_disconnect_node(GSEGraphEdge* edge,
-                                     GSEGraphNode* node);
+g_segraph_edge_is_second_extended (GSEGraphEdge* edge,
+                                   GSEGraphNode* node,
+                                   gboolean* is_second);
+
+void
+g_segraph_edge_clean (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_disconnect (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_clean_disconnect (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_clean_first (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_disconnect_first (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_clean_disconnect_first (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_clean_second (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_disconnect_second (GSEGraphEdge* edge);
+
+void
+g_segraph_edge_clean_disconnect_second (GSEGraphEdge* edge);
 
 gboolean
-g_segraph_edge_is_link(GSEGraphEdge* edge);
+g_segraph_edge_clean_node (GSEGraphEdge* edge,
+                           GSEGraphNode* node);
 
 gboolean
-g_segraph_edge_is_loop(GSEGraphEdge* edge);
+g_segraph_edge_disconnect_node (GSEGraphEdge* edge,
+                                GSEGraphNode* node);
+
+gboolean
+g_segraph_edge_clean_disconnect_node (GSEGraphEdge* edge,
+                                      GSEGraphNode* node);
+
+gboolean
+g_segraph_edge_is_link (GSEGraphEdge* edge);
+
+gboolean
+g_segraph_edge_is_loop (GSEGraphEdge* edge);
 
 guint
-g_segraph_edge_get_multiplicity(GSEGraphEdge* edge);
+g_segraph_edge_get_multiplicity (GSEGraphEdge* edge);
 
 gboolean
-g_segraph_edge_is_bridge(GSEGraphEdge* edge);
+g_segraph_edge_is_bridge (GSEGraphEdge* edge);
 
 gboolean
-g_segraph_edge_is_half_edge(GSEGraphEdge* edge);
+g_segraph_edge_is_half_edge (GSEGraphEdge* edge);
 
 G_END_DECLS
 

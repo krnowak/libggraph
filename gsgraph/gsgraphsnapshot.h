@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
@@ -46,40 +46,40 @@ struct _GSGraphSnapshot
 };
 
 GPtrArray*
-g_sgraph_snapshot_new(GSGraphDataPair** data_pair,
-                      guint count);
+g_sgraph_snapshot_new (GSGraphDataPair** data_pairs,
+                       guint count);
 
 GSGraphSnapshot*
-g_sgraph_snapshot_new_from_node(GSGraphNode* node,
-                                GSGraphTraverseType traverse_type);
+g_sgraph_snapshot_new_from_node (GSGraphNode* node,
+                                 GSGraphTraverseType traverse_type);
 
 GSGraphSnapshot*
-g_sgraph_snapshot_copy(GSGraphSnapshot* graph);
+g_sgraph_snapshot_copy (GSGraphSnapshot* graph);
 
 GSGraphSnapshot*
-g_sgraph_snapshot_copy_deep(GSGraphSnapshot* graph,
-                            GCopyFunc node_data_copy_func,
-                            gpointer node_user_data);
+g_sgraph_snapshot_copy_deep (GSGraphSnapshot* graph,
+                             GCopyFunc node_data_copy_func,
+                             gpointer node_user_data);
 
 void
-g_sgraph_snapshot_free(GSGraphSnapshot* graph,
-                       gboolean deep_free);
+g_sgraph_snapshot_free (GSGraphSnapshot* graph,
+                        gboolean deep_free);
 
 guint
-g_sgraph_snapshot_get_order(GSGraphSnapshot* graph);
+g_sgraph_snapshot_get_order (GSGraphSnapshot* graph);
 
 guint
-g_sgraph_snapshot_get_size(GSGraphSnapshot* graph);
+g_sgraph_snapshot_get_size (GSGraphSnapshot* graph);
 
 void
-g_sgraph_snapshot_foreach_node(GSGraphSnapshot* graph,
-                               GFunc func,
-                               gpointer user_data);
+g_sgraph_snapshot_foreach_node (GSGraphSnapshot* graph,
+                                GFunc func,
+                                gpointer user_data);
 
 GSGraphNode*
-g_sgraph_snapshot_find_node_custom(GSGraphSnapshot* graph,
-                                   gpointer user_data,
-                                   GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_snapshot_find_node_custom (GSGraphSnapshot* graph,
+                                    gpointer user_data,
+                                    GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

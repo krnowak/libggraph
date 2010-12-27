@@ -49,13 +49,8 @@ g_segraph_snapshot_find_edge_custom
 </SECTION>
 
 <SECTION>
-<FILE>gsgraphnode</FILE>
-GSGraphNode
-g_sgraph_node_new
-g_sgraph_node_free
-g_sgraph_node_connect
-g_sgraph_node_disconnect
-g_sgraph_node_are_separate
+<FILE>gsgraphenums</FILE>
+GSGraphTraverseType
 </SECTION>
 
 <SECTION>
@@ -71,6 +66,16 @@ g_sgraph_data_pair_is_valid
 <SECTION>
 <FILE>gsegraphenums</FILE>
 GSEGraphTraverseType
+</SECTION>
+
+<SECTION>
+<FILE>gsgraphnode</FILE>
+GSGraphNode
+g_sgraph_node_new
+g_sgraph_node_free
+g_sgraph_node_connect
+g_sgraph_node_disconnect
+g_sgraph_node_are_separate
 </SECTION>
 
 <SECTION>
@@ -93,11 +98,6 @@ g_sgraph_snapshot_get_order
 g_sgraph_snapshot_get_size
 g_sgraph_snapshot_foreach_node
 g_sgraph_snapshot_find_node_custom
-</SECTION>
-
-<SECTION>
-<FILE>gsgraphenums</FILE>
-GSGraphTraverseType
 </SECTION>
 
 <SECTION>

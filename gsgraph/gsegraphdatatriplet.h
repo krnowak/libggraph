@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsegraph.h> can be included directly."
 #endif
 
@@ -30,6 +30,9 @@ G_BEGIN_DECLS
 
 /**
  * GSEGraphDataTriplet:
+ * @first: data for first node.
+ * @second: data for second node.
+ * @edge: data for edge connecting both nodes.
  *
  * Convenience struct holding three #gpointer variables.
  */
@@ -43,23 +46,23 @@ struct _GSEGraphDataTriplet
 };
 
 GSEGraphDataTriplet*
-g_segraph_data_triplet_new(gpointer first,
-                           gpointer second,
-                           gpointer edge) G_GNUC_WARN_UNUSED_RESULT;
+g_segraph_data_triplet_new (gpointer first,
+                            gpointer second,
+                            gpointer edge) G_GNUC_WARN_UNUSED_RESULT;
 
 GSEGraphDataTriplet*
-g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet) G_GNUC_WARN_UNUSED_RESULT;
+g_segraph_data_triplet_copy (GSEGraphDataTriplet* data_triplet) G_GNUC_WARN_UNUSED_RESULT;
 
 void
-g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet);
+g_segraph_data_triplet_free (GSEGraphDataTriplet* data_triplet);
 
 void
-g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                              guint count,
-                              gboolean free_array);
+g_segraph_data_triplet_free_v (GSEGraphDataTriplet** data_triplets,
+                               guint count,
+                               gboolean free_array);
 
 gboolean
-g_segraph_data_triplet_is_valid(GSEGraphDataTriplet* data_triplet);
+g_segraph_data_triplet_is_valid (GSEGraphDataTriplet* data_triplet);
 
 G_END_DECLS
 

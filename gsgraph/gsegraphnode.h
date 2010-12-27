@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsegraph.h> can be included directly."
 #endif
 
@@ -44,14 +44,14 @@ struct _GSEGraphNode
 };
 
 GSEGraphNode*
-g_segraph_node_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
+g_segraph_node_new (gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 gpointer
-g_segraph_node_free(GSEGraphNode* node);
+g_segraph_node_free (GSEGraphNode* node);
 
 gboolean
-g_segraph_node_are_separate(GSEGraphNode* node,
-                            GSEGraphNode* other_node);
+g_segraph_node_are_separate (GSEGraphNode* node,
+                             GSEGraphNode* other_node);
 
 G_END_DECLS
 

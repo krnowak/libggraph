@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -21,7 +21,7 @@
 
 /**
  * SECTION: gsgraphdatapair
- * @title: Data pairs
+ * @title: Simple graph data pairs
  * @short_description: data pairs for constructing simple graphs
  * @include: gsgraph/gsgraph.h
  * @see_also: #GSGraphSnapshot, g_sgraph_snapshot_new()
@@ -55,16 +55,16 @@
  * Returns: newly created #GSGraphDataPair.
  */
 GSGraphDataPair*
-g_sgraph_data_pair_new(gpointer first,
-                       gpointer second)
+g_sgraph_data_pair_new (gpointer first,
+                        gpointer second)
 {
   GSGraphDataPair* data_pair;
 
-  g_return_val_if_fail(first != NULL, NULL);
-  g_return_val_if_fail(second != NULL, NULL);
-  g_return_val_if_fail(first != second, NULL);
+  g_return_val_if_fail (first != NULL, NULL);
+  g_return_val_if_fail (second != NULL, NULL);
+  g_return_val_if_fail (first != second, NULL);
 
-  data_pair = g_slice_new(GSGraphDataPair);
+  data_pair = g_slice_new (GSGraphDataPair);
   data_pair->first = first;
   data_pair->second = second;
   return data_pair;
@@ -79,11 +79,11 @@ g_sgraph_data_pair_new(gpointer first,
  * Returns: newly created #GSGraphDataPair.
  */
 GSGraphDataPair*
-g_sgraph_data_pair_copy(GSGraphDataPair* data_pair)
+g_sgraph_data_pair_copy (GSGraphDataPair* data_pair)
 {
-  g_return_val_if_fail(data_pair != NULL, NULL);
+  g_return_val_if_fail (data_pair != NULL, NULL);
 
-  return g_sgraph_data_pair_new(data_pair->first, data_pair->second);
+  return g_sgraph_data_pair_new (data_pair->first, data_pair->second);
 }
 
 /**
@@ -93,11 +93,11 @@ g_sgraph_data_pair_copy(GSGraphDataPair* data_pair)
  * Frees memorty allocated to data pair.
  */
 void
-g_sgraph_data_pair_free(GSGraphDataPair* data_pair)
+g_sgraph_data_pair_free (GSGraphDataPair* data_pair)
 {
-  g_return_if_fail(data_pair != NULL);
+  g_return_if_fail (data_pair != NULL);
 
-  g_slice_free(GSGraphDataPair, data_pair);
+  g_slice_free (GSGraphDataPair, data_pair);
 }
 
 /**
@@ -111,29 +111,29 @@ g_sgraph_data_pair_free(GSGraphDataPair* data_pair)
  * @data_pairs is %NULL terminated.
  */
 void
-g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
-                          guint count,
-                          gboolean free_array)
+g_sgraph_data_pair_free_v (GSGraphDataPair** data_pairs,
+                           guint count,
+                           gboolean free_array)
 {
   guint iter;
 
-  g_return_if_fail(data_pairs != NULL);
+  g_return_if_fail (data_pairs != NULL);
 
   if (!count)
   {
     while (data_pairs[count])
     {
-      count++;
+      ++count;
     }
   }
 
-  for (iter = 0; iter < count; iter++)
+  for (iter = 0; iter < count; ++iter)
   {
-    g_sgraph_data_pair_free(data_pairs[iter]);
+    g_sgraph_data_pair_free (data_pairs[iter]);
   }
   if (free_array)
   {
-    g_free(data_pairs);
+    g_free (data_pairs);
   }
 }
 
@@ -147,9 +147,9 @@ g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
  * Returns: %TRUE if @data_pair is valid, otherwise %FALSE.
  */
 gboolean
-g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair)
+g_sgraph_data_pair_is_valid (GSGraphDataPair* data_pair)
 {
-  g_return_val_if_fail(data_pair != NULL, FALSE);
+  g_return_val_if_fail (data_pair != NULL, FALSE);
 
   return (data_pair->first && data_pair->second &&
           data_pair->first != data_pair->second);

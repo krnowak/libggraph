@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -23,7 +23,7 @@
 
 /**
  * SECTION: gsegraphedge
- * @title: Simple edges
+ * @title: Simple edged graph edges
  * @short_description: edges connecting two nodes and holding user data.
  * @include: gsgraph/gsegraph.h
  * @see_also: #GSEGraphNode
@@ -69,19 +69,19 @@
 /* static function declarations */
 
 static gboolean
-_g_segraph_edge_general_member_check(GSEGraphEdge* edge,
-                                     GSEGraphNode* node,
-                                     gboolean* check_result,
-                                     gboolean check_for_first);
+_g_segraph_edge_general_member_check (GSEGraphEdge* edge,
+                                      GSEGraphNode* node,
+                                      gboolean* check_result,
+                                      gboolean check_for_first);
 
 static gboolean
-_g_segraph_edge_bridge_check(GSEGraphNode* first,
-                             GSEGraphNode* second,
-                             GHashTable* visited_nodes,
-                             GHashTable* visited_edges);
+_g_segraph_edge_bridge_check (GSEGraphNode* first,
+                              GSEGraphNode* second,
+                              GHashTable* visited_nodes,
+                              GHashTable* visited_edges);
 
 static void
-_g_segraph_edge_disjoin(GSEGraphEdge* edge);
+_g_segraph_edge_disjoin (GSEGraphEdge* edge);
 
 /* public function definitions */
 
@@ -94,11 +94,11 @@ _g_segraph_edge_disjoin(GSEGraphEdge* edge);
  * Returns: newly created #GSEGraphEdge.
  */
 GSEGraphEdge*
-g_segraph_edge_new(gpointer data)
+g_segraph_edge_new (gpointer data)
 {
   GSEGraphEdge* edge;
 
-  edge = g_slice_new(GSEGraphEdge);
+  edge = g_slice_new (GSEGraphEdge);
   edge->first = NULL;
   edge->second = NULL;
   edge->data = data;
@@ -119,25 +119,25 @@ g_segraph_edge_new(gpointer data)
  * Returns: newly created #GSEGraphEdge.
  */
 void
-g_segraph_edge_connect_nodes(GSEGraphEdge* edge,
-                             GSEGraphNode* first,
-                             GSEGraphNode* second)
+g_segraph_edge_connect_nodes (GSEGraphEdge* edge,
+                              GSEGraphNode* first,
+                              GSEGraphNode* second)
 {
-  g_return_if_fail(edge != NULL);
-  g_return_if_fail((edge->first == NULL) && (edge->second == NULL));
-  g_return_if_fail((first != NULL) || (second != NULL));
+  g_return_if_fail (edge != NULL);
+  g_return_if_fail ((edge->first == NULL) && (edge->second == NULL));
+  g_return_if_fail ((first != NULL) || (second != NULL));
 
   edge->first = first;
   edge->second = second;
 
   if (first)
   {
-    g_ptr_array_add(first->edges, edge);
+    g_ptr_array_add (first->edges, edge);
   }
 
   if (second)
   {
-    g_ptr_array_add(second->edges, edge);
+    g_ptr_array_add (second->edges, edge);
   }
 }
 
@@ -154,14 +154,14 @@ g_segraph_edge_connect_nodes(GSEGraphEdge* edge,
  * Returns: Data in freed @edge or %NULL if its data was %NULL.
  */
 gpointer
-g_segraph_edge_free(GSEGraphEdge* edge)
+g_segraph_edge_free (GSEGraphEdge* edge)
 {
   gpointer data;
 
-  g_return_val_if_fail(edge != NULL, NULL);
+  g_return_val_if_fail (edge != NULL, NULL);
 
   data = edge->data;
-  g_slice_free(GSEGraphEdge, edge);
+  g_slice_free (GSEGraphEdge, edge);
   return data;
 }
 
@@ -177,10 +177,10 @@ g_segraph_edge_free(GSEGraphEdge* edge)
  * Returns: #GSEGraphNode associated to @edge being a neighbour of @node.
  */
 GSEGraphNode*
-g_segraph_edge_get_node(GSEGraphEdge* edge,
-                        GSEGraphNode* node)
+g_segraph_edge_get_node (GSEGraphEdge* edge,
+                         GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, NULL);
+  g_return_val_if_fail (edge != NULL, NULL);
 
   if (edge->first == node)
   {
@@ -207,11 +207,11 @@ g_segraph_edge_get_node(GSEGraphEdge* edge,
  * Returns: %TRUE, if @node is a part of @edge, %FALSE otherwise.
  */
 gboolean
-g_segraph_edge_get_node_extended(GSEGraphEdge* edge,
-                                 GSEGraphNode* node,
-                                 GSEGraphNode** neighbour)
+g_segraph_edge_get_node_extended (GSEGraphEdge* edge,
+                                  GSEGraphNode* node,
+                                  GSEGraphNode** neighbour)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   if (edge->first == node)
   {
@@ -249,10 +249,10 @@ g_segraph_edge_get_node_extended(GSEGraphEdge* edge,
  * Returns: %TRUE, if @node is first member of @edge, %FALSE otherwise.
  */
 gboolean
-g_segraph_edge_is_first(GSEGraphEdge* edge,
-                        GSEGraphNode* node)
+g_segraph_edge_is_first (GSEGraphEdge* edge,
+                         GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   return (edge->first == node);
 }
@@ -268,10 +268,10 @@ g_segraph_edge_is_first(GSEGraphEdge* edge,
  * Returns: %TRUE, if @node is second member of @edge, %FALSE otherwise.
  */
 gboolean
-g_segraph_edge_is_second(GSEGraphEdge* edge,
-                         GSEGraphNode* node)
+g_segraph_edge_is_second (GSEGraphEdge* edge,
+                          GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   return (edge->second == node);
 }
@@ -292,13 +292,13 @@ g_segraph_edge_is_second(GSEGraphEdge* edge,
  * otherwise.
  */
 gboolean
-g_segraph_edge_is_first_extended(GSEGraphEdge* edge,
-                                 GSEGraphNode* node,
-                                 gboolean* is_first)
+g_segraph_edge_is_first_extended (GSEGraphEdge* edge,
+                                  GSEGraphNode* node,
+                                  gboolean* is_first)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
-  return _g_segraph_edge_general_member_check(edge, node, is_first, TRUE);
+  return _g_segraph_edge_general_member_check (edge, node, is_first, TRUE);
 }
 
 /**
@@ -317,13 +317,13 @@ g_segraph_edge_is_first_extended(GSEGraphEdge* edge,
  * otherwise.
  */
 gboolean
-g_segraph_edge_is_second_extended(GSEGraphEdge* edge,
-                                  GSEGraphNode* node,
-                                  gboolean* is_second)
+g_segraph_edge_is_second_extended (GSEGraphEdge* edge,
+                                   GSEGraphNode* node,
+                                   gboolean* is_second)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
-  return _g_segraph_edge_general_member_check(edge, node, is_second, FALSE);
+  return _g_segraph_edge_general_member_check (edge, node, is_second, FALSE);
 }
 
 /**
@@ -337,9 +337,9 @@ g_segraph_edge_is_second_extended(GSEGraphEdge* edge,
  * calling this function is a safe bet.
  */
 void
-g_segraph_edge_clean(GSEGraphEdge* edge)
+g_segraph_edge_clean (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   edge->first = NULL;
   edge->second = NULL;
@@ -354,11 +354,11 @@ g_segraph_edge_clean(GSEGraphEdge* edge)
  * in edges are separate is up to programmist.
  */
 void
-g_segraph_edge_disconnect(GSEGraphEdge* edge)
+g_segraph_edge_disconnect (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
-  _g_segraph_edge_disjoin(edge);
+  _g_segraph_edge_disjoin (edge);
 }
 
 /**
@@ -367,16 +367,16 @@ g_segraph_edge_disconnect(GSEGraphEdge* edge)
  *
  * Removes connection between nodes in @edge, that is - in both nodes @edge is
  * removed and in @edge both pointer to nodes are set to %NULL, so @edge can be
- * used for connecting another nodes with g_segraph_edge_connect_two_nodes().
+ * used for connecting another nodes with g_segraph_edge_connect_nodes().
  * Checking if nodes in edges are separate is up to programmist, provided that
  * pointers to nodes were saved before calling this function.
  */
 void
-g_segraph_edge_clean_disconnect(GSEGraphEdge* edge)
+g_segraph_edge_clean_disconnect (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
-  _g_segraph_edge_disjoin(edge);
+  _g_segraph_edge_disjoin (edge);
   edge->first = NULL;
   edge->second = NULL;
 }
@@ -389,9 +389,9 @@ g_segraph_edge_clean_disconnect(GSEGraphEdge* edge)
  * half-edge.
  */
 void
-g_segraph_edge_clean_first(GSEGraphEdge* edge)
+g_segraph_edge_clean_first (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   edge->first = NULL;
 }
@@ -404,13 +404,13 @@ g_segraph_edge_clean_first(GSEGraphEdge* edge)
  * node in @edge intact.
  */
 void
-g_segraph_edge_disconnect_first(GSEGraphEdge* edge)
+g_segraph_edge_disconnect_first (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   if (edge->first)
   {
-    g_ptr_array_remove(edge->first->edges, edge);
+    g_ptr_array_remove (edge->first->edges, edge);
   }
 }
 
@@ -421,13 +421,13 @@ g_segraph_edge_disconnect_first(GSEGraphEdge* edge)
  * Disconnects node in first member of @edge from @edge and cleans first member.
  */
 void
-g_segraph_edge_clean_disconnect_first(GSEGraphEdge* edge)
+g_segraph_edge_clean_disconnect_first (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   if (edge->first)
   {
-    g_ptr_array_remove(edge->first->edges, edge);
+    g_ptr_array_remove (edge->first->edges, edge);
     edge->first = NULL;
   }
 }
@@ -440,9 +440,9 @@ g_segraph_edge_clean_disconnect_first(GSEGraphEdge* edge)
  * half-edge.
  */
 void
-g_segraph_edge_clean_second(GSEGraphEdge* edge)
+g_segraph_edge_clean_second (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   edge->second = NULL;
 }
@@ -455,13 +455,13 @@ g_segraph_edge_clean_second(GSEGraphEdge* edge)
  * to node in @edge intact.
  */
 void
-g_segraph_edge_disconnect_second(GSEGraphEdge* edge)
+g_segraph_edge_disconnect_second (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   if (edge->second)
   {
-    g_ptr_array_remove(edge->second->edges, edge);
+    g_ptr_array_remove (edge->second->edges, edge);
   }
 }
 
@@ -473,13 +473,13 @@ g_segraph_edge_disconnect_second(GSEGraphEdge* edge)
  * member.
  */
 void
-g_segraph_edge_clean_disconnect_second(GSEGraphEdge* edge)
+g_segraph_edge_clean_disconnect_second (GSEGraphEdge* edge)
 {
-  g_return_if_fail(edge != NULL);
+  g_return_if_fail (edge != NULL);
 
   if (edge->second)
   {
-    g_ptr_array_remove(edge->second->edges, edge);
+    g_ptr_array_remove (edge->second->edges, edge);
     edge->second = NULL;
   }
 }
@@ -496,11 +496,11 @@ g_segraph_edge_clean_disconnect_second(GSEGraphEdge* edge)
  * no such node in @edge).
  */
 gboolean
-g_segraph_edge_clean_node(GSEGraphEdge* edge,
-                          GSEGraphNode* node)
+g_segraph_edge_clean_node (GSEGraphEdge* edge,
+                           GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
-  g_return_val_if_fail(node != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
+  g_return_val_if_fail (node != NULL, FALSE);
 
   if (edge->first == node)
   {
@@ -527,15 +527,15 @@ g_segraph_edge_clean_node(GSEGraphEdge* edge,
  * no such node in @edge).
  */
 gboolean
-g_segraph_edge_disconnect_node(GSEGraphEdge* edge,
-                               GSEGraphNode* node)
+g_segraph_edge_disconnect_node (GSEGraphEdge* edge,
+                                GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
-  g_return_val_if_fail(node != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
+  g_return_val_if_fail (node != NULL, FALSE);
 
   if ((edge->first == node) || (edge->second == node))
   {
-    g_ptr_array_remove(node->edges, edge);
+    g_ptr_array_remove (node->edges, edge);
     return TRUE;
   }
   return FALSE;
@@ -553,22 +553,22 @@ g_segraph_edge_disconnect_node(GSEGraphEdge* edge,
  * otherwise %FALSE (there was no such node in @edge).
  */
 gboolean
-g_segraph_edge_clean_disconnect_node(GSEGraphEdge* edge,
-                                     GSEGraphNode* node)
+g_segraph_edge_clean_disconnect_node (GSEGraphEdge* edge,
+                                      GSEGraphNode* node)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
-  g_return_val_if_fail(node != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
+  g_return_val_if_fail (node != NULL, FALSE);
 
   if (edge->first == node)
   {
-    g_ptr_array_remove(node->edges, edge);
+    g_ptr_array_remove (node->edges, edge);
     edge->first = NULL;
     return TRUE;
   }
 
   if (edge->second == node)
   {
-    g_ptr_array_remove(node->edges, edge);
+    g_ptr_array_remove (node->edges, edge);
     edge->second = NULL;
     return TRUE;
   }
@@ -585,9 +585,9 @@ g_segraph_edge_clean_disconnect_node(GSEGraphEdge* edge,
  * Returns: %TRUE if @edge is a link, otherwise %FALSE.
  */
 gboolean
-g_segraph_edge_is_link(GSEGraphEdge* edge)
+g_segraph_edge_is_link (GSEGraphEdge* edge)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   return (edge->first && edge->second && (edge->first != edge->second));
 }
@@ -602,9 +602,9 @@ g_segraph_edge_is_link(GSEGraphEdge* edge)
  * Returns: %TRUE if @edge is a loop, otherwise %FALSE.
  */
 gboolean
-g_segraph_edge_is_loop(GSEGraphEdge* edge)
+g_segraph_edge_is_loop (GSEGraphEdge* edge)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   return (edge->first && edge->second && (edge->first == edge->second));
 }
@@ -619,15 +619,15 @@ g_segraph_edge_is_loop(GSEGraphEdge* edge)
  * Returns: @edge's multiplicity.
  */
 guint
-g_segraph_edge_get_multiplicity(GSEGraphEdge* edge)
+g_segraph_edge_get_multiplicity (GSEGraphEdge* edge)
 {
   guint iter;
   guint multiplicity;
   GSEGraphNode* checking_node;
   GSEGraphNode* checked_node;
 
-  g_return_val_if_fail(edge != NULL, 0);
-  g_return_val_if_fail((edge->first != NULL) || (edge->second != NULL), 0);
+  g_return_val_if_fail (edge != NULL, 0);
+  g_return_val_if_fail ((edge->first != NULL) || (edge->second != NULL), 0);
 
   if (edge->first)
   {
@@ -641,20 +641,20 @@ g_segraph_edge_get_multiplicity(GSEGraphEdge* edge)
   }
 
   multiplicity = 1;
-  for (iter = 0; iter < checking_node->edges->len; iter++)
+  for (iter = 0; iter < checking_node->edges->len; ++iter)
   {
     GSEGraphEdge* temp_edge;
     GSEGraphNode* temp_node;
 
-    temp_edge = g_ptr_array_index(checking_node->edges, iter);
+    temp_edge = g_ptr_array_index (checking_node->edges, iter);
     if (temp_edge == edge)
     {
       continue;
     }
-    temp_node = g_segraph_edge_get_node(temp_edge, checking_node);
+    temp_node = g_segraph_edge_get_node (temp_edge, checking_node);
     if (temp_node == checked_node)
     {
-      multiplicity++;
+      ++multiplicity;
     }
   }
   return multiplicity;
@@ -671,29 +671,31 @@ g_segraph_edge_get_multiplicity(GSEGraphEdge* edge)
  * Returns: %TRUE if @edge is a bridge, otherwise %FALSE.
  */
 gboolean
-g_segraph_edge_is_bridge(GSEGraphEdge* edge)
+g_segraph_edge_is_bridge (GSEGraphEdge* edge)
 {
   GHashTable* visited_nodes;
   GHashTable* visited_edges;
   gboolean result;
 
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   if (!edge->first || !edge->second)
   {
     return FALSE;
   }
 
-  visited_nodes = g_hash_table_new(NULL, NULL);
-  visited_edges = g_hash_table_new(NULL, NULL);
+  visited_nodes = g_hash_table_new (NULL, NULL);
+  visited_edges = g_hash_table_new (NULL, NULL);
 
-  g_hash_table_insert(visited_edges, edge, NULL);
+  g_hash_table_insert (visited_edges, edge, NULL);
 
-  result = _g_segraph_edge_bridge_check(edge->first, edge->second,
-                                        visited_nodes, visited_edges);
+  result = _g_segraph_edge_bridge_check (edge->first,
+                                         edge->second,
+                                         visited_nodes,
+                                         visited_edges);
 
-  g_hash_table_unref(visited_nodes);
-  g_hash_table_unref(visited_edges);
+  g_hash_table_unref (visited_nodes);
+  g_hash_table_unref (visited_edges);
 
   return result;
 }
@@ -708,9 +710,9 @@ g_segraph_edge_is_bridge(GSEGraphEdge* edge)
  * Returns: %TRUE if @edge is half-edge, otherwise %FALSE.
  */
 gboolean
-g_segraph_edge_is_half_edge(GSEGraphEdge* edge)
+g_segraph_edge_is_half_edge (GSEGraphEdge* edge)
 {
-  g_return_val_if_fail(edge != NULL, FALSE);
+  g_return_val_if_fail (edge != NULL, FALSE);
 
   return (!edge->first || !edge->second);
 }
@@ -733,10 +735,10 @@ g_segraph_edge_is_half_edge(GSEGraphEdge* edge)
  * %FALSE.
  */
 static gboolean
-_g_segraph_edge_general_member_check(GSEGraphEdge* edge,
-                                     GSEGraphNode* node,
-                                     gboolean* check_result,
-                                     gboolean check_for_first)
+_g_segraph_edge_general_member_check (GSEGraphEdge* edge,
+                                      GSEGraphNode* node,
+                                      gboolean* check_result,
+                                      gboolean check_for_first)
 {
   GSEGraphNode* check_node;
   GSEGraphNode* other_node;
@@ -781,10 +783,10 @@ _g_segraph_edge_general_member_check(GSEGraphEdge* edge,
  * Returns: %TRUE if edge is a bridge, otherwise %FALSE.
  */
 static gboolean
-_g_segraph_edge_bridge_check(GSEGraphNode* first,
-                             GSEGraphNode* second,
-                             GHashTable* visited_nodes,
-                             GHashTable* visited_edges)
+_g_segraph_edge_bridge_check (GSEGraphNode* first,
+                              GSEGraphNode* second,
+                              GHashTable* visited_nodes,
+                              GHashTable* visited_edges)
 {
   guint iter;
 
@@ -793,30 +795,32 @@ _g_segraph_edge_bridge_check(GSEGraphNode* first,
     return FALSE;
   }
 
-  g_hash_table_insert(visited_nodes, second, NULL);
+  g_hash_table_insert (visited_nodes, second, NULL);
 
-  for (iter = 0; iter < second->edges->len; iter++)
+  for (iter = 0; iter < second->edges->len; ++iter)
   {
     GSEGraphEdge* edge;
     GSEGraphNode* node;
 
-    edge = g_ptr_array_index(second->edges, iter);
-    if (g_hash_table_lookup_extended(visited_edges, edge, NULL, NULL))
+    edge = g_ptr_array_index (second->edges, iter);
+    if (g_hash_table_lookup_extended (visited_edges, edge, NULL, NULL))
     {
       continue;
     }
     else
     {
-      g_hash_table_insert(visited_edges, edge, NULL);
+      g_hash_table_insert (visited_edges, edge, NULL);
     }
-    node = g_segraph_edge_get_node(edge, second);
-    if (g_hash_table_lookup_extended(visited_nodes, node, NULL, NULL))
+    node = g_segraph_edge_get_node (edge, second);
+    if (g_hash_table_lookup_extended (visited_nodes, node, NULL, NULL))
     {
       continue;
     }
 
-    if (!_g_segraph_edge_bridge_check(first, node, visited_nodes,
-                                      visited_edges))
+    if (!_g_segraph_edge_bridge_check (first,
+                                       node,
+                                       visited_nodes,
+                                       visited_edges))
     {
       return FALSE;
     }
@@ -831,14 +835,14 @@ _g_segraph_edge_bridge_check(GSEGraphNode* first,
  * Removes pointers to @edge in both nodes it holds.
  */
 static void
-_g_segraph_edge_disjoin(GSEGraphEdge* edge)
+_g_segraph_edge_disjoin (GSEGraphEdge* edge)
 {
   if (edge->first)
   {
-    g_ptr_array_remove(edge->first->edges, edge);
+    g_ptr_array_remove (edge->first->edges, edge);
   }
   if (edge->second)
   {
-    g_ptr_array_remove(edge->second->edges, edge);
+    g_ptr_array_remove (edge->second->edges, edge);
   }
 }

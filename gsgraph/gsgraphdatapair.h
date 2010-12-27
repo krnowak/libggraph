@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
@@ -44,22 +44,22 @@ struct _GSGraphDataPair
 };
 
 GSGraphDataPair*
-g_sgraph_data_pair_new(gpointer first,
-                       gpointer second) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_data_pair_new (gpointer first,
+                        gpointer second) G_GNUC_WARN_UNUSED_RESULT;
 
 GSGraphDataPair*
-g_sgraph_data_pair_copy(GSGraphDataPair* data_pair) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_data_pair_copy (GSGraphDataPair* data_pair) G_GNUC_WARN_UNUSED_RESULT;
 
 void
-g_sgraph_data_pair_free(GSGraphDataPair* data_pair);
+g_sgraph_data_pair_free (GSGraphDataPair* data_pair);
 
 void
-g_sgraph_data_pair_free_v(GSGraphDataPair** data_pairs,
-                          guint count,
-                          gboolean free_array);
+g_sgraph_data_pair_free_v (GSGraphDataPair** data_pairs,
+                           guint count,
+                           gboolean free_array);
 
 gboolean
-g_sgraph_data_pair_is_valid(GSGraphDataPair* data_pair);
+g_sgraph_data_pair_is_valid (GSGraphDataPair* data_pair);
 
 G_END_DECLS
 

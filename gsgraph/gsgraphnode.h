@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsgraph.h> can be included directly."
 #endif
 
@@ -44,22 +44,22 @@ struct _GSGraphNode
 };
 
 GSGraphNode*
-g_sgraph_node_new(gpointer data) G_GNUC_WARN_UNUSED_RESULT;
+g_sgraph_node_new (gpointer data) G_GNUC_WARN_UNUSED_RESULT;
 
 gpointer
-g_sgraph_node_free(GSGraphNode* node);
+g_sgraph_node_free (GSGraphNode* node);
 
 void
-g_sgraph_node_connect(GSGraphNode* node,
-                      GSGraphNode* other_node);
+g_sgraph_node_connect (GSGraphNode* node,
+                       GSGraphNode* other_node);
 
 void
-g_sgraph_node_disconnect(GSGraphNode* sgraph_node,
-                         GSGraphNode* other_sgraph_node);
+g_sgraph_node_disconnect (GSGraphNode* node,
+                          GSGraphNode* other_node);
 
 gboolean
-g_sgraph_node_are_separate(GSGraphNode* sgraph_node,
-                           GSGraphNode* other_sgraph_node);
+g_sgraph_node_are_separate (GSGraphNode* node,
+                            GSGraphNode* other_node);
 
 G_END_DECLS
 

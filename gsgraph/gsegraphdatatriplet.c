@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -21,7 +21,7 @@
 
 /**
  * SECTION: gsegraphdatatriplet
- * @title: Data triplets
+ * @title: Simple edged graph data triplets
  * @short_description: data triplets for constructing graphs.
  * @include: gsgraph/gsegraph.h
  * @see_also: #GSEGraphSnapshot, g_segraph_snapshot_new()
@@ -54,22 +54,22 @@
  * g_segraph_data_triplet_new:
  * @first: first data.
  * @second: second data.
- * @data: connection data.
+ * @edge: connection data.
  *
  * Creates new data triplet.
  *
  * Returns: newly created #GSEGraphDataTriplet.
  */
 GSEGraphDataTriplet*
-g_segraph_data_triplet_new(gpointer first,
-                           gpointer second,
-                           gpointer edge)
+g_segraph_data_triplet_new (gpointer first,
+                            gpointer second,
+                            gpointer edge)
 {
   GSEGraphDataTriplet* data_triplet;
 
-  g_return_val_if_fail((first != NULL) || (second != NULL), NULL);
+  g_return_val_if_fail ((first != NULL) || (second != NULL), NULL);
 
-  data_triplet = g_slice_new(GSEGraphDataTriplet);
+  data_triplet = g_slice_new (GSEGraphDataTriplet);
   data_triplet->first = first;
   data_triplet->second = second;
   data_triplet->edge = edge;
@@ -85,12 +85,13 @@ g_segraph_data_triplet_new(gpointer first,
  * Returns: newly created #GSEGraphDataTriplet.
  */
 GSEGraphDataTriplet*
-g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
+g_segraph_data_triplet_copy (GSEGraphDataTriplet* data_triplet)
 {
-  g_return_val_if_fail(data_triplet != NULL, NULL);
+  g_return_val_if_fail (data_triplet != NULL, NULL);
 
-  return g_segraph_data_triplet_new(data_triplet->first, data_triplet->second,
-                                    data_triplet->edge);
+  return g_segraph_data_triplet_new (data_triplet->first,
+                                     data_triplet->second,
+                                     data_triplet->edge);
 }
 
 /**
@@ -100,11 +101,11 @@ g_segraph_data_triplet_copy(GSEGraphDataTriplet* data_triplet)
  * Frees memory allocated to data triplet.
  */
 void
-g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet)
+g_segraph_data_triplet_free (GSEGraphDataTriplet* data_triplet)
 {
-  g_return_if_fail(data_triplet != NULL);
+  g_return_if_fail (data_triplet != NULL);
 
-  g_slice_free(GSEGraphDataTriplet, data_triplet);
+  g_slice_free (GSEGraphDataTriplet, data_triplet);
 }
 
 /**
@@ -118,29 +119,29 @@ g_segraph_data_triplet_free(GSEGraphDataTriplet* data_triplet)
  * @data_triplets is %NULL terminated.
  */
 void
-g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
-                              guint count,
-                              gboolean free_array)
+g_segraph_data_triplet_free_v (GSEGraphDataTriplet** data_triplets,
+                               guint count,
+                               gboolean free_array)
 {
   guint iter;
 
-  g_return_if_fail(data_triplets != NULL);
+  g_return_if_fail (data_triplets != NULL);
 
   if (!count)
   {
     while (data_triplets[count])
     {
-      count++;
+      ++count;
     }
   }
 
-  for (iter = 0; iter < count; iter++)
+  for (iter = 0; iter < count; ++iter)
   {
-    g_segraph_data_triplet_free(data_triplets[iter]);
+    g_segraph_data_triplet_free (data_triplets[iter]);
   }
   if (free_array)
   {
-    g_free(data_triplets);
+    g_free (data_triplets);
   }
 }
 
@@ -154,9 +155,9 @@ g_segraph_data_triplet_free_v(GSEGraphDataTriplet** data_triplets,
  * Returns: %TRUE if @data_triplet is valid, otherwise %FALSE.
  */
 gboolean
-g_segraph_data_triplet_is_valid(GSEGraphDataTriplet* data_triplet)
+g_segraph_data_triplet_is_valid (GSEGraphDataTriplet* data_triplet)
 {
-  g_return_val_if_fail(data_triplet != NULL, FALSE);
+  g_return_val_if_fail (data_triplet != NULL, FALSE);
 
   return ((data_triplet->first != NULL) || (data_triplet->second != NULL));
 }

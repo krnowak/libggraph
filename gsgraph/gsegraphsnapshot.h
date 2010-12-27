@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -17,7 +17,7 @@
  * along with libggraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
+#if defined (G_DISABLE_SINGLE_INCLUDES) && !defined (_G_SEGRAPH_H_INSIDE_) && !defined (_LIB_G_GRAPH_COMPILATION_)
 #error "Only <gsgraph/gsegraph.h> can be included directly."
 #endif
 
@@ -48,64 +48,64 @@ struct _GSEGraphSnapshot
 };
 
 GPtrArray*
-g_segraph_snapshot_new(GSEGraphDataTriplet** data_triplets,
-                       guint count);
+g_segraph_snapshot_new (GSEGraphDataTriplet** data_triplets,
+                        guint count);
 
 GSEGraphSnapshot*
-g_segraph_snapshot_new_from_node(GSEGraphNode* node,
-                                 GSEGraphTraverseType traverse_type);
-
-GSEGraphSnapshot*
-g_segraph_snapshot_new_from_edge(GSEGraphEdge* edge,
-                                 GSEGraphTraverseType traverse_type);
-
-GSEGraphSnapshot*
-g_segraph_snapshot_new_only_nodes(GSEGraphNode* node,
+g_segraph_snapshot_new_from_node (GSEGraphNode* node,
                                   GSEGraphTraverseType traverse_type);
 
 GSEGraphSnapshot*
-g_segraph_snapshot_new_only_edges(GSEGraphEdge* edge,
+g_segraph_snapshot_new_from_edge (GSEGraphEdge* edge,
                                   GSEGraphTraverseType traverse_type);
 
 GSEGraphSnapshot*
-g_segraph_snapshot_copy(GSEGraphSnapshot* graph);
+g_segraph_snapshot_new_only_nodes (GSEGraphNode* node,
+                                   GSEGraphTraverseType traverse_type);
 
 GSEGraphSnapshot*
-g_segraph_snapshot_copy_deep(GSEGraphSnapshot* graph,
-                             GCopyFunc node_data_copy_func,
-                             gpointer node_user_data,
-                             GCopyFunc edge_data_copy_func,
-                             gpointer edge_user_data);
+g_segraph_snapshot_new_only_edges (GSEGraphEdge* edge,
+                                   GSEGraphTraverseType traverse_type);
+
+GSEGraphSnapshot*
+g_segraph_snapshot_copy (GSEGraphSnapshot* graph);
+
+GSEGraphSnapshot*
+g_segraph_snapshot_copy_deep (GSEGraphSnapshot* graph,
+                              GCopyFunc node_data_copy_func,
+                              gpointer node_user_data,
+                              GCopyFunc edge_data_copy_func,
+                              gpointer edge_user_data);
 
 void
-g_segraph_snapshot_free(GSEGraphSnapshot* graph,
-                        gboolean deep_free);
+g_segraph_snapshot_free (GSEGraphSnapshot* graph,
+                         gboolean deep_free);
 
 guint
-g_segraph_snapshot_get_order(GSEGraphSnapshot* graph);
+g_segraph_snapshot_get_order (GSEGraphSnapshot* graph);
 
 guint
-g_segraph_snapshot_get_size(GSEGraphSnapshot* graph);
+g_segraph_snapshot_get_size (GSEGraphSnapshot* graph);
 
 void
-g_segraph_snapshot_foreach_node(GSEGraphSnapshot* graph,
-                                GFunc func,
-                                gpointer user_data);
+g_segraph_snapshot_foreach_node (GSEGraphSnapshot* graph,
+                                 GFunc func,
+                                 gpointer user_data);
 
 GSEGraphNode*
-g_segraph_snapshot_find_node_custom(GSEGraphSnapshot* graph,
-                                    gpointer user_data,
-                                    GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+g_segraph_snapshot_find_node_custom (GSEGraphSnapshot* graph,
+                                     gpointer user_data,
+                                     GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
 
 void
-g_segraph_snapshot_foreach_edge(GSEGraphSnapshot* graph,
-                                GFunc func,
-                                gpointer user_data);
+g_segraph_snapshot_foreach_edge (GSEGraphSnapshot* graph,
+                                 GFunc func,
+                                 gpointer user_data);
 
 GSEGraphEdge*
-g_segraph_snapshot_find_edge_custom(GSEGraphSnapshot* graph,
-                                    gpointer data,
-                                    GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
+g_segraph_snapshot_find_edge_custom (GSEGraphSnapshot* graph,
+                                     gpointer user_data,
+                                     GEqualFunc func) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

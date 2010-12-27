@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Krzesimir Nowak <qdlacz@gmail.com>
+ * Copyright (C) 2009, 2010 Krzesimir Nowak
  *
  * This file is part of libggraph.
  *
@@ -49,10 +49,10 @@
 /* static function declarations. */
 
 static gboolean
-_g_segraph_node_separation_check(GSEGraphNode* node,
-                                 GSEGraphNode* other_node,
-                                 GHashTable* visited_nodes,
-                                 GHashTable* visited_edges);
+_g_segraph_node_separation_check (GSEGraphNode* node,
+                                  GSEGraphNode* other_node,
+                                  GHashTable* visited_nodes,
+                                  GHashTable* visited_edges);
 
 /* public function definitions */
 
@@ -65,13 +65,13 @@ _g_segraph_node_separation_check(GSEGraphNode* node,
  * Returns: newly created #GSEGraphNode.
  */
 GSEGraphNode*
-g_segraph_node_new(gpointer data)
+g_segraph_node_new (gpointer data)
 {
   GSEGraphNode* graph;
 
-  graph = g_slice_new(GSEGraphNode);
+  graph = g_slice_new (GSEGraphNode);
   graph->data = data;
-  graph->edges = g_ptr_array_new();
+  graph->edges = g_ptr_array_new ();
   return graph;
 }
 
@@ -87,15 +87,15 @@ g_segraph_node_new(gpointer data)
  * Returns: pointer to @node's data.
  */
 gpointer
-g_segraph_node_free(GSEGraphNode* node)
+g_segraph_node_free (GSEGraphNode* node)
 {
   gpointer data;
 
-  g_return_val_if_fail(node != NULL, NULL);
+  g_return_val_if_fail (node != NULL, NULL);
 
   data = node->data;
-  g_ptr_array_free(node->edges, TRUE);
-  g_slice_free(GSEGraphNode, node);
+  g_ptr_array_free (node->edges, TRUE);
+  g_slice_free (GSEGraphNode, node);
   return data;
 }
 
@@ -118,24 +118,26 @@ g_segraph_node_free(GSEGraphNode* node)
  * Returns: %TRUE if there is no path between @node and @other_node.
  */
 gboolean
-g_segraph_node_are_separate(GSEGraphNode* node,
-                            GSEGraphNode* other_node)
+g_segraph_node_are_separate (GSEGraphNode* node,
+                             GSEGraphNode* other_node)
 {
   GHashTable* visited_nodes;
   GHashTable* visited_edges;
   gboolean are_separate;
 
-  g_return_val_if_fail(node != NULL, FALSE);
-  g_return_val_if_fail(other_node != NULL, FALSE);
+  g_return_val_if_fail (node != NULL, FALSE);
+  g_return_val_if_fail (other_node != NULL, FALSE);
 
-  visited_nodes = g_hash_table_new(NULL, NULL);
-  visited_edges = g_hash_table_new(NULL, NULL);
+  visited_nodes = g_hash_table_new (NULL, NULL);
+  visited_edges = g_hash_table_new (NULL, NULL);
 
-  are_separate = _g_segraph_node_separation_check(node, other_node,
-                                                  visited_nodes, visited_edges);
+  are_separate = _g_segraph_node_separation_check (node,
+                                                   other_node,
+                                                   visited_nodes,
+                                                   visited_edges);
 
-  g_hash_table_unref(visited_nodes);
-  g_hash_table_unref(visited_edges);
+  g_hash_table_unref (visited_nodes);
+  g_hash_table_unref (visited_edges);
 
   return are_separate;
 }
@@ -156,10 +158,10 @@ g_segraph_node_are_separate(GSEGraphNode* node,
  * Returns: %TRUE if @node and other_node are not the same, otherwise @FALSE.
  */
 static gboolean
-_g_segraph_node_separation_check(GSEGraphNode* node,
-                                 GSEGraphNode* other_node,
-                                 GHashTable* visited_nodes,
-                                 GHashTable* visited_edges)
+_g_segraph_node_separation_check (GSEGraphNode* node,
+                                  GSEGraphNode* other_node,
+                                  GHashTable* visited_nodes,
+                                  GHashTable* visited_edges)
 {
   guint iter;
 
@@ -168,33 +170,35 @@ _g_segraph_node_separation_check(GSEGraphNode* node,
     return FALSE;
   }
 
-  g_hash_table_insert(visited_nodes, other_node, NULL);
+  g_hash_table_insert (visited_nodes, other_node, NULL);
 
-  for (iter = 0; iter < other_node->edges->len; iter++)
+  for (iter = 0; iter < other_node->edges->len; ++iter)
   {
     GSEGraphEdge* edge;
     GSEGraphNode* temp_node;
 
-    edge = g_ptr_array_index(other_node->edges, iter);
-    if (g_hash_table_lookup_extended(visited_edges, edge, NULL, NULL))
+    edge = g_ptr_array_index (other_node->edges, iter);
+    if (g_hash_table_lookup_extended (visited_edges, edge, NULL, NULL))
     {
       continue;
     }
-    g_hash_table_insert(visited_edges, edge, NULL);
+    g_hash_table_insert (visited_edges, edge, NULL);
 
-    temp_node = g_segraph_edge_get_node(edge, other_node);
+    temp_node = g_segraph_edge_get_node (edge, other_node);
     if (!temp_node)
     {
       continue;
     }
 
-    if (g_hash_table_lookup_extended(visited_nodes, temp_node, NULL, NULL))
+    if (g_hash_table_lookup_extended (visited_nodes, temp_node, NULL, NULL))
     {
       continue;
     }
 
-    if (!_g_segraph_node_separation_check(node, temp_node, visited_nodes,
-                                          visited_edges))
+    if (!_g_segraph_node_separation_check (node,
+                                           temp_node,
+                                           visited_nodes,
+                                           visited_edges))
     {
       return FALSE;
     }
